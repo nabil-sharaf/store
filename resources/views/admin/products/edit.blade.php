@@ -55,7 +55,7 @@
                 <div class="form-group row mt-4">
                     <label for="inputCategories" class="col-sm-2 control-label">الفئات</label>
                     <div class="col-sm-10">
-                        <select multiple class="form-control @error('categories') is-invalid @enderror"
+                        <select multiple class="form-control select2 @error('categories') is-invalid @enderror"
                                 id="inputCategories" name="categories[]">
                             @foreach($categories as $category)
                                 <option

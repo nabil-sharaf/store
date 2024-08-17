@@ -45,7 +45,7 @@
             <div class="form-group row mt-4">
                 <label for="inputCategories" class="col-sm-2 control-label">الفئات</label>
                 <div class="col-sm-10">
-                    <select multiple class="form-control @error('categories') is-invalid @enderror" id="inputCategories" name="categories[]">
+                    <select  multiple class="form-control select2  @error('categories') is-invalid @enderror" id="inputCategories" name="categories[]" style="width: 100%">
                         @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ (is_array(old('categories')) && in_array($category->id, old('categories'))) ? 'selected' : '' }}>
                             {{ $category->name }}
@@ -55,6 +55,7 @@
                     @error('categories')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
+
       <div class="form-group row mt-4">
         <label for="inputImages" class="col-sm-2 control-label">صور المنتج</label>
         <div class="col-sm-10">
@@ -81,7 +82,8 @@
 
 @push('scripts')
 <script>
-function previewImages(event) {
+
+    function previewImages(event) {
     var previewContainer = document.getElementById('imagePreviewContainer');
     previewContainer.innerHTML = ''; // مسح المعاينات السابقة
 
@@ -106,3 +108,5 @@ function previewImages(event) {
 }
 </script>
 @endpush
+
+

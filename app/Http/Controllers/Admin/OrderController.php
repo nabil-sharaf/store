@@ -170,8 +170,7 @@ class OrderController extends Controller
         // Update the order status
         $order->status_id = $request->input('status');
         $order->save();
-        return redirect()->route('admin.orders.index')->with('success', 'تم تعديل حالة الطلب بنجاح');
-    }
+        return response()->json(['success' => 'تم تعديل حالة الطلب بنجاح']);}
 }
 
 

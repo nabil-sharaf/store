@@ -51,16 +51,17 @@
                         <td>{{ $order->created_at->format('Y-m-d') }}</td>
                         <td>
                             @if($order->status->id != 3 && $order->status->id != 4)
-                                <form action="{{ route('admin.orders.updatestatus', $order->id) }}" method="POST">
+                                <form class="status-form" id="form{{$order->id}}" data-order-id="{{ $order->id }}">
                                     @csrf
                                     @method('PUT')
-                                    <select name="status" onchange="this.form.submit()" class="form-control">
+                                    <select name="status" class="form-control order-status" data-order-id="{{ $order->id }}">
                                         <option value="1" {{ $order->status->id == 1 ? 'selected' : '' }}>قيد المعالجة</option>
                                         <option value="2" {{ $order->status->id == 2 ? 'selected' : '' }}>جاري الشحن</option>
                                         <option value="3" {{ $order->status->id == 3 ? 'selected' : '' }}>تم التسليم</option>
                                         <option value="4" {{ $order->status->id == 4 ? 'selected' : '' }}>ملغي</option>
                                     </select>
                                 </form>
+
                             @elseif($order->status->id==3)
                                 <span class="btn-sm btn-success">{{ $order->status->name }}</span>
                             @elseif($order->status->id==4)
@@ -72,11 +73,11 @@
                                 <i class="fas fa-eye"></i>
                             </a>
                             @if($order->status->id == 1)
-                                <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-sm btn-info mr-1" title="تعديل">
+                                <a  href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-sm btn-info mr-1 edit-st{{$order->id}}" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             @else
-                                <a href="#" class="btn btn-sm btn-secondary mr-1 disabled" title="غير متاح">
+                                <a  href="#" class="btn btn-sm btn-secondary mr-1 disabled edit-st{{$order->id}}" title="غير متاح">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             @endif
@@ -123,6 +124,52 @@
                     table.append(row);
                 });
             });
+
+
+            // ajax for change status
+            $('.order-status').on('change', function() {
+                var orderId = $(this).data('order-id');
+                var status = $(this).val();
+                var token = $('input[name="_token"]').val();
+                var mySelect = $(this).closest('form');
+
+                $.ajax({
+                    // url: '/admin/orders/' + orderId + '/updatestatus',
+                    url: '{{ route("admin.orders.updatestatus", ":id") }}'.replace(':id', orderId),
+
+                    type: 'POST',
+                    data: {
+                        _token: token,
+                        _method: 'Put',
+                        status: status
+                    },
+                    success: function(response) {
+                        // عرض رسالة نجاح باستخدام Toastr
+                        toastr.success(response.success);
+
+                        // تعطيل الـ select وزر التعديل إذا كانت الحالة تم التسليم أو ملغي
+                        if (status == 3) {
+                            mySelect.replaceWith( '<span class="btn-sm btn-success">تم التسليم</span>');
+                        }
+                        if (status == 4) {
+                            mySelect.replaceWith( '<span class="btn-sm btn-danger">ملغي</span>');
+                        }
+                        if(status==1){
+                            $('.edit-st'+orderId).removeClass().addClass('btn btn-sm btn-info mr-1 edit-st'+orderId);
+                        }else{
+                            $('.edit-st'+orderId).removeClass().addClass('btn btn-sm btn-secondary mr-1 disabled edit-st'+orderId);
+
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // عرض رسالة خطأ باستخدام Toastr
+                        var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'حدث خطأ أثناء تعديل الحالة';
+                        toastr.error(errorMessage);
+                    }
+                });
+            });
+
+
 
         });
     </script>

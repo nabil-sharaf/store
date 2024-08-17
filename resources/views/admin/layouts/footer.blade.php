@@ -53,13 +53,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-
+ <!--select2-->
+ <script src="{{asset('admin/plugins/select2/js/select2.full.min.js')}}"></script>
 <script>
+    // select2
+    $('.select2').select2({
+        theme: 'bootstrap4'
+    })
      toastr.options = {
         "positionClass": "toast-top-left", // هنا نغير الموقع إلى أعلى اليسار
         "closeButton": true,
         "progressBar": true
-        
+
     };
 
     @if(Session::has('success'))
@@ -68,9 +73,11 @@
 
     @if(Session::has('error'))
         toastr.error("{{ Session::get('error') }}");
-    
+
     @endif
-    
+
+
+
 </script>
     @stack('scripts')
 </body>
