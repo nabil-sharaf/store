@@ -21,7 +21,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview {{ Request::is('admin/dashboard*') ? 'menu-open' : '' }}">
+          <li class="nav-item has-treeview {{ Request::is('admin/customers*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ Request::is('admin/dashboard*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p class='font-weight-bold'>
@@ -34,6 +34,23 @@
                 <a href="./index.html" class="nav-link {{ Request::is('admin/index*') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>المديرين</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview {{ Request::is('admin/customers*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Request::is('admin/customers*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p class='font-weight-bold'>
+                العملاء
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('admin.customers.index')}}" class="nav-link {{ Request::is('admin/customers/index*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>العملاء</p>
                 </a>
               </li>
             </ul>
@@ -129,6 +146,23 @@
                 <a href="{{ route('admin.promo-codes.create') }}" class="nav-link {{ Request::is('admin/promo-codes/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>إضافة برومو كود</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview {{ Request::is('admin/reports*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Request::is('admin/reports*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p class='font-weight-bold'>
+               التقارير
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.reports.index') }}" class="nav-link {{ Request::is('admin/reports') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>تقارير المبيعات</p>
                 </a>
               </li>
             </ul>

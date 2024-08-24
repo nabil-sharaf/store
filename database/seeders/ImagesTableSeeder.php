@@ -17,13 +17,13 @@ class ImagesTableSeeder extends Seeder
         foreach ($products as $product) {
             Image::create([
                 'name' => $product->name . ' Image 1',
-                'path' => 'products/66aced71c5a06.jpg',
+                'path' => 'products/66c0719f68780.jpg',
                 'product_id' => $product->id,
             ]);
 
             Image::create([
                 'name' => $product->name . ' Image 2',
-                'path' => 'products/66aced71cd523.jpg',
+                'path' => 'products/66c070bfec2e7.jpg',
                 'product_id' => $product->id,
             ]);
         }

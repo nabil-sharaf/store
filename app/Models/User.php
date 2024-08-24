@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-class User extends Authenticatable 
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -16,9 +16,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name','email','password','customer_type','vip_start_dae','vip_end_date','discount',
     ];
 
     /**
@@ -41,6 +39,24 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'vip_start_date'=>'datetime',
+            'vip_end_date'=>'datetime',
         ];
     }
+
+    public function isVip()
+    {
+        return $this->is_vip && now()->between($this->vip_start_date, $this->vip_end_date);
+    }
+
+    public function getVipDiscount()
+    {
+        if ($this->isVip()) {
+            return $this->vip_discount;
+        }
+        return 0;
+    }
+
+    
+
 }

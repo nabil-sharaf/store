@@ -23,7 +23,7 @@
                 <div class="form-group row">
                     <label for="inputUser" class="col-sm-2 control-label">المستخدم</label>
                     <div class="col-sm-10">
-                        <select class="custom-select form-control @error('user_id') is-invalid @enderror" id="inputUser"
+                        <select class=" select2 form-control @error('user_id') is-invalid @enderror" id="inputUser"
                                 name="user_id" required>
                             <option value="">اختر مستخدم</option>
                             @foreach($users as $user)
@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="product-select-0">اختر المنتج</label>
-                                        <select id="product-select-0" class="custom-select form-control product-select"
+                                        <select id="product-select-0" class="select2 form-control product-select"
                                                 name="products[0][id]" required>
                                             <option value="">اختر منتج</option>
                                             @foreach($products as $product)
@@ -98,12 +98,24 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputTotalOrder" class="col-sm-2 control-label">الإجمالي الكلي للطلب</label>
+                    <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة الخصم</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputDiscountPercentage" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة الخصم</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputDiscountAmount" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputTotalOrder" class="col-sm-2 control-label">الإجمالي  بعد الخصم</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="inputTotalOrder" readonly>
                     </div>
                 </div>
-            </div>
             <div class="card-footer">
                 <button type="submit" class="btn btn-info float-right">حفظ البيانات</button>
             </div>
@@ -133,7 +145,7 @@
                     </div>
                     <div class="form-group">
                         <label for="product-select-${productCount}">اختر المنتج</label>
-                        <select id="product-select-${productCount}" class="custom-select form-control product-select" name="products[${productCount}][id]" required>
+                        <select id="product-select-${productCount}" class="select2 form-control product-select" name="products[${productCount}][id]" required>
                             <option value="">اختر منتج</option>
                             @foreach($products as $product)
                 <option value="{{ $product->id }}" data-price="{{ $product->price }}" data-quantity="{{ $product->quantity }}">{{ $product->name }}</option>
@@ -168,6 +180,7 @@
             </div>
         `;
                 $('#product-fields').append(newField);
+                initializeSelect2();
                 updateProductNumbers();
                 updateTotalOrder();
             }
@@ -196,6 +209,7 @@
                 productBody.find('.product-current-quantity').val(quantity);
 
                 updateTotal(productBody);
+                initializeSelect2();
             });
 
             $('#product-fields').on('input', '.product-quantity', function () {
@@ -210,23 +224,84 @@
                 updateTotalOrder();
             }
 
+
+
+            function initializeSelect2() {
+                $('.select2').select2({
+                    theme: 'bootstrap4',
+                    width: '100%',
+                    language: {
+                        noResults: function() {
+                            return "لا توجد نتائج";
+                        }
+                    }
+                });
+            }
+
+            function updateDiscount() {
+                var userId = $('#inputUser').val();
+                var totalBeforeDiscount = calculateTotalBeforeDiscount();
+                var url = "{{route('admin.get-user-discount', ':id')}}".replace(':id', userId);
+
+                if (userId) {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function(response) {
+                            var discountPercentage = response.discount;
+                            if (discountPercentage && discountPercentage > 0) {
+                                var discountAmount = (totalBeforeDiscount * discountPercentage) / 100;
+                                var totalAfterDiscount = totalBeforeDiscount - discountAmount;
+
+                                $('#inputDiscountPercentage').val(discountPercentage + ' % ');
+                                $('#inputDiscountAmount').val(discountAmount.toFixed(2));
+                                $('#inputTotalOrder').val(totalAfterDiscount.toFixed(2));
+                            } else {
+                                $('#inputDiscountPercentage').val('لا يوجد خصم');
+                                $('#inputDiscountAmount').val('0');
+                                $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error fetching discount: " + error);
+                            $('#inputDiscountPercentage').val('خطأ في جلب الخصم');
+                            $('#inputDiscountAmount').val('0');
+                            $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
+                        }
+                    });
+                } else {
+                    $('#inputDiscountPercentage').val('لا يوجد خصم');
+                    $('#inputDiscountAmount').val('0');
+                    $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
+                }
+            }
+
+            function calculateTotalBeforeDiscount() {
+                var total = 0;
+                $('.product-total').each(function () {
+                    total += parseFloat($(this).val()) || 0;
+                });
+                return total;
+            }
+
+            // تحديث الخصم عند تغيير المستخدم
+            $('#inputUser').change(function() {
+                updateDiscount();
+            });
+
+            // تعديل دالة updateTotalOrder
             function updateTotalOrder() {
                 var totalOrder = 0;
                 $('.product-total').each(function () {
                     totalOrder += parseFloat($(this).val()) || 0;
                 });
                 $('#inputTotalOrder').val(totalOrder.toFixed(2));
+                updateDiscount();  // نضيف هذا السطر لتحديث الخصم بعد تحديث الإجمالي
             }
+
+
+
+
         });
     </script>
-@endpush
-
-@push('styles')
-    <style>
-        .custom-select {
-            padding-right: 30px !important;
-            background-position: left 0.75rem center !important; /* Adjust arrow position for RTL */
-            background-size: 16px 12px !important; /* Ensure arrow size is appropriate */
-        }
-    </style>
 @endpush

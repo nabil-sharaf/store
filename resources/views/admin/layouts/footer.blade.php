@@ -63,8 +63,10 @@
      toastr.options = {
         "positionClass": "toast-top-left", // هنا نغير الموقع إلى أعلى اليسار
         "closeButton": true,
-        "progressBar": true
-
+        "progressBar": true,
+         "showDuration": "2000", // مدة عرض الرسالة
+         "hideDuration": "1000", // مدة اختفاء الرسالة
+         "timeOut": "4000", // مدة عرض الرسالة قبل الاختفاء (بالملي ثانية)
     };
 
     @if(Session::has('success'))
@@ -75,6 +77,8 @@
         toastr.error("{{ Session::get('error') }}");
 
     @endif
+
+
 
 
 

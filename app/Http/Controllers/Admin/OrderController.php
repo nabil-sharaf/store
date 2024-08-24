@@ -42,10 +42,12 @@ class OrderController extends Controller
     {
         try {
             return DB::transaction(function () use ($request) {
-
+                $user = User::findOrFail($request->user_id);
                 $order = new Order();
-                $order->user_id = $request->user_id;
+                $order->user_id = $user->id;
                 $order->total_price = 0;
+                $order->discount = 0;
+                $order->total_after_discount = 0;
                 $order->save();
 
                 $totalPrice = 0;
@@ -54,7 +56,7 @@ class OrderController extends Controller
                     if ($product->quantity < $productData['quantity']) {
                         throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
                     }
-                    if ($productData['quantity'] < 1 ) {
+                    if ($productData['quantity'] < 1) {
                         throw new \Exception('الكمية لابد ان تكون واحد على الأقل ');
                     }
 
@@ -71,7 +73,13 @@ class OrderController extends Controller
                     $product->save();
                 }
 
+                // حساب الخصم
+                $discount = $this->calculateDiscount($user, $totalPrice);
+                $discountedTotal = $totalPrice - $discount;
+
                 $order->total_price = $totalPrice;
+                $order->discount = $discount;
+                $order->total_after_discount = $discountedTotal;
                 $order->save();
 
                 return redirect()->route('admin.orders.index')->with('success', 'تم إنشاء الطلب بنجاح');
@@ -81,9 +89,28 @@ class OrderController extends Controller
         }
     }
 
+    private function calculateDiscount(User $user, $totalPrice)
+    {
+        switch($user->customer_type) {
+            case 'vip':
+                // تحقق من صلاحية فترة VIP
+                if ($user->vip_start_date<=now() && $user->vip_end_date >= now() ) {
+                    return $totalPrice * ($user->discount / 100);
+                }
+                // إذا انتهت فترة VIP، قم بتحديث نوع العميل
+                $user->customer_type = 'normal';
+                $user->save();
+                return 0;
+            case 'goomla':
+                return $totalPrice * ($user->discount / 100);
+            default:
+                return 0;
+        }
+    }
+
     public function edit(Order $order)
     {
-        if($order->status->id==1){ // تعديل الطلب في حالة اذا لم  شحنه
+        if($order->status->id==1){ // تعديل الطلب في حالة اذا لم  يتم شحنه
 
         $users = User::all();
         $products = Product::all();
@@ -133,12 +160,19 @@ class OrderController extends Controller
                     $product->save();
                 }
 
+                // حساب الخصم
+                $user = User::findOrFail($request->user_id);
+                $discount = $this->calculateDiscount($user, $totalPrice);
+                $discountedTotal = $totalPrice - $discount;
+
                 $order->total_price = $totalPrice;
+                $order->discount = $discount;
+                $order->total_after_discount = $discountedTotal;
                 $order->save();
 
                 return redirect()->route('admin.orders.index')->with('success', 'تم تحديث الطلب بنجاح');
-            });
-        } catch (\Exception $e) {
+           });
+        }  catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
     }
@@ -149,17 +183,6 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
-//    public function destroy(Order $order)
-//    {
-//        foreach ($order->orderDetails as $orderDetail) {
-//            $product = $orderDetail->product;
-//            $product->quantity += $orderDetail->product_quantity;
-//            $product->save();
-//        }
-//
-//        $order->delete();
-//        return redirect()->route('admin.orders.index')->with('success', 'تم حذف الطلب بنجاح');
-//    }
 
     public function updateStatus(Order $order, Request $request)
     {
@@ -170,7 +193,21 @@ class OrderController extends Controller
         // Update the order status
         $order->status_id = $request->input('status');
         $order->save();
-        return response()->json(['success' => 'تم تعديل حالة الطلب بنجاح']);}
+        return response()->json(['success' => 'تم تعديل حالة الطلب بنجاح']);
+    }
+
+    // حساب نسبة الخصم عند اضافة اوردر
+    public function getUserDiscount(User $user)
+    {
+        $discount = 0;
+        if ($user->customer_type == 'vip' && $user->vip_end_date >= now()) {
+            $discount = $user->discount;
+        } elseif ($user->customer_type == 'goomla') {
+            $discount = $user->discount;
+        }
+
+        return response()->json(['discount' => $discount]);
+    }
 }
 
 

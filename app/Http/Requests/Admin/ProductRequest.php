@@ -4,21 +4,28 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Contracts\Validation\Validator;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductRequest extends FormRequest
 {
    public function authorize()
     {
-        return true; // يمكنك تعديل هذا وفقًا لمنطق التفويض الخاص بك
+        return true;
     }
 
     public function rules()
     {
+        $id = $this->route('product') ? $this->route('product')->id : null;
+
         return [
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|'. Rule::unique('products','name')->ignore($id),
             'description' => 'required',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
+            'discount' => 'nullable|numeric|min:0',
+            'discount_type' => 'nullable|in:fixed,percentage',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date|after_or_equal:today',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -46,6 +53,7 @@ class ProductRequest extends FormRequest
             'images.*.image' => 'يجب أن يكون الملف صورة',
             'images.*.mimes' => 'يجب أن تكون الصورة من نوع: jpeg, png, jpg, gif',
             'images.*.max' => 'يجب أن لا يتجاوز حجم الصورة 2 ميجابايت',
+            'end_date'      => ' يجب ان يكون تاريخ نهاية الخصم اكبر من تاريخ اليوم وتاريخ بداية الخصم'
         ];
     }
 }

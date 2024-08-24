@@ -3,6 +3,7 @@
     تعديل المنتج
 @endsection
 @section('content')
+
     <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title float-left">تعديل المنتج</h3>
@@ -12,7 +13,9 @@
         <form class="form-horizontal" action="{{ route('admin.products.update', $product->id) }}" method="POST"
               enctype="multipart/form-data" dir="rtl">
             @method('PUT')
+            @csrf
             <div class="card-body">
+                <!-- الحقول السابقة مثل اسم المنتج، الوصف، السعر، الكمية -->
                 <div class="form-group row">
                     <label for="inputName" class="col-sm-2 control-label">اسم المنتج</label>
                     <div class="col-sm-10">
@@ -52,11 +55,12 @@
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
+
+                <!-- إضافة حقل اختيار الفئات -->
                 <div class="form-group row mt-4">
                     <label for="inputCategories" class="col-sm-2 control-label">الفئات</label>
                     <div class="col-sm-10">
-                        <select multiple class="form-control select2 @error('categories') is-invalid @enderror"
-                                id="inputCategories" name="categories[]">
+                        <select  multiple class="form-control select2  @error('categories') is-invalid @enderror" id="inputCategories" name="categories[]" style="width: 100%">
                             @foreach($categories as $category)
                                 <option
                                     value="{{ $category->id }}" {{ (in_array($category->id, old('categories', $product->categories->pluck('id')->toArray()))) ? 'selected' : '' }}>
@@ -64,10 +68,57 @@
                                 </option>
                             @endforeach
                         </select>
-                        @error('categories')
+                        @error('categories')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <!-- إضافة الحقول الجديدة للخصم وتواريخه -->
+                <div class="form-group row mt-4">
+                    <label for="inputDiscount" class="col-sm-2 control-label">قيمة الخصم</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="0.01" class="form-control @error('discount') is-invalid @enderror"
+                               id="inputDiscount" placeholder="أدخل قيمة الخصم" name='discount'
+                               value="{{ old('discount', $product->productDiscount->discount) }}" min="0">
+                        @error('discount')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
+
+                <div class="form-group row mt-4">
+                    <label for="inputDiscountType" class="col-sm-2 control-label">نوع الخصم</label>
+                    <div class="col-sm-10">
+                        <select class="select2 form-control @error('discount_type') is-invalid @enderror"
+                                id="inputDiscountType" name="discount_type">
+                            <option value="fixed" {{ old('discount_type', $product->productDiscount->discount_type) == 'fixed' ? 'selected' : '' }}>ثابت</option>
+                            <option value="percentage" {{ old('discount_type', $product->productDiscount->discount_type) == 'percentage' ? 'selected' : '' }}>نسبة مئوية</option>
+                        </select>
+                        @error('discount_type')
+                        <div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <div class="form-group row mt-4">
+                    <label for="inputStartDate" class="col-sm-2 control-label">تاريخ البدء</label>
+                    <div class="col-sm-10">
+                        <input type="date" class="form-control @error('start_date') is-invalid @enderror"
+                               id="inputStartDate" name='start_date'
+                               value="{{ old('start_date', $product->productDiscount->start_date->format('Y-m-d')) }}">
+                        @error('start_date')
+                        <div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <div class="form-group row mt-4">
+                    <label for="inputEndDate" class="col-sm-2 control-label">تاريخ الانتهاء</label>
+                    <div class="col-sm-10">
+                        <input type="date" class="form-control @error('end_date') is-invalid @enderror"
+                               id="inputEndDate" name='end_date'
+                               value="{{ old('end_date', $product->productDiscount->end_date->format('Y-m-d')) }}">
+                        @error('end_date')
+                        <div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <!-- الحقول السابقة للصور وغيرها -->
                 <div class="form-group row mt-4">
                     <label for="inputImages" class="col-sm-2 control-label">صور المنتج</label>
                     <div class="col-sm-10">
@@ -98,7 +149,6 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <!-- /.card-body -->
             <div class="card-footer">
                 <button type="submit" class="btn btn-info float-right">حفظ التعديلات</button>
@@ -110,11 +160,9 @@
 
 @push('scripts')
     <script>
-
         function previewImages(event) {
             var previewContainer = $('#newImagePreviewContainer');
-            // مسح المعاينات السابقة
-            previewContainer.html('');
+            previewContainer.html(''); // مسح المعاينات السابقة
 
             if (event.target.files) {
                 $.each(event.target.files, function(_, file) {
@@ -137,33 +185,22 @@
         function removeImage(button, imageId) {
             let csrfToken = $('input[name="_token"]').val();
             if (confirm('هل أنت متأكد من حذف هذه الصورة؟')) {
-                var url = removeImageUrl.replace(':id', imageId);
-                console.log('Sending request to:', url); // لتسجيل الرابط في وحدة التحكم
-
                 $.ajax({
-                    url: url,
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    success: function(data) {
-                        console.log('Response data:', data); // لتسجيل بيانات الاستجابة
-                        if (data.success) {
-                            $(button).parent().remove();
+                    url: removeImageUrl.replace(':id', imageId),
+                    type: 'DELETE',
+                    data: { _token: csrfToken },
+                    success: function(response) {
+                        if (response.success) {
+                            $(button).closest('.m-2').remove();
                         } else {
-                            alert('حدث خطأ أثناء حذف الصورة: ' + data.message);
+                            alert('حدث خطأ أثناء حذف الصورة.');
                         }
                     },
-                    error: function(xhr) {
-                        console.error('Error:', xhr);
-                        alert('حدث خطأ أثناء حذف الصورة: ' + xhr.statusText);
+                    error: function() {
+                        alert('حدث خطأ أثناء حذف الصورة.');
                     }
                 });
             }
         }
-
-
     </script>
 @endpush

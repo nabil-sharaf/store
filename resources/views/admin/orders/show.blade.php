@@ -19,24 +19,23 @@
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>المستخدم:</strong> {{ $order->user->name }}</p>
-                    <p><strong>الإجمالي:</strong> {{ $order->total_price }} جنيه</p>
+                    <p><strong> الاجمالي بعد الخصم:</strong> {{ $order->total_after_discount }} جنيه</p>
                     <p><strong>الحالة الحالية:</strong> {{ ucfirst($order->status->name) }}</p>
                 </div>
                 <div class="col-md-6">
                     @if($order->status->id != 3 && $order->status->id != 4)
-                        <form action="{{ route('admin.orders.updatestatus', $order->id) }}" method="POST">
+                        <form id="statusForm" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="form-group">
                                 <label for="status">تغيير حالة الطلب:</label>
-                                <select name="status" id="status" class="custom-select">
-                                    <option value="1" {{ $order->status->id ==1 ? 'selected' : '' }}>جاري المعالجة</option>
-                                    <option value="2" {{ $order->status->id ==2  ? 'selected' : '' }}>جاري الشحن</option>
-                                    <option value="3" {{ $order->status->id ==3  ? 'selected' : '' }}>تم التسليم</option>
-                                    <option value="4" {{ $order->status->id ==4  ? 'selected' : '' }}>ملغي</option>
+                                <select name="status" id="status" class="select2 form-control" style="width: 60%">
+                                    <option id="processing" value="1" {{ $order->status->id == 1 ? 'selected' : '' }}>جاري المعالجة</option>
+                                    <option value="2" {{ $order->status->id == 2 ? 'selected' : '' }}>جاري الشحن</option>
+                                    <option value="3" {{ $order->status->id == 3 ? 'selected' : '' }}>تم التسليم</option>
+                                    <option value="4" {{ $order->status->id == 4 ? 'selected' : '' }}>ملغي</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-info">تحديث الحالة</button>
                         </form>
                     @elseif($order->status->id == 3)
                         <div class="alert alert-success p-1">
@@ -65,13 +64,21 @@
                     <tr>
                         <td>{{ $detail->product->name }}</td>
                         <td>{{ $detail->product_quantity }}</td>
-                        <td>{{ $detail->product->price }} جنيه</td>
-                        <td>{{ $detail->product_quantity * $detail->product->price }} جنيه</td>
+                        <td>{{ $detail->product->price }} ج</td>
+                        <td>{{ $detail->product_quantity * $detail->product->price }} ج</td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td colspan="3" class="text-left font-weight-bold"> اجمالي الاوردر </td>
+                    <td class="">{{ $order->total_price }} ج</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-left font-weight-bold">قيمة الخصم </td>
+                    <td class="">{{ $order->discount }} ج</td>
+                </tr>
                 <tr class="table-info">
-                    <td colspan="3" class="text-left font-weight-bold">السعر الاجمالي للأوردر</td>
-                    <td class="font-weight-bold">{{ $order->total_price }} جنيه</td>
+                    <td colspan="3" class="text-left font-weight-bold">السعر الاجمالي بعد الخصم </td>
+                    <td class="font-weight-bold">{{ $order->total_after_discount }} ج</td>
                 </tr>
                 </tbody>
             </table>
@@ -81,3 +88,37 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#status').on('change', function() {
+                var formData = $('#statusForm').serialize();
+                var url = '{{ route("admin.orders.updatestatus", $order->id) }}';
+                let status = $('#status').val();
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        toastr.success('تم تحديث الحالة بنجاح!');
+                    if(status==2){
+                        $('#processing').remove();
+                    }
+                    if(status==3){
+                        $('#statusForm').replaceWith('<div class="alert alert-success p-1">تم تسليم الاوردر ✅</div>')
+                    }
+                    if(status==4){
+                        $('#statusForm').replaceWith('<div class="alert alert-danger p-1"> تم الغاء الطلب ❌</div>')
+                    }
+
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error('حدث خطأ أثناء تحديث الحالة.');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

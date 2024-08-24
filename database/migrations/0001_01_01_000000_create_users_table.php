@@ -18,10 +18,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->boolean('is_vip');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->integer('vip_discount');
+            $table->enum('customer_type', ['normal', 'vip', 'goomla'])->default('normal');
+            $table->date('vip_start_date')->nullable();
+            $table->date('vip_end_date')->nullable();
+            $table->decimal('discount', 5, 2)->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
 

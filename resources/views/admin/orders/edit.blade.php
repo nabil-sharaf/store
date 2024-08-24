@@ -51,13 +51,29 @@
                     </div>
                 </div>
 
+
+
+                <div class="form-group row">
+                    <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة الخصم</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputDiscountPercentage" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة الخصم</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputDiscountAmount" readonly>
+                    </div>
+                </div>
                 <!-- Total Order -->
                 <div class="form-group row">
-                    <label for="inputTotalOrder" class="col-sm-2 control-label">الإجمالي الكلي للطلب</label>
+                    <label for="inputTotalOrder" class="col-sm-2 control-label">الاجمالي بعد الخصم</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="inputTotalOrder" name="total_price" value="{{ old('total_price', $order->total_price) }}" readonly>
                     </div>
                 </div>
+
             </div>
             <div class="card-footer">
                 <button type="submit" class="btn btn-info float-right">تحديث البيانات</button>
@@ -127,6 +143,66 @@
             $('.product-field').each(function() {
                 updateTotal($(this));
             });
+            function updateDiscount() {
+                var userId = $('#inputUser').val();
+                var totalBeforeDiscount = calculateTotalBeforeDiscount();
+                var url = "{{route('admin.get-user-discount', ':id')}}".replace(':id', userId);
+
+                if (userId) {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function(response) {
+                            var discountPercentage = response.discount;
+                            if (discountPercentage && discountPercentage > 0) {
+                                var discountAmount = (totalBeforeDiscount * discountPercentage) / 100;
+                                var totalAfterDiscount = totalBeforeDiscount - discountAmount;
+
+                                $('#inputDiscountPercentage').val(discountPercentage + ' % ');
+                                $('#inputDiscountAmount').val(discountAmount.toFixed(2));
+                                $('#inputTotalOrder').val(totalAfterDiscount.toFixed(2));
+                            } else {
+                                $('#inputDiscountPercentage').val('لا يوجد خصم');
+                                $('#inputDiscountAmount').val('0');
+                                $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error fetching discount: " + error);
+                            $('#inputDiscountPercentage').val('خطأ في جلب الخصم');
+                            $('#inputDiscountAmount').val('0');
+                            $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
+                        }
+                    });
+                } else {
+                    $('#inputDiscountPercentage').val('لا يوجد خصم');
+                    $('#inputDiscountAmount').val('0');
+                    $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
+                }
+            }
+
+            function calculateTotalBeforeDiscount() {
+                var total = 0;
+                $('.product-total').each(function () {
+                    total += parseFloat($(this).val()) || 0;
+                });
+                return total;
+            }
+
+            // تحديث الخصم عند تغيير المستخدم
+            $('#inputUser').change(function() {
+                updateDiscount();
+            });
+
+            // تعديل دالة updateTotalOrder
+            function updateTotalOrder() {
+                var totalOrder = 0;
+                $('.product-total').each(function () {
+                    totalOrder += parseFloat($(this).val()) || 0;
+                });
+                $('#inputTotalOrder').val(totalOrder.toFixed(2));
+                updateDiscount();  // نضيف هذا السطر لتحديث الخصم بعد تحديث الإجمالي
+            }
             updateTotalOrder();
         });
     </script>

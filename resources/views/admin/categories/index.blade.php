@@ -14,7 +14,7 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <table class="table table-bordered text-center">
-                  <thead>                  
+                  <thead>
                     <tr>
                       <th >#</th>
                       <th >اسم القسم</th>
@@ -24,7 +24,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach($categories as $category)
+                    @forelse($categories as $category)
                     <tr>
                       <td>{{ $loop->iteration }}.</td>
                       <td>{{ $category->name }}</td>
@@ -54,7 +54,11 @@
     </form>
 </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5">لا يوجد اقسام حاليا</td>
+                        </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>

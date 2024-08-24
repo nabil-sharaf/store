@@ -36,6 +36,12 @@ class Product extends Model
                 ->where('end_date', '>=', $now);
         });
     }
+    public function ProductDiscount()
+    {
+        return $this->hasOne(ProductDiscount::class);
+
+
+    }
 
 
     public function getPriceAfterDiscountAttribute()

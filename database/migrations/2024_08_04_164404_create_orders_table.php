@@ -18,6 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('status_id')->default(1);
             $table->foreign('status_id')->references('id')->on('statuses');
             $table->decimal('total_price', 8, 2);
+            $table->decimal('discount', 8, 2);
+            $table->decimal('total_after_discount', 8, 2);
             $table->timestamps();
         });
     }
