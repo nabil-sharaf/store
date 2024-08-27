@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('code')->unique(); // رمز البرومو
             $table->decimal('discount', 8, 2); // قيمة الخصم
             $table->enum('discount_type', ['percentage', 'fixed'])->default('fixed'); // نوع الخصم
-            $table->timestamp('start_date'); // تاريخ البدء
-            $table->timestamp('end_date'); // تاريخ الانتهاء
+            $table->datetime('start_date')->notNullable();
+            $table->datetime('end_date')->notNullable();
             $table->boolean('active')->default(true); // حالة التفعيل
             $table->decimal('min_amount', 8, 2);
             $table->timestamps();

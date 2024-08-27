@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             StatusesTableSeeder::class,
             CategoriesTableSeeder::class,
+            SettingsTableSeeder::class,
          //   ProductsTableSeeder::class,
            // OrdersTableSeeder::class,
          //   OrderDetailsTableSeeder::class,
