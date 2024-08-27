@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             StatusesTableSeeder::class,
             CategoriesTableSeeder::class,
-            ProductsTableSeeder::class,
-            OrdersTableSeeder::class,
-            OrderDetailsTableSeeder::class,
-            ImagesTableSeeder::class,
-            CategoryProductTableSeeder::class,
+         //   ProductsTableSeeder::class,
+           // OrdersTableSeeder::class,
+         //   OrderDetailsTableSeeder::class,
+          //  ImagesTableSeeder::class,
+          //  CategoryProductTableSeeder::class,
         ]);
     }
 }

@@ -26,6 +26,7 @@ class OrdersTableSeeder extends Seeder
                     'total_price' => rand(1000, 5000),
                     'user_id' => $user->id,
                     'status_id' => $status->id,
+
                 ]);
             }
         }

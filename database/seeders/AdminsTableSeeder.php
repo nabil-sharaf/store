@@ -19,6 +19,13 @@ class AdminsTableSeeder extends Seeder
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ]);
+        Admin::create([
+            'name' => 'nnnn',
+            'email' => 'admin2@gmail.com',
+            'password' => bcrypt('12345678'),
+            'email_verified_at' => now(),
+            'remember_token' => Str::random(10),
+        ]);
     }
 }
 

@@ -46,7 +46,13 @@ use App\Http\Controllers\Admin\ProductController;
         Route::Put('/customers/change-status', [Adm\CustomerController::class, 'changeStatus'])->name('customers.changeStatus');
 
 
+//----------------------------- Settings Routes  ------------------------------
 
-            });
+         Route::get('/settings', [Adm\SettingContoller::class, 'edit'])->name('settings.edit');
+         Route::post('/settings', [Adm\SettingContoller::class, 'update'])->name('settings.update');
+
+
+
+ });
 
 

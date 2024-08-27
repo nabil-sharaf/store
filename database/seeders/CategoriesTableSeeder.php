@@ -17,10 +17,10 @@ class CategoriesTableSeeder extends Seeder
 // إعادة تمكين التحقق من المفاتيح الأجنبية
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        Category::create(['name' => 'حلويات', 'description' => '','parent_id'=>null]);
-        Category::create(['name' => 'شرقي', 'description' => 'حلويات شرقي','parent_id'=>1]);
-        Category::create(['name' => ' غربي', 'description' => 'حلويات غربي','parent_id'=>1]);
-        Category::create(['name' => ' كنافة', 'description' => 'كنافة','parent_id'=>2]);
-        Category::create(['name' => 'كنافة مكسرات ', 'description' => '','parent_id'=>3]);
+        Category::create(['name' => 'العاب', 'description' => '','parent_id'=>null]);
+        Category::create(['name' => 'العاب 1', 'description' => ' ','parent_id'=>1]);
+        Category::create(['name' => ' العاب 2', 'description' => ' ','parent_id'=>1]);
+        Category::create(['name' => ' العاب 3', 'description' => '','parent_id'=>2]);
+        Category::create(['name' => 'العاب 4 ', 'description' => '','parent_id'=>3]);
     }
 }
