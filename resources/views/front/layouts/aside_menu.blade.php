@@ -1,5 +1,5 @@
 <!--== Start Product Quick View ==-->
-<aside class="product-quick-view-modal">
+<aside class="product-quick-view-modal" style="direction: rtl">
     <div class="product-quick-view-inner">
         <div class="product-quick-view-content">
             <button type="button" class="btn-close">
@@ -15,7 +15,7 @@
                     <div class="single-product-info">
                         <h4 class="title product-name">product title</h4>
                         <div class="prices">
-                            <span  style="float: left;margin-right: 8px;"> ج </span><span class="price">$120.59</span>
+                          <span class="price">$120.59</span>  <span  style="margin-right: 4px;"> ج </span>
                         </div>
                         <div class="product-rating">
                             <div class="rating">
@@ -47,7 +47,7 @@
                             </div>
                         </div>
 
-                        <div class="widget" style="direction: rtl">
+                        <div class="widget">
                             <h3 class="title ">الأقسام:</h3>
                             <div class="widget-tags product-categories">
                                 <a href="blog.html">Toys.</a>
