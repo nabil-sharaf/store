@@ -7,7 +7,7 @@
             </button>
             <div class="row row-gutter-0">
                 <div class="col-lg-6 col-md-6 col-12">
-                    <div class="thumb">
+                    <div class="thumb product-images-slider">
                         <img src="assets/img/shop/quick-view1.jpg" alt="Image">
                     </div>
                 </div>
@@ -42,32 +42,20 @@
                                 <div class="pro-qty">
                                     <input type="text" id="quantity" title="Quantity" value="01" />
                                 </div>
-                                <button class="btn btn-theme">Add to Cart</button>
+                                <button class="btn btn-theme font-weight-bold">أضف للسلة</button>
                                 <a class="btn-wishlist" href="shop-wishlist.html">Add to Wishlist</a>
                             </div>
                         </div>
-                        <div class="widget">
-                            <h3 class="title">SKU:</h3>
-                            <div class="widget-tags">
-                                <span>Ch-256xl</span>
-                            </div>
-                        </div>
-                        <div class="widget">
-                            <h3 class="title">Categories:</h3>
-                            <div class="widget-tags">
+
+                        <div class="widget" style="direction: rtl">
+                            <h3 class="title ">الأقسام:</h3>
+                            <div class="widget-tags product-categories">
                                 <a href="blog.html">Toys.</a>
-                                <a href="blog.html">Dresss</a>
                             </div>
                         </div>
-                        <div class="widget">
-                            <h3 class="title">Tag:</h3>
-                            <div class="widget-tags">
-                                <a href="blog.html">Toys,</a>
-                                <a href="blog.html">Dress</a>
-                            </div>
-                        </div>
-                        <div class="widget">
-                            <h3 class="title">Share:</h3>
+
+                        <div class="widget" style="direction: rtl">
+                            <h3 class="title">:</h3>
                             <div class="widget-tags widget-share">
                                 <span class="fa fa-facebook"></span>
                                 <span class="fa fa-dribbble"></span>

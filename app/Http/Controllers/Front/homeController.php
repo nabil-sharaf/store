@@ -29,7 +29,8 @@ class homeController extends Controller
             'name' => $product->name,
             'price' => $product->price,
             'description' => $product->description,
-            'image' => asset('storage/' . $product->images->first()->path),
+            'images' => $product->images,
+            'categories'=> $product->categories
         ]);
     }
 

@@ -40,9 +40,31 @@
 
 <script>
 
+
+
+    $(document).ready(function() {
+        // إظهار المودال والتراكب عند النقر على الرابط
+        $('.action-quick-view').on('click', function(event) {
+            event.preventDefault();
+            $('.product-quick-view-modal').fadeIn(); // إظهار المودال
+            $('.canvas-overlay').fadeIn(); // إظهار التراكب
+        });
+
+        // إخفاء المودال والتراكب عند النقر على زر الإغلاق
+        $('.btn-close').on('click', function() {
+            $('.product-quick-view-modal').fadeOut(); // إخفاء المودال
+            $('.canvas-overlay').fadeOut(); // إخفاء التراكب
+        });
+    });
+
+
+
+
     // عرض مودال تفاصيل البروداكت
     function showProductDetails(element) {
         var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
+        var categoriesContainer = $('.product-quick-view-modal .product-categories');
+        var sliderContainer = $('.product-images-slider');
 
 // استدعاء AJAX للحصول على تفاصيل المنتج
         $.ajax({
@@ -53,7 +75,18 @@
                 $('.product-quick-view-modal .product-name').text(response.name);
                 $('.product-quick-view-modal .price').text (response.price);
                 $('.product-quick-view-modal .product-desc').text(response.description);
-                $('.product-quick-view-modal .thumb img').attr('src', response.image);
+
+                categoriesContainer.empty();
+                response.categories.forEach(function(cat){
+                    categoriesContainer.append('&nbsp;<a href="#">'+cat['name']+'</a> &nbsp;&nbsp;  ');
+                });
+
+                sliderContainer.empty();
+                response.images.forEach(function(image){
+
+                    sliderContainer.append(`<div class="swiper-slide"><img src="{{asset('storage/')}}/${image.path}" alt="Product Image" /></div>`);
+                });
+
 
                 $('.product-quick-view-modal').show();
             },
@@ -62,6 +95,7 @@
             }
         });
     }
+
 </script>
 
 </body>
