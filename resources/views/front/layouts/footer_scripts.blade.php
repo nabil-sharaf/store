@@ -38,6 +38,32 @@
 <!--=== Custom Js ===-->
 <script src="{{asset('front/assets')}}/js/custom.js"></script>
 
+<script>
+
+    // عرض مودال تفاصيل البروداكت
+    function showProductDetails(element) {
+        var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
+
+// استدعاء AJAX للحصول على تفاصيل المنتج
+        $.ajax({
+            url: 'product/details/'+productId, // المسار للوصول إلى تفاصيل المنتج
+            method: 'GET',
+            success: function (response) {
+
+                $('.product-quick-view-modal .product-name').text(response.name);
+                $('.product-quick-view-modal .price').text (response.price);
+                $('.product-quick-view-modal .product-desc').text(response.description);
+                $('.product-quick-view-modal .thumb img').attr('src', response.image);
+
+                $('.product-quick-view-modal').show();
+            },
+            error: function (error) {
+                console.log('Error fetching product details:', error);
+            }
+        });
+    }
+</script>
+
 </body>
 
 </html>

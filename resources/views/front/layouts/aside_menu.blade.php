@@ -13,9 +13,9 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-12">
                     <div class="single-product-info">
-                        <h4 class="title">Jigsaw Puzzles For Kids</h4>
+                        <h4 class="title product-name">product title</h4>
                         <div class="prices">
-                            <span class="price">$120.59</span>
+                            <span  style="float: left;margin-right: 8px;"> ج </span><span class="price">$120.59</span>
                         </div>
                         <div class="product-rating">
                             <div class="rating">
@@ -26,14 +26,14 @@
                                 <span class="fa fa-star"></span>
                             </div>
                             <div class="review">
-                                <a href="#/">( 5 Customer Review )</a>
+                                <a href="#">( 5 Customer Review )</a>
                             </div>
                         </div>
                         <div class="single-product-featured">
                             <ul>
-                                <li><i class="fa fa-check"></i> Free Shipping</li>
-                                <li><i class="fa fa-check"></i> Support 24/7</li>
-                                <li><i class="fa fa-check"></i> Money Return</li>
+                                <li><i class="fa fa-check"></i> شحن مجاني</li>
+                                <li><i class="fa fa-check"></i> دعم 24 ساعة</li>
+                                <li><i class="fa fa-check"></i> استرجاع خلال 14 يوم</li>
                             </ul>
                         </div>
                         <p class="product-desc">Lorem ipsum dolor sit amet, consect adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quisll exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duisol aute irure dolor in reprehenderit.</p>
@@ -110,7 +110,7 @@
 <aside class="sidebar-cart-modal">
     <div class="sidebar-cart-inner">
         <div class="sidebar-cart-content">
-            <a class="cart-close" href="javascript:void(0);"><i class="pe-7s-close"></i></a>
+            <a class="cart-close" href="javascript:void(0);" ><i class="pe-7s-close"></i></a>
             <div class="sidebar-cart-all">
                 <div class="cart-header">
                     <h3 style="margin-right: 20px;">Shopping Cart</h3>
