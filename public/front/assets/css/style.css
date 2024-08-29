@@ -26,13 +26,14 @@
 body {
   color: #2d2d2d;
   font-size: 1rem;
-  font-family: "Rubik", sans-serif;
+  font-family: "cairo", sans-serif;
   font-weight: 400;
   line-height: 1.875;
   margin: 0;
   overflow-x: hidden;
   -ms-word-wrap: break-word;
   word-wrap: break-word;
+
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -3970,6 +3971,7 @@ table p {
   }
 }
 @media only screen and (max-width: 479.98px) {
+
   .home-slider-area.slider-default .home-slider-item .shape-bottom {
     height: 60px;
   }
@@ -3988,23 +3990,29 @@ table p {
   -ms-transition: 2s;
   -o-transition: 2s;
 }
+@media only screen and (min-width: 1200px) {
+  .home-slider-area.slider-default .home-slider-item .thumb-two {
+    max-width: 40%;
+  }
+}
 @media only screen and (max-width: 1199px) {
   .home-slider-area.slider-default .home-slider-item .thumb-two {
-    width: 53%;
+    max-width: 40%;
   }
+
 }
 @media only screen and (max-width: 991px) {
   .home-slider-area.slider-default .home-slider-item .thumb-two {
-    width: 58%;
+    max-width: 40%;
   }
 }
 @media only screen and (max-width: 575px) {
   .home-slider-area.slider-default .home-slider-item .thumb-two {
-    bottom: 0;
+    /*bottom: 0;*/
     position: relative;
-    padding: 0 30px;
-    left: 0;
-    width: 100%;
+    /*padding: 0 0px;*/
+    left: 150px;
+   max-width:50%;
   }
 }
 @media only screen and (max-width: 479.98px) {
@@ -4089,28 +4097,28 @@ table p {
 }
 @media (max-width: 1399px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 840px;
+    max-height: 550px;
   }
 }
 @media only screen and (max-width: 1199px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 680px;
+    height: 550px;
   }
 }
 @media only screen and (max-width: 991px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 620px;
+    height: 450px;
   }
 }
 @media only screen and (max-width: 767px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 520px;
+    height: 450px;
   }
 }
 @media only screen and (max-width: 575px) {
   .home-slider-area.slider-default .slider-content-area {
     height: auto;
-    padding: 80px 0 0;
+    padding: 50px 0 0;
     flex-direction: column;
   }
 }

@@ -35,9 +35,16 @@
     <link href="{{asset('front/assets')}}/css/swiper.min.css" rel="stylesheet"/>
     <!--== Slick CSS ==-->
     <link href="{{asset('front/assets')}}/css/slick.css" rel="stylesheet"/>
+
+    {{--    font cairo--}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
     <!--== Main Style CSS ==-->
     <link href="{{asset('front/assets')}}/css/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('styles')
 </head>

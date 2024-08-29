@@ -1,47 +1,67 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('front.layouts.app')
+@section('content')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    <!--== Start Page Title Area ==-->
+    <section class="page-title-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12 m-auto">
+                    <div class="page-title-content text-center">
+                        مرحبا بك سجل دخولك الشخصي
+                        او انشئ حسابك الجديد وتمتع بكل مزايا عملائنا
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
+    <!--== End Page Title Area ==-->
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+    <!--== Start Login Wrapper ==-->
+    <section class="login-register-area">
+        <div class="container">
+            <div class="row">
+                <!-- Login Section -->
+                <div class="col-md-8 offset-md-2 login-register-border">
+                    <div class="login-register-content">
+                        <div class="login-register-style login-register-pr" style="direction: rtl;">
+                            <div class="login-register-title mb-30">
+                                <h2>تسجيل الدخول</h2>
+                                <div style="direction: rtl;">
+                                    <p>مرحبا بعودتك مرة أخرى</p>
+                                </div>
+                            </div>
+                            <form action="{{ route('login') }}" method="post">
+                                @csrf
+                                <div class="login-register-input">
+                                    <input type="text" name="email" value="{{ old('email') }}" placeholder="البريد الالكتروني">
+                                    @error('email', 'loginErrors')
+                                    <div style="color: red; font-size: 12px;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="login-register-input">
+                                    <input type="password" name="password" placeholder="كلمة المرور">
+                                    @error('password', 'loginErrors')
+                                    <div style="color: red; font-size: 12px;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="remember-me-btn">
+                                    <input type="checkbox" name="remember">
+                                    <label>&nbsp;&nbsp;تذكرني &nbsp;</label>
+                                </div>
+                                <div class="forgot">
+                                    <a href="#">! forget password</a>
+                                </div>
+                                <div class="btn-style-3">
+                                    <button class="btn" type="submit"><strong>تسجيل دخول</strong></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    <!--== End Login Wrapper ==-->
+@endsection

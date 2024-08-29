@@ -7,6 +7,7 @@ use App\Models\Front\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class WishlistController extends Controller
 {
     public function store(Request $request, $productId)
@@ -35,7 +36,7 @@ class WishlistController extends Controller
         $user = Auth::user();
         $wishlists = Wishlist::where('user_id', $user->id)->with('product')->get();
 
-        return view('wishlist.index', compact('wishlists'));
+        return view('front.wishlist', compact('wishlists'));
     }
 
     public function destroy($id)

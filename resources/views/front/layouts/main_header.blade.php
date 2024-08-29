@@ -75,7 +75,7 @@
                             <div class="header-align-right">
                                 <div class="header-action-area">
                                     <div class="header-action-wishlist">
-                                        <button class="btn-wishlist" onclick="window.location.href='shop-wishlist.html'">
+                                        <button class="btn-wishlist" onclick="window.location.href='{{route('wishlist.index')}}'" title="قائمة الأمنيات">
                                             <i class="pe-7s-like"></i>
                                         </button>
                                     </div>
@@ -109,7 +109,7 @@
                     <div class="col-lg-8 sticky-md-none" style="direction: rtl">
                         <div class="header-navigation-area d-none d-md-block">
                             <ul class="main-menu nav position-relative">
-                                <li><a class="ml--2" href="">الرئيسية</a></li>
+                                <li><a class="ml--2" href="{{route('home.index')}}">الرئيسية</a></li>
                                 <li><a href="">من نحن</a></li>
 
                                 <li class="has-submenu"><a href="">الأقسام</a>
@@ -151,7 +151,7 @@
                                 @endif
                             </div>
                             <div class="header-action-wishlist">
-                                <button class="btn-wishlist" onclick="window.location.href='shop-wishlist.html'">
+                                <button class="btn-wishlist" onclick="window.location.href='{{route('wishlist.index')}}'" title="قائمة الأمنيات">
                                     <i class="pe-7s-like"></i>
                                 </button>
                             </div>

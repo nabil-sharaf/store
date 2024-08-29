@@ -9,21 +9,23 @@
                     <div class="swiper-slide">
                         <!-- Start Slide Item -->
                         <div class="home-slider-item">
-                            {{--                            <div class="thumb-one bg-img" data-bg-img="{{asset('front/assets')}}/img/mama.png"></div>--}}
+{{--                            <div class="thumb-one bg-img" data-bg-img="{{asset('front/assets')}}/img/slider/child.png"></div>--}}
                             <div class="slider-content-area">
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="content">
-                                                <div class="inner-content">
-                                                    <a href="shop.html" class="btn-theme">تسوق الان</a>
+                                                <div class="inner-content text-center" style="direction: rtl">
+                                                    <h2>Best Kids Store & Online Shop</h2>
+                                                    <p>المتجر الافضل لكل ما يحتاجه أطفالك</p>
+                                                    <a href="shop.html" class="btn-theme"><strong>تسوق الأن</strong></a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <img class="thumb-two" src="{{asset('front/assets')}}/img/3.png" alt="Image">
-                                {{--                                <img class="thumb-three" src="{{asset('front/assets')}}/img/slider/3.png" alt="Image">--}}
+                                <img class="thumb-two" src="{{asset('front/assets')}}/img/slider/2.png" alt="Image">
+{{--                                <img class="thumb-three" src="{{asset('front/assets')}}/img/slider/child.png" alt="Image">--}}
                                 <img class="thumb-four" src="{{asset('front/assets')}}/img/photos/3.png" alt="Image">
                             </div>
                             <div class="shape-top bg-img" data-bg-img="{{asset('front/assets')}}/img/photos/1.png"></div>
@@ -35,6 +37,7 @@
             </div>
         </div>
     </section>
+
     <!--== End Hero Area Wrapper ==-->
 
     <!--== Start Category Area Wrapper ==-->
@@ -484,7 +487,7 @@
                                                     <!-- Start Product Item -->
                                                     <div class="product-item">
                                                         <div class="product-thumb">
-                                                            <img src="{{asset('front/assets')}}/img/shop/4.png" alt="Image">
+                                                            <img src="{{asset('front/assets')}}/img/child.png" alt="Image">
                                                             <div class="product-action">
                                                                 <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
                                                                 <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
@@ -637,3 +640,22 @@
 
 
 @endsection
+
+@push('styles')
+    <style>
+
+
+    .slider-content-area {
+        background-color: #c2e0eb; /* اختر لون الخلفية المطلوب */
+        /*max-height: 650px;*/
+
+    }
+
+
+
+
+
+
+    </style>
+
+@endpush
