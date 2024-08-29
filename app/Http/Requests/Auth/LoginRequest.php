@@ -45,8 +45,8 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+                'email' => 'غير موجود لدينا تأكد من الايميل وكلمة المرور',
+            ])->errorBag('loginErrors');
         }
 
         RateLimiter::clear($this->throttleKey());

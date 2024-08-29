@@ -38,7 +38,13 @@
 <!--=== Custom Js ===-->
 <script src="{{asset('front/assets')}}/js/custom.js"></script>
 
+{{--toastr--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
 <script>
+
 
 
 
@@ -46,8 +52,8 @@
         // إظهار المودال والتراكب عند النقر على الرابط
         $('.action-quick-view').on('click', function(event) {
             event.preventDefault();
-            $('.product-quick-view-modal').fadeIn(); // إظهار المودال
-            $('.canvas-overlay').fadeIn(); // إظهار التراكب
+            $('.product-quick-view-modal').fadeIn(200); // إظهار المودال
+            $('.canvas-overlay').fadeIn(200); // إظهار التراكب
         });
 
         // إخفاء المودال والتراكب عند النقر على زر الإغلاق
@@ -94,7 +100,61 @@
                 console.log('Error fetching product details:', error);
             }
         });
+    }    // عرض مودال تفاصيل البروداكت
+
+    function wishListAdd(element) {
+    event.preventDefault();
+
+        var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
+
+        $.ajax({
+            url: 'wishlist/' + productId,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if(response.message){
+
+                toastr.success(response.message);
+                }
+
+                if(response.err){
+
+                toastr.error(response.err);
+                }
+
+            },
+            error: function(xhr) {
+                if (xhr.status === 401) {
+                    toastr.warning('يرجى تسجيل الدخول لإضافة منتجاتك الى قائمة الأمنيات');
+                } else {
+                    toastr.error('حدث خطأ، يرجى المحاولة مرة أخرى.', 'خطأ');
+                }
+            }
+        });
     }
+
+
+    // Toastr
+    // Toastr
+    toastr.options = {
+        "positionClass": "toast-top-left", // هنا نغير الموقع إلى أعلى اليسار
+        "closeButton": true,
+        "progressBar": true,
+        "showDuration": "2000", // مدة عرض الرسالة
+        "hideDuration": "1000", // مدة اختفاء الرسالة
+        "timeOut": "4000", // مدة عرض الرسالة قبل الاختفاء (بالملي ثانية)
+    };
+
+    @if(Session::has('success'))
+    toastr.success("{{ Session::get('success') }}");
+    @endif
+
+    @if(Session::has('error'))
+    toastr.error("{{ Session::get('error') }}");
+
+    @endif
 
 </script>
 

@@ -14,7 +14,7 @@ class homeController extends Controller
         $categories = Category::with('products')->get();
         $products = Product::with('images')->get();
 
-        return view('front.layouts.app', compact('categories','products'));
+        return view('front.index', compact('categories','products'));
     }
 
     public function productDetails($id)

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\homeController;
+use App\Http\Controllers\Front\WishlistController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
@@ -27,6 +28,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+//    ------------------------------------ Wishlist Routes ------------------------
+
+    Route::post('/wishlist/{productId}', [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });
 
 

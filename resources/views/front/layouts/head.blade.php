@@ -37,5 +37,7 @@
     <link href="{{asset('front/assets')}}/css/slick.css" rel="stylesheet"/>
     <!--== Main Style CSS ==-->
     <link href="{{asset('front/assets')}}/css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('styles')
 </head>

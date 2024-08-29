@@ -30,7 +30,17 @@
                     </div>
                     <div class="col-xs-12 col-sm-7 col-md-8 col-lg-6 sm-pl-0 xs-pl-15 header-top-right">
                         <div class="header-info">
+                            @if(auth()->user())
+                                <form id='logout-form' method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        تسجيل خروج <i class="fa fa-user"></i>
+                                    </a>
+
+                                </form>
+                            @else
                             <a href="{{route('register')}}"> تسجيل <i class="fa fa-user"></i> </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -104,6 +114,7 @@
 
                                 <li class="has-submenu"><a href="">الأقسام</a>
                                     <ul class="submenu-nav">
+                                        <?php $categories = \App\Models\Admin\Category::all();?>
                                         @foreach($categories as $cat)
                                         <li><a href="{{''}}">{{$cat->name}}</a></li>
 
@@ -123,9 +134,21 @@
                                 </button>
                             </div>
                             <div class="header-action-login">
-                                <button class="btn-login" onclick="window.location.href='login-register.html'">
+                                @if(auth()->user())
+                                    <form id='logout-form' method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button class="btn-login" type="submit" title="تسجيل خروج">
+                                            <i class="pe-7s-delete-user"></i>
+                                        </button>
+
+                                    </form>
+
+                                @else
+
+                                <button class="btn-login" title="تسجيل دخول" onclick="window.location.href='{{ route('register') }}'">
                                     <i class="pe-7s-users"></i>
                                 </button>
+                                @endif
                             </div>
                             <div class="header-action-wishlist">
                                 <button class="btn-wishlist" onclick="window.location.href='shop-wishlist.html'">

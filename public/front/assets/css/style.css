@@ -9490,31 +9490,22 @@ table p {
 
 
     /* changes from me*/
+.toast {
+    background-color: #333 !important; /* تغيير اللون الخلفي */
+    color: #fff !important; /* تغيير لون النص */
+    opacity: 1 !important; /* إزالة الشفافية */
+    border-radius: 4px; /* تعديل حواف الرسالة */
+}
 
-/*.product-quick-view-modal {*/
-/*    display: none; !* البداية تكون مخفية *!*/
-/*    position: fixed; !* تثبيت المودال بالنسبة للنافذة *!*/
-/*    top: 50%;*/
-/*    left: 50%;*/
-/*    transform: translate(-50%, -50%); !* توسيط المودال عمودياً وأفقياً *!*/
-/*    z-index: 9999; !* فوق باقي العناصر *!*/
-/*    width: 80%; !* العرض الافتراضي للمودال *!*/
-/*    max-width: 500px; !* أقصى عرض للمودال *!*/
-/*    background-color: #fff; !* خلفية المودال *!*/
-/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); !* ظل خفيف للمودال *!*/
-/*    border-radius: 8px; !* زوايا مستديرة *!*/
-/*    padding: 20px; !* مسافات داخلية *!*/
-/*    overflow: auto; !* إذا كان المحتوى كبيراً، يمكن التمرير داخل المودال *!*/
-/*}*/
-
-/*.canvas-overlay {*/
-/*    display: none; !* مخفي في البداية *!*/
-/*    position: fixed;*/
-/*    top: 0;*/
-/*    left: 0;*/
-/*    width: 100%;*/
-/*    height: 100%;*/
-/*    background-color: rgba(0, 0, 0, 0.5); !* تراكب شفاف *!*/
-/*    z-index: 9998; !* خلف المودال *!*/
-/*}*/
-
+.toast-success {
+    background-color: #4CAF50 !important; /* لون الخلفية للنجاح */
+}
+.toast-error {
+    background-color: #f44336 !important; /* لون الخلفية للخطأ */
+}
+.toast-warning {
+    background-color: #ff9800 !important; /* لون الخلفية للتحذير */
+}
+.toast-info {
+    background-color: #2196F3 !important; /* لون الخلفية للمعلومات */
+}

@@ -1,4 +1,5 @@
-<main class="main-content">
+@extends('front.layouts.app')
+@section('content')
 
     <!--== Start Hero Area Wrapper ==-->
     <section class="home-slider-area slider-default">
@@ -8,7 +9,7 @@
                     <div class="swiper-slide">
                         <!-- Start Slide Item -->
                         <div class="home-slider-item">
-{{--                            <div class="thumb-one bg-img" data-bg-img="{{asset('front/assets')}}/img/mama.png"></div>--}}
+                            {{--                            <div class="thumb-one bg-img" data-bg-img="{{asset('front/assets')}}/img/mama.png"></div>--}}
                             <div class="slider-content-area">
                                 <div class="container">
                                     <div class="row">
@@ -22,7 +23,7 @@
                                     </div>
                                 </div>
                                 <img class="thumb-two" src="{{asset('front/assets')}}/img/3.png" alt="Image">
-{{--                                <img class="thumb-three" src="{{asset('front/assets')}}/img/slider/3.png" alt="Image">--}}
+                                {{--                                <img class="thumb-three" src="{{asset('front/assets')}}/img/slider/3.png" alt="Image">--}}
                                 <img class="thumb-four" src="{{asset('front/assets')}}/img/photos/3.png" alt="Image">
                             </div>
                             <div class="shape-top bg-img" data-bg-img="{{asset('front/assets')}}/img/photos/1.png"></div>
@@ -108,10 +109,10 @@
                                 <button class="nav-link active" id="our-features-tab" data-bs-toggle="tab" data-bs-target="#our-features" type="button" role="tab" aria-controls="our-features" aria-selected="true">كل المنتجات</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="best-sellers-tab" data-bs-toggle="tab" data-bs-target="#best-sellers" type="button" role="tab" aria-controls="best-sellers" aria-selected="false">قسم 1</button>
+                                <button class="nav-link" id="best-sellers-tab" data-bs-toggle="tab" data-bs-target="#best-sellers" type="button" role="tab" aria-controls="best-sellers" aria-selected="false"> المضاف حديثا </button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link mr-0" id="new-items-tab" data-bs-toggle="tab" data-bs-target="#new-items" type="button" role="tab" aria-controls="new-items" aria-selected="false">قسم 2</button>
+                                <button class="nav-link mr-3" id="new-items-tab" data-bs-toggle="tab" data-bs-target="#new-items" type="button" role="tab" aria-controls="new-items" aria-selected="false">الأكثر مبيعا  </button>
                             </li>
                         </ul>
 
@@ -121,36 +122,36 @@
                                     <div class="col-lg-12">
                                         <div class="product">
                                             <div class="row">
-                                            @foreach($products as $product)
-                                                <div class="col-lg-3 col-md-4 col-sm-6">
-                                                    <!-- Start Product Item -->
-                                                    <div class="product-item">
-                                                        <div class="product-thumb">
-                                                            <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                                                @foreach($products as $product)
+                                                    <div class="col-lg-3 col-md-4 col-sm-6">
+                                                        <!-- Start Product Item -->
+                                                        <div class="product-item">
+                                                            <div class="product-thumb">
+                                                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
 
-                                                            <div class="product-action">
-                                                                <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
-                                                                <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                                <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                                                <div class="product-action">
+                                                                    <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
+                                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(this)"><i class="ion-heart"></i></a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-info">
+                                                                <div class="rating">
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                </div>
+                                                                <h4 class="title"><a href="shop-single-product.html">{{$product->name}}</a></h4>
+                                                                <div class="prices">
+                                                                    <span class="price">{{$product->price}} ج</span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="product-info">
-                                                            <div class="rating">
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                            </div>
-                                                            <h4 class="title"><a href="shop-single-product.html">{{$product->name}}</a></h4>
-                                                            <div class="prices">
-                                                                <span class="price">{{$product->price}} ج</span>
-                                                            </div>
-                                                        </div>
+                                                        <!-- End Product Item -->
                                                     </div>
-                                                    <!-- End Product Item -->
-                                                </div>
-                                            @endforeach
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -169,7 +170,7 @@
                                                             <div class="product-action">
                                                                 <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
                                                                 <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
-                                                                <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                                                <a class="action-quick-view-wishlist" href="shop-wishlist.html"><i class="ion-heart"></i></a>
                                                                 <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
                                                             </div>
                                                         </div>
@@ -633,4 +634,6 @@
     <!--== End Product Tab Area Wrapper ==-->
 
 
-</main>
+
+
+@endsection
