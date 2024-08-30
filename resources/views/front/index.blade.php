@@ -133,9 +133,10 @@
                                                                 <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
 
                                                                 <div class="product-action">
-                                                                    <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                                                    <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
+
                                                                     <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(this)"><i class="ion-heart"></i></a>
+                                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
                                                                 </div>
                                                             </div>
                                                             <div class="product-info">

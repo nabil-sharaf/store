@@ -2,57 +2,81 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
+use App\Models\Admin\Product;
 
 class CartController extends Controller
 {
-    // عرض محتويات العربة
-    public function index()
+    // إضافة المنتج إلى السلة
+    public function addToCart(Request $request)
     {
-        $cartItems = Cart::getContent();
-        return view('cart.index', compact('cartItems'));
+        $productId = $request->input('product_id');
+        $product = Product::find($productId);
+
+        Cart::add([
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'quantity' => 1,
+            'attributes' => [
+                        'url' => 'www.google.com',
+                        'image'=>$product->images->first()->path,
+                         ]
+        ]);
+
+        return response()->json(['message' => 'تم اضافة المنتج لسلة الشراء']);
     }
 
-    // إضافة منتج إلى العربة
-    public function add(Request $request)
+    // تحديث كمية المنتج في السلة
+    public function updateCart(Request $request)
     {
-        Cart::add(array(
-            'id' => $request->id,
-            'name' => $request->name,
-            'price' => $request->price,
-            'quantity' => $request->quantity,
-            'attributes' => array()
-        ));
+        $productId = $request->input('product_id');
+        $quantity = $request->input('quantity');
 
-        return redirect()->route('cart.index')->with('success', 'تمت إضافة المنتج إلى العربة بنجاح');
-    }
-
-    // تحديث منتج في العربة
-    public function update(Request $request, $id)
-    {
-        Cart::update($id, array(
-            'quantity' => array(
+        Cart::update($productId, [
+            'quantity' => [
                 'relative' => false,
-                'value' => $request->quantity
-            ),
-        ));
+                'value' => $quantity
+            ],
+        ]);
 
-        return redirect()->route('cart.index')->with('success', 'تم تحديث المنتج بنجاح');
+        return response()->json(['success' => true, 'message' => 'Cart updated successfully.']);
     }
 
-    // حذف منتج من العربة
-    public function remove($id)
+    // حذف المنتج من السلة
+    public function removeFromCart(Request $request)
     {
-        Cart::remove($id);
-        return redirect()->route('cart.index')->with('success', 'تمت إزالة المنتج من العربة بنجاح');
+        $productId = $request->input('product_id');
+
+        Cart::remove($productId);
+
+        return response()->json(['success' => true, 'message' => 'Product removed from cart successfully.']);
     }
 
-    // تفريغ العربة
+    // الحصول على تفاصيل السلة (عدد المنتجات والإجمالي)
+    public function getCartDetails()
+    {
+        $items = Cart::getContent();
+        $totalQuantity = Cart::getTotalQuantity();
+        $totalPrice = Cart::getTotal();
+
+        return response()->json([
+            'items' => $items,
+            'totalQuantity' => $totalQuantity,
+            'totalPrice' => $totalPrice
+        ]);
+    }
+
+
+// تفريغ العربة
     public function clear()
     {
         Cart::clear();
         return redirect()->route('cart.index')->with('success', 'تمت تفريغ العربة بنجاح');
     }
 }
+
+
+

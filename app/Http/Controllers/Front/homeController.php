@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Category;
 use App\Models\Admin\Product;
+use App\Models\Admin\Setting;
 use Illuminate\Http\Request;
 
 class homeController extends Controller
@@ -32,6 +33,12 @@ class homeController extends Controller
             'images' => $product->images,
             'categories'=> $product->categories
         ]);
+    }
+
+    public function contact()
+    {
+        $setting = Setting::all();
+        return view('front.contact',compact('setting'));
     }
 
 }

@@ -61,6 +61,9 @@
             $('.product-quick-view-modal').fadeOut(); // إخفاء المودال
             $('.canvas-overlay').fadeOut(); // إخفاء التراكب
         });
+
+        updateCartDetails();
+
     });
 
 
@@ -102,7 +105,8 @@
         });
     }    // عرض مودال تفاصيل البروداكت
 
-    function wishListAdd(element) {
+   // اضافة المنتجات للويش ليست
+    function wishListAdd(event,element) {
     event.preventDefault();
 
         var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
@@ -135,9 +139,143 @@
         });
     }
 
+    function wishListMessage(event) {
+    // عرض رسالة اذا لم يكن المستخدم مسجل دخول
 
-    // Toastr
-    // Toastr
+        // منع إعادة توجيه الرابط
+        event.preventDefault();
+
+        // عرض رسالة باستخدام Toastr
+        toastr.warning('سجل معنا لتتمكن من اضافة منتجاتك إلى قائمة قائمة الأمنيات');
+    }
+
+// ------------------------------ Shopping Cart--------------------------------
+
+    // إضافة منتج إلى السلة
+   function addToCart(event,productId) {
+      event.preventDefault();
+
+       $.ajax({
+            url: '{{ route("cart.add") }}',
+            type: 'POST',
+            data: {
+                product_id: productId,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+               toastr.success(response.message);
+
+                // تحديث تفاصيل السلة بعد إضافة المنتج
+                updateCartDetails();
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function updateCartDetails() {
+        $.ajax({
+            url: '{{ route("cart.details") }}',
+            type: 'GET',
+            success: function(response) {
+                // تحديث عدد المنتجات والإجمالي في الواجهة
+                $('#cart-total-quantity').text(response.totalQuantity);
+                $('#cart-total-price').text(response.totalPrice.toFixed(2) + ' ج ');
+
+                // إذا كانت items كائنًا، قم بالتكرار على خصائصه
+                var itemsList = $('#cart-items-list');
+                itemsList.empty(); // تنظيف القائمة الحالية
+
+                for (var key in response.items) {
+                    if (response.items.hasOwnProperty(key)) {
+                        var item = response.items[key];
+                        var url = item.attributes.url;
+                        var image = item.attributes.image;
+                        itemsList.append(`
+                        <li class="single-product-cart"">
+                            <div class="cart-img">
+                                <a href="${url}"><img src="{{asset('storage')}}/${image}" alt=""></a>
+                            </div>
+                            <div class="cart-title">
+                                <h4><a href="${url}">${item.name}</a></h4>
+                                <span>${item.quantity} × <span class="price">${item.price.toFixed(2)} ج</span></span>
+                            </div>
+                            <div class="cart-delete">
+                                <a href="javascript:void(0);" data-id="${item.id}" onclick="removeFromCart(${item.id})" class="remove-item"><i class="pe-7s-trash icons"></i></a>
+                            </div>
+                        </li>
+                    `);
+                    }
+                }
+            },
+            error: function(error) {
+                toastr.error('Failed to fetch cart details.');
+            }
+        });
+    }
+
+
+
+
+    // تحديث كمية المنتج في السلة
+   function updateCart(productId, quantity) {
+        $.ajax({
+            url: '{{ route("cart.update") }}',
+            type: 'POST',
+            data: {
+                product_id: productId,
+                quantity: quantity,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                alert(response.message);
+                getCartDetails();
+            },
+            error: function(error) {
+                alert('Failed to update cart.');
+            }
+        });
+    }
+
+    // حذف منتج من السلة
+   function removeFromCart(productId) {
+        $.ajax({
+            url: '{{ route("cart.remove") }}',
+            type: 'POST',
+            data: {
+                product_id: productId,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                updateCartDetails();
+            },
+            error: function(error) {
+                console.log('Failed to remove product from cart.');
+            }
+        });
+    }
+
+    // الحصول على تفاصيل السلة وتحديث الواجهة
+   {{--function getCartDetails() {--}}
+   {{--     $.ajax({--}}
+   {{--         url: '{{ route("cart.details") }}',--}}
+   {{--         type: 'GET',--}}
+   {{--         success: function(response) {--}}
+   {{--             // تحديث عدد المنتجات والإجمالي في الواجهة--}}
+   {{--             $('#cart-total-quantity').text(response.totalQuantity);--}}
+   {{--             $('#cart-total-price').text(response.totalPrice.toFixed(2) + ' $');--}}
+   {{--         },--}}
+   {{--         error: function(error) {--}}
+   {{--             alert('Failed to fetch cart details.');--}}
+   {{--         }--}}
+   {{--     });--}}
+   {{-- }--}}
+
+
+// ------------------------------- Toastr options -------------------------------
+
+
     toastr.options = {
         "positionClass": "toast-top-left", // هنا نغير الموقع إلى أعلى اليسار
         "closeButton": true,

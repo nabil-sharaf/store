@@ -3522,6 +3522,9 @@ table p {
   width: 100%;
   border-top: 1px dashed #e5e5e5;
   border-bottom: 1px dashed #e5e5e5;
+    direction: rtl; /* لضبط اتجاه النصوص من اليمين إلى اليسار */
+    text-align: right; /* لمحاذاة النصوص إلى اليمين */
+    margin-top: 10px; /* إضافة مسافة أعلى */
 }
 .cart-content .cart-total.cart-total-padding-2 {
   padding: 15px 0;
@@ -3532,9 +3535,10 @@ table p {
   margin: 0;
   font-weight: 500;
   color: #000;
+    display: inline-block; /* لجعل العنوان والنص في نفس السطر */
 }
 .cart-content .cart-total h4 span {
-  font-size: 18px;
+  font-size: 16px;
   color: #f379a7;
   float: right;
   font-weight: 400;
@@ -9516,4 +9520,51 @@ table p {
 }
 .toast-info {
     background-color: #2196F3 !important; /* لون الخلفية للمعلومات */
+}
+
+
+ /*cart shopping in header*/
+
+
+ .sidebar-cart-modal {
+     direction: rtl !important; /* لتغيير اتجاه العناصر والنصوص من اليمين لليسار */
+     text-align: right; /* لتأكيد محاذاة النصوص إلى اليمين */
+ }
+
+.single-product-cart {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px; /* مسافة بين كل منتج */
+}
+
+.cart-img {
+    margin-left: 10px; /* ضبط المسافة بين الصورة وباقي العنصر */
+}
+
+.cart-title {
+    flex-grow: 1;
+    text-align: right; /* تأكيد المحاذاة إلى اليمين للنص */
+    margin-right: 10px;
+}
+
+.cart-delete {
+    margin-left: 5px; /* مسافة بين أيقونة الحذف والعناصر الأخرى */
+}
+
+.cart-total{
+    direction:rtl !important;
+    text-align:right;
+    margin-left:5px;
+}
+
+
+.cart-total span {
+    margin-left: 5px; /* إضافة مسافة بين النص والقيمة */
+}
+
+.cart-total .cart-label {
+    font-size: 18px !important; /* حجم الخط للنص "المجموع" */
+    font-weight: bold !important; /* لتغليظ الخط */
+    color:#1b1b1b!important;
 }

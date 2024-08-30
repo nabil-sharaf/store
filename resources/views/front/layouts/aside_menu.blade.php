@@ -95,50 +95,27 @@
 <!--== End Aside Search Menu ==-->
 
 <!--== Start Sidebar Cart Menu ==-->
-<aside class="sidebar-cart-modal">
+<aside class="sidebar-cart-modal" >
     <div class="sidebar-cart-inner">
         <div class="sidebar-cart-content">
-            <a class="cart-close" href="javascript:void(0);" ><i class="pe-7s-close"></i></a>
+            <a class="cart-close" href="javascript:void(0);"><i class="pe-7s-close"></i></a>
             <div class="sidebar-cart-all">
                 <div class="cart-header">
-                    <h3 style="margin-right: 20px;">Shopping Cart</h3>
+                    <h3 style="margin-right: 40px; font-weight: bold">سلة المشتريات</h3>
                     <div class="close-style-wrap">
                         <span class="close-style close-style-width-1 cart-close"></span>
                     </div>
                 </div>
                 <div class="cart-content cart-content-padding">
-                    <ul>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="shop-single-product.html"><img src="assets/img/shop/details/nav1.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="shop-single-product.html">Jigsaw Puzzles For Kids </a></h4>
-                                <span> 1 × <span class="price"> $12.00 </span></span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#/"><i class="pe-7s-trash icons"></i></a>
-                            </div>
-                        </li>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="shop-single-product.html"><img src="assets/img/shop/details/nav2.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="shop-single-product.html">Bruder Toys Mini Ships </a></h4>
-                                <span> 1 × <span class="price"> $59.00 </span></span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#/"><i class="pe-7s-trash icons"></i></a>
-                            </div>
-                        </li>
+                    <ul id="cart-items-list">
+                        <!-- العناصر سيتم إضافتها ديناميكيًا بواسطة JavaScript -->
                     </ul>
                     <div class="cart-total">
-                        <h4>Subtotal: <span>$278.90</span></h4>
+                        <h4> <span class="cart-label">المجموع : </span>  <span id="cart-total-price"> 0.00 ج</span> </h4>
                     </div>
                     <div class="cart-checkout-btn">
-                        <a class="cart-btn" href="shop-cart.html">view cart</a>
-                        <a class="checkout-btn" href="shop-checkout.html">checkout</a>
+                        <a class="cart-btn" href="shop-cart.html">عرض السلة</a>
+                        <a class="checkout-btn" href="shop-checkout.html">الدفع</a>
                     </div>
                 </div>
             </div>

@@ -8,17 +8,18 @@ use App\Http\Controllers\ProfileController;
 
 
 Route::get('/', [HomeController::class,'index'])->name('home.index');
+Route::get('/contact', [HomeController::class,'contact'])->name('home.contact');
 Route::get('/product/details/{id}', [HomeController::class, 'productDetails'])->name('product.details');
+
 
 
 //--------------------------- Cart Shopping Routes -----------------------------
 
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::get('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::put('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::get('/cart/details', [CartController::class, 'getCartDetails'])->name('cart.details');
 //---------------------------------------------------------------------------------
 Route::get('/dashboard', function () {
     return view('front/dashboard');
