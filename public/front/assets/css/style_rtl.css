@@ -23,6 +23,7 @@
 -----------------------------------------------------------------------
 */
 body {
+  direction: rtl;
   color: #2d2d2d;
   font-size: 1rem;
   font-family: "Rubik", sans-serif;
@@ -151,8 +152,8 @@ table p {
 -----------------------------------------------------------------------
 */
 .container {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-inline-start: 15px;
+  padding-inline-end: 15px;
 }
 
 @media only screen and (min-width: 1200px) {
@@ -166,13 +167,13 @@ table p {
   }
 }
 .row {
-  margin-right: -15px;
-  margin-left: -15px;
+  margin-inline-end: -15px;
+  margin-inline-start: -15px;
 }
 
 .row > [class*=col-] {
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-inline-end: 15px;
+  padding-inline-start: 15px;
 }
 
 .section-title {
@@ -268,22 +269,22 @@ table p {
 
 @media only screen and (min-width: 1200px) {
   .row-gutter-80 {
-    margin-right: -40px;
-    margin-left: -40px;
+    margin-inline-end: -40px;
+    margin-inline-start: -40px;
   }
   .row-gutter-80 [class*=col] {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-inline-start: 40px;
+    padding-inline-end: 40px;
   }
 }
 @media only screen and (min-width: 1200px) {
   .row-gutter-20 {
-    margin-right: -10px;
-    margin-left: -10px;
+    margin-inline-end: -10px;
+    margin-inline-start: -10px;
   }
   .row-gutter-20 [class*=col] {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-inline-start: 10px;
+    padding-inline-end: 10px;
   }
 }
 .wrapper {
@@ -314,7 +315,7 @@ table p {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 42px;
+  inset-inline-end: 42px;
   transition: 0.3s;
   -webkit-transition: 0.3s;
   -moz-transition: 0.3s;
@@ -334,7 +335,7 @@ table p {
 }
 
 .btn-theme:hover .icon, .btn-theme:focus .icon {
-  right: 40px;
+  inset-inline-end: 40px;
 }
 
 .btn-theme.btn-theme-color2 {
@@ -475,7 +476,7 @@ table p {
   bottom: -40px;
   content: "";
   height: 65px;
-  left: -27px;
+  inset-inline-start: -27px;
   position: absolute;
   width: 65px;
   z-index: -1;
@@ -492,7 +493,7 @@ table p {
   content: "";
   height: 65px;
   position: absolute;
-  right: -27px;
+  inset-inline-end: -27px;
   top: -40px;
   width: 65px;
   z-index: -1;
@@ -504,14 +505,14 @@ table p {
 }
 
 .btn-theme.btn-slide .icon.icon-img {
-  right: 42px;
+  inset-inline-end: 42px;
 }
 
 .btn-theme.btn-slide:hover:before {
   border-radius: 32.5px;
   bottom: 0;
   height: 100%;
-  left: 0;
+  inset-inline-start: 0;
   opacity: 0;
   width: 100%;
 }
@@ -520,7 +521,7 @@ table p {
   border-radius: 32.5px;
   height: 100%;
   opacity: 0;
-  right: 0;
+  inset-inline-end: 0;
   top: 0;
   width: 100%;
 }
@@ -540,8 +541,8 @@ table p {
   z-index: -1;
   top: 0;
   bottom: 0;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   transform: scaleY(0);
   -webkit-transform: scaleY(0);
   -moz-transform: scaleY(0);
@@ -581,8 +582,8 @@ table p {
   z-index: -1;
   top: 0;
   bottom: 0;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   transform: scaleY(0);
   -webkit-transform: scaleY(0);
   -moz-transform: scaleY(0);
@@ -617,7 +618,7 @@ table p {
 }
 
 .btn-theme.btn-size-xs .icon {
-  right: 20px;
+  inset-inline-end: 20px;
 }
 
 .btn-theme.btn-size-xs.btn-border {
@@ -637,7 +638,7 @@ table p {
 }
 
 .btn-theme.btn-size-md .icon {
-  right: 22px;
+  inset-inline-end: 22px;
 }
 
 .btn-theme.btn-size-md.btn-border {
@@ -697,7 +698,7 @@ table p {
   width: 100%;
   position: absolute;
   top: -11px;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .page-title-area .page-title-content {
@@ -750,7 +751,7 @@ table p {
 
 .page-title-area .page-title-content .bread-crumbs .breadcrumb-sep {
   color: #f379a7;
-  margin-left: 4px;
+  margin-inline-start: 4px;
 }
 
 .page-title-area .page-title-content .bread-crumbs span {
@@ -787,7 +788,7 @@ table p {
   width: 40px;
   height: 40px;
   line-height: 37px;
-  margin-right: 10px;
+  margin-inline-end: 10px;
   text-align: center;
   transition: all 0.4s ease-in-out;
   -webkit-transition: all 0.4s ease-in-out;
@@ -859,7 +860,8 @@ table p {
   line-height: 35px;
   color: #666;
   width: 90%;
-  margin: 20px auto 24px;
+  margin-block: 20px 24px;
+  padding-inline-end: auto;
 }
 
 @media only screen and (max-width: 991px) {
@@ -893,7 +895,9 @@ table p {
   font-family: "Rubik", sans-serif;
   width: 100%;
   height: 48px;
-  padding: 2px 70px 2px 16px;
+  padding-block: 2px 2px;
+  padding-inline-start: 16px;
+  padding-inline-end: 70px;
   color: #495057;
   font-size: 15px;
   border: 1px solid #e5e5e5;
@@ -913,7 +917,7 @@ table p {
   position: absolute;
   top: 56%;
   transform: translateY(-50%);
-  right: 16px;
+  inset-inline-end: 16px;
   padding: 0;
   border: none;
   background-color: transparent;
@@ -985,7 +989,7 @@ table p {
   color: #495057;
   position: absolute;
   top: 15px;
-  left: 15px;
+  inset-inline-start: 15px;
 }
 
 .subscribe-form form .input-content input {
@@ -995,7 +999,9 @@ table p {
   font-size: 15px;
   border: 1px solid #ccc;
   background-color: #fff;
-  padding: 2px 120px 2px 45px;
+  padding-block: 2px 2px;
+  padding-inline-start: 45px;
+  padding-inline-start: 120px;
 }
 
 .subscribe-form form .input-content input::-moz-input-placeholder {
@@ -1020,7 +1026,7 @@ table p {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 20px;
+  inset-inline-end: 20px;
 }
 
 .subscribe-form form .input-content .submit-btn input {
@@ -1051,7 +1057,7 @@ table p {
 .preloader-wrap {
   background-color: #fff;
   position: fixed;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   height: 100vh;
   width: 100vw;
@@ -1063,10 +1069,11 @@ table p {
   background-color: #fff;
   position: absolute;
   top: 50%;
-  left: 50%;
+  inset-inline-start: 50%;
   width: 142px;
   height: 40px;
-  margin: -20px 0 0 -71px;
+  margin: -20px 0 0;
+  margin-inline-start: -71px;
   filter: contrast(20);
 }
 
@@ -1076,7 +1083,7 @@ table p {
   width: 16px;
   height: 16px;
   top: 12px;
-  left: 15px;
+  inset-inline-start: 15px;
   filter: blur(4px);
   border-radius: 50%;
   transform: translateX(0);
@@ -1086,17 +1093,17 @@ table p {
 .preloader-wrap .preloader .dots {
   transform: translateX(0);
   margin-top: 12px;
-  margin-left: 31px;
+  margin-inline-start: 31px;
   animation: dots 2.8s infinite;
 }
 
 .preloader-wrap .preloader .dots span {
   background-color: #000;
   display: block;
-  float: left;
+  float: right;
   width: 16px;
   height: 16px;
-  margin-left: 16px;
+  margin-inline-start: 16px;
   filter: blur(4px);
   border-radius: 50%;
 }
@@ -1241,52 +1248,52 @@ table p {
   }
 }
 .mr-0 {
-  margin-right: 0px !important;
+  margin-inline-end: 0px !important;
 }
 
 .mr-10 {
-  margin-right: 10px;
+  margin-inline-end: 10px;
 }
 
 .mr-15 {
-  margin-right: 15px;
+  margin-inline-end: 15px;
 }
 
 .mr-20 {
-  margin-right: 20px;
+  margin-inline-end: 20px;
 }
 
 .mr-25 {
-  margin-right: 25px;
+  margin-inline-end: 25px;
 }
 
 .mr-30 {
-  margin-right: 30px;
+  margin-inline-end: 30px;
 }
 
 .mr-50 {
-  margin-right: 50px;
+  margin-inline-end: 50px;
 }
 
 .mr-80 {
-  margin-right: 80px;
+  margin-inline-end: 80px;
 }
 
 .mr--100 {
-  margin-right: -100px;
+  margin-inline-end: -100px;
 }
 
 @media only screen and (max-width: 991px) {
   .md-mr-0 {
-    margin-right: 0 !important;
+    margin-inline-end: 0 !important;
   }
 }
 @media only screen and (max-width: 575px) {
   .mr-xs-0 {
-    margin-right: 0;
+    margin-inline-end: 0;
   }
   .mr-xs-15 {
-    margin-right: 15;
+    margin-inline-end: 15;
   }
 }
 .mb-10 {
@@ -1486,44 +1493,44 @@ table p {
   }
 }
 .ml-10 {
-  margin-left: 10px;
+  margin-inline-start: 10px;
 }
 
 .ml-15 {
-  margin-left: 15px;
+  margin-inline-start: 15px;
 }
 
 .ml-20 {
-  margin-left: 20px;
+  margin-inline-start: 20px;
 }
 
 .ml-25 {
-  margin-left: 25px;
+  margin-inline-start: 25px;
 }
 
 .ml-30 {
-  margin-left: 30px;
+  margin-inline-start: 30px;
 }
 
 .ml-40 {
-  margin-left: 40px;
+  margin-inline-start: 40px;
 }
 
 .ml-50 {
-  margin-left: 50px !important;
+  margin-inline-start: 50px !important;
 }
 
 @media only screen and (max-width: 991px) {
   .ml-md-0 {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
   }
   .md-ml-0 {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
   }
 }
 @media only screen and (max-width: 479.98px) {
   .ml-xxs-5 {
-    margin-left: 5px !important;
+    margin-inline-start: 5px !important;
   }
 }
 .pb-5 {
@@ -1724,84 +1731,84 @@ table p {
   }
 }
 .pl-0 {
-  padding-left: 0;
+  padding-inline-start: 0;
 }
 
 .pl-10 {
-  padding-left: 10px;
+  padding-inline-start: 10px;
 }
 
 .pl-15 {
-  padding-left: 15px;
+  padding-inline-start: 15px;
 }
 
 .pl-20 {
-  padding-left: 20px;
+  padding-inline-start: 20px;
 }
 
 .pl-30 {
-  padding-left: 30px;
+  padding-inline-start: 30px;
 }
 
 .pl-40 {
-  padding-left: 40px;
+  padding-inline-start: 40px;
 }
 
 .pl-50 {
-  padding-left: 50px;
+  padding-inline-start: 50px;
 }
 
 .pl-60 {
-  padding-left: 60px;
+  padding-inline-start: 60px;
 }
 
 .pl-70 {
-  padding-left: 70px;
+  padding-inline-start: 70px;
 }
 
 .pl-100 {
-  padding-left: 100px;
+  padding-inline-start: 100px;
 }
 
 .pl-130 {
-  padding-left: 130px !important;
+  padding-inline-start: 130px !important;
 }
 
 @media only screen and (max-width: 1199px) {
   .pl-lg-15 {
-    padding-left: 15px !important;
+    padding-inline-start: 15px !important;
   }
 }
 @media only screen and (max-width: 991px) {
   .md-pl-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
   .md-pl-15 {
-    padding-left: 15px !important;
+    padding-inline-start: 15px !important;
   }
   .pl-md-30 {
-    padding-left: 30px !important;
+    padding-inline-start: 30px !important;
   }
   .pl-md-50 {
-    padding-left: 50px !important;
+    padding-inline-start: 50px !important;
   }
 }
 @media only screen and (max-width: 767px) {
   .sm-pl-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
   .sm-pl-15, .pl-sm-15 {
-    padding-left: 15px !important;
+    padding-inline-start: 15px !important;
   }
 }
 @media only screen and (max-width: 575px) {
   .xs-pl-15 {
-    padding-left: 15px !important;
+    padding-inline-start: 15px !important;
   }
 }
 @media only screen and (max-width: 479.98px) {
   .pl-xxs-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
 }
 .pt-10 {
@@ -1977,75 +1984,75 @@ table p {
   }
 }
 .pr-0 {
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 .pr-10 {
-  padding-right: 10px;
+  padding-inline-end: 10px;
 }
 
 .pr-15 {
-  padding-right: 15px;
+  padding-inline-end: 15px;
 }
 
 .pr-20 {
-  padding-right: 20px;
+  padding-inline-end: 20px;
 }
 
 .pr-30 {
-  padding-right: 30px;
+  padding-inline-end: 30px;
 }
 
 .pr-40 {
-  padding-right: 40px;
+  padding-inline-end: 40px;
 }
 
 .pr-50 {
-  padding-right: 50px;
+  padding-inline-end: 50px;
 }
 
 .pr-60 {
-  padding-right: 60px;
+  padding-inline-end: 60px;
 }
 
 .pr-70 {
-  padding-right: 70px;
+  padding-inline-end: 70px;
 }
 
 .pr-80 {
-  padding-right: 80px;
+  padding-inline-end: 80px;
 }
 
 .pr-90 {
-  padding-right: 90px;
+  padding-inline-end: 90px;
 }
 
 .pr-100 {
-  padding-right: 100px;
+  padding-inline-end: 100px;
 }
 
 @media only screen and (max-width: 1199px) {
   .lg-pr-0 {
-    padding-right: 0 !important;
+    padding-inline-end: 0 !important;
   }
   .pr-lg-15 {
-    padding-right: 15px !important;
+    padding-inline-end: 15px !important;
   }
 }
 @media only screen and (max-width: 767px) {
   .sm-pr-0 {
-    padding-right: 0 !important;
+    padding-inline-end: 0 !important;
   }
   .sm-pr-15, .pr-sm-15 {
-    padding-right: 15px !important;
+    padding-inline-end: 15px !important;
   }
 }
 @media only screen and (max-width: 991px) {
   .md-pr-15 {
-    padding-right: 15px;
+    padding-inline-end: 15px;
   }
   .md-pl-15 {
-    padding-left: 15px;
+    padding-inline-start: 15px;
   }
 }
 .d-contents {
@@ -2053,11 +2060,11 @@ table p {
 }
 
 .ml--2 {
-  margin-left: -2px !important;
+  margin-inline-start: -2px !important;
 }
 
 .ml-33 {
-  margin-left: 33px;
+  margin-inline-start: 33px;
 }
 
 .pt-38 {
@@ -2081,7 +2088,7 @@ table p {
   height: 50px;
   line-height: 50px;
   position: fixed;
-  right: 50px;
+  inset-inline-end: 50px;
   text-align: center;
   width: 50px;
   z-index: 100;
@@ -2094,7 +2101,7 @@ table p {
 
 @media only screen and (max-width: 575px) {
   .scroll-to-top {
-    right: 30px;
+    inset-inline-end: 30px;
     bottom: 15px;
   }
 }
@@ -2120,12 +2127,12 @@ table p {
 }
 
 .main-menu > li {
-  margin-right: 14px;
+  margin-inline-end: 14px;
   padding: 3px 0;
 }
 
 .main-menu > li:last-child {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 .main-menu > li > a {
@@ -2149,7 +2156,7 @@ table p {
 }
 
 .has-submenu {
-  padding-right: 10px;
+  padding-inline-end: 10px;
   position: relative;
 }
 
@@ -2165,7 +2172,7 @@ table p {
   line-height: 30px;
   font-family: "FontAwesome";
   position: absolute;
-  right: 11px;
+  inset-inline-end: 11px;
   top: 7px;
 }
 
@@ -2204,7 +2211,7 @@ table p {
   position: absolute;
   height: 26px;
   width: 100%;
-  left: 0;
+  inset-inline-start: 0;
   bottom: 100%;
 }
 
@@ -2258,12 +2265,12 @@ table p {
   line-height: 1.2;
   font-family: "FontAwesome";
   position: absolute;
-  right: 25px;
+  inset-inline-end: 25px;
   top: 12px;
 }
 
 .has-submenu .submenu-nav > li.has-submenu .submenu-nav {
-  left: 100%;
+  inset-inline-start: 100%;
   top: 0;
   margin-top: -15px;
 }
@@ -2281,10 +2288,10 @@ table p {
   }
 }
 .has-submenu .submenu-nav-mega .mega-menu-item {
-  text-align: left;
-  padding-right: 30px;
-  padding-left: 0;
-  float: left;
+  text-align: start;
+  padding-inline-end: 30px;
+  padding-inline-start: 0;
+  float: right;
   display: block;
   width: 20%;
   padding-top: 0;
@@ -2295,7 +2302,7 @@ table p {
 }
 
 .has-submenu .submenu-nav-mega .mega-menu-item:last-child {
-  border-right: 0;
+  border-inline-end: 0;
 }
 
 .has-submenu .submenu-nav-mega .mega-menu-item ul li {
@@ -2316,7 +2323,7 @@ table p {
   position: absolute;
   font-family: "FontAwesome";
   color: #f379a7;
-  right: -20px;
+  inset-inline-end: -20px;
   top: 1px;
   font-size: 12px;
 }
@@ -2334,7 +2341,7 @@ table p {
   border-radius: 2px;
   position: absolute;
   top: 0;
-  right: -38px;
+  inset-inline-end: -38px;
   line-height: 1;
   padding: 2px 3px;
 }
@@ -2396,7 +2403,7 @@ table p {
 }
 
 .has-submenu.colunm-two .submenu-nav-mega {
-  left: 100px !important;
+  inset-inline-start: 100px !important;
   width: 550px;
 }
 
@@ -2462,7 +2469,7 @@ table p {
   text-align: center;
   margin: 0;
   position: absolute;
-  right: 8px;
+  inset-inline-end: 8px;
   top: 48%;
   transform: translateY(-50%);
   height: 35px;
@@ -2493,16 +2500,16 @@ table p {
 
 .res-mobile-menu .slicknav_nav li ul {
   margin: 0;
-  padding-left: 10px;
+  padding-inline-start: 10px;
 }
 
 .res-mobile-menu .slicknav_nav li ul li {
-  padding-left: 20px;
+  padding-inline-start: 20px;
 }
 
 @media only screen and (max-width: 575px) {
   .res-mobile-menu .slicknav_nav li ul li {
-    padding-left: 15px;
+    padding-inline-start: 15px;
   }
 }
 .res-mobile-menu .slicknav_nav li ul li a {
@@ -2583,7 +2590,7 @@ table p {
 }
 .header-area.header-default .header-navigation-area .main-menu {
   justify-content: center;
-  left: 14px;
+  inset-inline-start: 14px;
 }
 
 .header-area.header-default .header-navigation-area .main-menu > li {
@@ -2617,7 +2624,7 @@ table p {
   font-weight: 600;
   font-size: 14px;
   position: absolute;
-  right: -20px;
+  inset-inline-end: -20px;
   top: 47%;
   transform: translate(-50%, -50%);
 }
@@ -2645,7 +2652,7 @@ table p {
   line-height: 1;
   justify-content: flex-end;
   margin-top: 12px;
-  margin-right: 9px;
+  margin-inline-end: 9px;
 }
 
 @media only screen and (max-width: 1199px) {
@@ -2664,7 +2671,7 @@ table p {
   opacity: 1;
   margin-top: -1px;
   padding: 0px;
-  text-align: right;
+  text-align: end;
   width: 250px;
 }
 
@@ -2694,7 +2701,8 @@ table p {
   font-size: 25px;
   line-height: 1;
   border: none;
-  margin: 0 14px 0 0;
+  margin: 0 0 0;
+  margin-inline-end: 14px;
   padding: 0;
   transition: all 0.2s ease-in-out;
   -webkit-transition: all 0.2s ease-in-out;
@@ -2732,7 +2740,9 @@ table p {
   color: #000;
   font-size: 27px;
   line-height: 1;
-  margin: 0 12px 0 14px;
+  margin-block: 0;
+  margin-inline-start: 14px;
+  margin-inline-end: 12px;
   padding: 0;
   transition: all 0.2s ease-in-out;
   -webkit-transition: all 0.2s ease-in-out;
@@ -2770,7 +2780,7 @@ table p {
   font-size: 10px;
   height: 16px;
   line-height: 16px;
-  right: -8px;
+  inset-inline-end: -8px;
   position: absolute;
   text-align: center;
   width: 16px;
@@ -2789,7 +2799,7 @@ table p {
   display: inline-block;
   padding: 10px 25px;
   line-height: 1;
-  margin-left: 30px;
+  margin-inline-start: 30px;
   text-align: center;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
@@ -2808,7 +2818,8 @@ table p {
   box-shadow: none;
   color: #414141;
   font-size: 24px;
-  margin: -1px 0 0 20px;
+  margin: -1px 0 0;
+  margin-inline-start: 20px;
   padding: 0;
   transition: 0.3s;
   -webkit-transition: 0.3s;
@@ -2865,7 +2876,7 @@ table p {
   position: absolute;
   height: 2px;
   width: 100%;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .header-area.header-default.header-style .header-navigation-area .main-menu > li.active > a {
@@ -2882,7 +2893,7 @@ table p {
   position: absolute;
   height: 2px;
   width: 100%;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .header-area.header-default.header-style .header-navigation-area .main-menu .has-submenu.active > a {
@@ -2899,7 +2910,7 @@ table p {
   position: absolute;
   height: 2px;
   width: 100%;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .header-area.header-default.header-style .header-navigation-area .main-menu .has-submenu:hover > a {
@@ -2919,7 +2930,7 @@ table p {
   position: absolute;
   height: 2px;
   width: 100%;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .header-area.header-default.header-style .header-action-area .btn-search {
@@ -2940,8 +2951,8 @@ table p {
 
 .header-area.header-default.header-style .header-action-area .btn-cart {
   color: #000;
-  margin-left: 0;
-  margin-right: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
   top: 0;
 }
 
@@ -3030,7 +3041,7 @@ table p {
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.06);
   padding: 15px 0;
   position: fixed;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   width: 100%;
   z-index: 999;
@@ -3057,7 +3068,7 @@ table p {
 }
 .header-area.header-transparent {
   background-color: transparent;
-  left: 0;
+  inset-inline-start: 0;
   position: absolute;
   top: 0;
   width: 100%;
@@ -3069,7 +3080,7 @@ table p {
   height: 100vh;
   opacity: 0;
   position: fixed;
-  right: -50%;
+  inset-inline-end: -50%;
   top: 0;
   visibility: hidden;
   width: 100%;
@@ -3085,7 +3096,7 @@ table p {
   color: #fff;
   font-size: 32px;
   position: absolute;
-  right: 360px;
+  inset-inline-end: 360px;
   top: 45px;
   transition: 0.3s;
   -webkit-transition: 0.3s;
@@ -3101,7 +3112,7 @@ table p {
 
 .btn-menu-slide-close.active {
   opacity: 1;
-  right: 0;
+  inset-inline-end: 0;
   visibility: visible;
 }
 
@@ -3159,10 +3170,10 @@ table p {
   }
 }
 .header-top .header-info a {
-  border-left: 1px solid #cdcdcd;
+  border-inline-start: 1px solid #cdcdcd;
   color: #404041;
-  margin-left: 19px;
-  padding-left: 20px;
+  margin-inline-start: 19px;
+  padding-inline-start: 20px;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
   -moz-transition: all 0.3s ease-in-out;
@@ -3172,14 +3183,14 @@ table p {
 
 @media only screen and (max-width: 767px) {
   .header-top .header-info a {
-    margin-left: 10px;
-    padding-left: 10px;
+    margin-inline-start: 10px;
+    padding-inline-start: 10px;
   }
 }
 .header-top .header-info a:first-child {
   border: none;
-  margin-left: 0;
-  padding-left: 0;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
 }
 
 .header-top .header-info a:first-child i {
@@ -3198,7 +3209,7 @@ table p {
 .header-top .header-info a i {
   color: #414141;
   font-size: 16px;
-  margin-right: 11px;
+  margin-inline-end: 11px;
   position: relative;
   top: 1px;
   transition: all 0.3s ease-in-out;
@@ -3211,7 +3222,7 @@ table p {
 @media only screen and (max-width: 767px) {
   .header-top .header-info a i {
     font-size: 12px;
-    margin-right: 0;
+    margin-inline-end: 0;
     margin-top: 0;
   }
 }
@@ -3231,13 +3242,13 @@ table p {
 .header-top .header-icons {
   line-height: 1;
   margin-bottom: -1px;
-  margin-right: 25px;
+  margin-inline-end: 25px;
 }
 
 .header-top .header-icons a {
   color: #aba5a5;
   font-size: 14px;
-  margin-right: 13px;
+  margin-inline-end: 13px;
 }
 
 .header-top .header-icons a:hover {
@@ -3245,14 +3256,15 @@ table p {
 }
 
 .header-top .header-icons a:last-child {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 .header-top .header-language {
-  border-left: 1px solid #e1e1e1;
+  border-inline-start: 1px solid #e1e1e1;
   cursor: pointer;
   line-height: 1;
-  padding: 2px 0 2px 25px;
+  padding: 2px 0 2px;
+  padding-inline-start: 25px;
 }
 
 .header-top .header-language .current {
@@ -3264,12 +3276,12 @@ table p {
 }
 
 .header-top .header-language .current .icon-img {
-  margin-right: 11px;
+  margin-inline-end: 11px;
   width: auto;
 }
 
 .header-top .header-language .current i {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 .header-top .header-language ul {
@@ -3292,7 +3304,7 @@ table p {
   background-color: #fff;
   content: "";
   height: 100%;
-  left: -10px;
+  inset-inline-start: -10px;
   position: absolute;
   top: 0;
   width: calc(100% + 30px);
@@ -3314,7 +3326,7 @@ table p {
 }
 
 .header-top .header-language ul li a .icon-img {
-  margin-right: 11px;
+  margin-inline-end: 11px;
 }
 
 .header-top .header-language:hover ul {
@@ -3346,7 +3358,7 @@ table p {
 
 @media only screen and (max-width: 1199px) {
   .header-top + .header-area .header-action-area button.btn-theme.btn-two, .header-top + .header-area .header-action-area a.btn-theme.btn-two {
-    margin-left: 30px;
+    margin-inline-start: 30px;
     padding: 18px 33px;
   }
 }
@@ -3424,12 +3436,12 @@ table p {
   }
 }
 .header-middle .header-align .header-align-center .header-search-box {
-  margin-left: -80px;
+  margin-inline-start: -80px;
 }
 
 @media only screen and (max-width: 991px) {
   .header-middle .header-align .header-align-center .header-search-box {
-    margin-left: -15px;
+    margin-inline-start: -15px;
   }
 }
 .header-middle .header-align .header-align-center .header-search-box form .form-input-item {
@@ -3443,7 +3455,9 @@ table p {
   font-size: 14px;
   height: 44px;
   width: 450px;
-  padding: 0 75px 0 23px;
+  padding-block: 0;
+  padding-inline-start: 23px;
+  padding-inline-end: 75px;
 }
 
 @media only screen and (max-width: 991px) {
@@ -3478,13 +3492,16 @@ table p {
 .header-middle .header-align .header-align-center .header-search-box form .form-input-item .btn-src {
   border: none;
   background-color: #f379a7;
-  border-radius: 0px 22px 22px 0px;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 22px;
   color: #fff;
   font-size: 25px;
   height: 44px;
   position: absolute;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   padding: 2px 20px;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
@@ -3504,7 +3521,7 @@ table p {
 
 .header-middle .header-align .header-align-right {
   position: relative;
-  left: -8px;
+  inset-inline-start: -8px;
   top: 4px;
 }
 
@@ -3518,7 +3535,8 @@ table p {
   color: #414141;
   font-size: 27px;
   line-height: 1;
-  margin: 0 0 0 12px;
+  margin: 0 0 0;
+  margin-inline-start: 12px;
   padding: 0;
   position: relative;
   transition: all 0.3s ease-in-out;
@@ -3542,7 +3560,7 @@ table p {
   font-weight: 300;
   height: 21px;
   line-height: 21px;
-  right: -8px;
+  inset-inline-end: -8px;
   position: absolute;
   text-align: center;
   width: 21px;
@@ -3551,7 +3569,7 @@ table p {
 @media only screen and (max-width: 767px) {
   .header-middle .header-align .header-align-right .header-action-area .btn-menu {
     top: -4px;
-    margin-left: 20px;
+    margin-inline-start: 20px;
   }
 }
 .header-middle .header-align .header-align-right .header-action-area .btn-menu i {
@@ -3588,7 +3606,7 @@ table p {
   min-height: 100vh;
   bottom: 0;
   z-index: 9999;
-  right: 0;
+  inset-inline-end: 0;
   opacity: 0;
   transition: all 250ms ease-in;
   transform: translate(200px, 0);
@@ -3597,7 +3615,9 @@ table p {
 
 @media only screen and (max-width: 575px) {
   .sidebar-cart-modal {
-    padding: 0 15px 15px;
+    padding-block: 0 15px;
+    padding-inline-start: 0;
+    padding-inline-end: 15px;
     width: 310px;
   }
 }
@@ -3605,11 +3625,11 @@ table p {
   color: #000;
   position: absolute;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   font-size: 36px;
   line-height: 36px;
   top: 11px;
-  right: 23px;
+  inset-inline-end: 23px;
 }
 
 .sidebar-cart-modal .sidebar-cart-inner .sidebar-cart-content .cart-close i {
@@ -3674,7 +3694,7 @@ table p {
 }
 
 .cart-content ul li .cart-title {
-  margin-left: 20px;
+  margin-inline-start: 20px;
 }
 
 .cart-content ul li .cart-title h4 {
@@ -3722,7 +3742,7 @@ table p {
   display: block;
   font-size: 20px;
   margin-top: -6px;
-  text-align: right;
+  text-align: end;
 }
 
 .cart-content ul li .cart-delete a:hover {
@@ -3751,7 +3771,7 @@ table p {
 .cart-content .cart-total h4 span {
   font-size: 18px;
   color: #f379a7;
-  float: right;
+  float: left;
   font-weight: 400;
 }
 
@@ -3765,7 +3785,9 @@ table p {
   display: block;
   margin: 10px 0 0;
   text-align: center;
-  padding: 13px 20px 12px;
+  padding-block: 13px 12px;
+  padding-inline-start: 0;
+  padding-inline-end: 20px;
   text-transform: uppercase;
   font-size: 15px;
   font-weight: 600;
@@ -3816,7 +3838,9 @@ table p {
   }
 }
 .cart-content.cart-content-padding .cart-checkout-btn {
-  padding: 36px 30px 30px;
+  padding-block: 36px 30px;
+  padding-inline-start: 0;
+  padding-inline-end: 30px;
 }
 
 @media only screen and (max-width: 575px) {
@@ -3830,8 +3854,8 @@ table p {
   z-index: 999;
   visibility: hidden;
   opacity: 0;
-  right: 0;
-  left: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
   bottom: 0;
   top: 0;
   transition: all 250ms ease-out;
@@ -3849,7 +3873,7 @@ table p {
   display: flex;
   position: fixed;
   min-height: 550px;
-  left: 0;
+  inset-inline-start: 0;
   opacity: 0;
   visibility: hidden;
   top: 0;
@@ -3937,7 +3961,7 @@ table p {
   margin: 0;
   position: absolute;
   bottom: 18px;
-  right: 15px;
+  inset-inline-end: 15px;
 }
 
 .search-box-wrapper .search-box-content-inner .search-box-form-wrap form .search-form .search-button i {
@@ -3955,7 +3979,7 @@ table p {
   position: absolute;
   z-index: 5;
   top: 20%;
-  right: 20%;
+  inset-inline-end: 20%;
   line-height: 60px;
   height: 60px;
   transition: all 0.3s;
@@ -3990,7 +4014,7 @@ table p {
   min-height: 100vh;
   opacity: 0;
   position: fixed;
-  right: 0;
+  inset-inline-end: 0;
   visibility: hidden;
   transform: translate(200px, 0);
   top: 0;
@@ -4028,8 +4052,8 @@ table p {
   box-shadow: none;
   color: #0A1039;
   font-size: 40px;
-  left: auto;
-  right: 35px;
+  inset-inline-start: auto;
+  inset-inline-end: 35px;
   line-height: 30px;
   height: auto;
   margin: 0;
@@ -4048,8 +4072,8 @@ table p {
 @media only screen and (max-width: 575px) {
   .off-canvas-wrapper .off-canvas-inner .off-canvas-content .off-canvas-header .close-action .btn-close {
     font-size: 36px;
-    left: auto;
-    right: 25px;
+    inset-inline-start: auto;
+    inset-inline-end: 25px;
     top: 20px;
   }
 }
@@ -4096,7 +4120,7 @@ table p {
 .off-canvas-wrapper .off-canvas-inner .off-canvas-content .off-canvas-item .res-mobile-menu .slicknav_nav li a .slicknav_arrow {
   color: #0A1039;
   font-size: 14px;
-  right: 10px;
+  inset-inline-end: 10px;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
   -moz-transition: all 0.3s ease-in-out;
@@ -4109,13 +4133,14 @@ table p {
 }
 
 .off-canvas-wrapper .off-canvas-inner .off-canvas-content .off-canvas-item .res-mobile-menu .slicknav_nav li ul {
-  padding: 38px 0 0px 25px;
+  padding: 38px 0 0px;
+  padding-inline-start: 25px;
 }
 
 .off-canvas-wrapper .off-canvas-inner .off-canvas-content .off-canvas-item .res-mobile-menu .slicknav_nav li ul li {
   margin: 0;
   padding-bottom: 22px;
-  padding-left: 0;
+  padding-inline-start: 0;
 }
 
 .off-canvas-wrapper .off-canvas-inner .off-canvas-content .off-canvas-item .res-mobile-menu .slicknav_nav li ul li:last-child {
@@ -4249,7 +4274,7 @@ table p {
 }
 .home-slider-area.slider-default .home-slider-item .thumb-two {
   bottom: 24px;
-  left: calc(50% + 12px);
+  inset-inline-start: calc(50% + 12px);
   position: absolute;
   pointer-events: none;
   animation-duration: 1.25s;
@@ -4277,7 +4302,7 @@ table p {
     bottom: 0;
     position: relative;
     padding: 0 30px;
-    left: 0;
+    inset-inline-start: 0;
     width: 100%;
   }
 }
@@ -4290,7 +4315,7 @@ table p {
   bottom: -18px;
   position: absolute;
   pointer-events: none;
-  right: -68px;
+  inset-inline-end: -68px;
   animation-duration: 1.25s;
   animation-fill-mode: both;
   transition: 2s;
@@ -4307,7 +4332,7 @@ table p {
 }
 .home-slider-area.slider-default .home-slider-item .thumb-four {
   bottom: 98px;
-  left: 129px;
+  inset-inline-start: 129px;
   position: absolute;
   pointer-events: none;
   animation-duration: 1.25s;
@@ -4322,27 +4347,27 @@ table p {
 @media (max-width: 1599px) {
   .home-slider-area.slider-default .home-slider-item .thumb-four {
     bottom: 75px;
-    left: 45px;
+    inset-inline-start: 45px;
   }
 }
 @media only screen and (max-width: 1199px) {
   .home-slider-area.slider-default .home-slider-item .thumb-four {
     bottom: 65px;
-    left: 45px;
+    inset-inline-start: 45px;
     width: 7%;
   }
 }
 @media only screen and (max-width: 991px) {
   .home-slider-area.slider-default .home-slider-item .thumb-four {
     bottom: 60px;
-    left: 38px;
+    inset-inline-start: 38px;
     width: 6%;
   }
 }
 @media only screen and (max-width: 575px) {
   .home-slider-area.slider-default .home-slider-item .thumb-four {
     bottom: 35px;
-    left: 38px;
+    inset-inline-start: 38px;
     width: 7%;
   }
 }
@@ -4415,7 +4440,7 @@ table p {
   }
 }
 .home-slider-area.slider-default .slider-content-area .content .inner-content {
-  margin-left: -1px;
+  margin-inline-start: -1px;
   position: relative;
   animation-duration: 1.25s;
   animation-fill-mode: both;
@@ -4427,7 +4452,7 @@ table p {
 }
 
 .home-slider-area.slider-default .slider-content-area .content .inner-content.content-style2 {
-  text-align: left;
+  text-align: start;
 }
 
 @media only screen and (max-width: 575px) {
@@ -4470,7 +4495,7 @@ table p {
   font-weight: 400;
   line-height: 1.875;
   margin-bottom: 40px;
-  margin-left: 2px;
+  margin-inline-start: 2px;
 }
 
 @media only screen and (max-width: 1199px) {
@@ -4506,7 +4531,7 @@ table p {
   font-weight: 400;
   font-size: 16px;
   padding: 0 44px;
-  margin-left: 2px;
+  margin-inline-start: 2px;
 }
 
 @media only screen and (max-width: 1199px) {
@@ -4624,8 +4649,8 @@ table p {
 @media only screen and (max-width: 767px) {
   .team-area.team-default-area .team-member {
     max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
   }
 }
 .team-member .thumb {
@@ -4660,7 +4685,7 @@ table p {
 .team-member .thumb img {
   bottom: 0;
   position: absolute;
-  left: 50%;
+  inset-inline-end: 50%;
   transform: translate(-50%, 0);
   -webkit-transform: translate(-50%, 0);
   -moz-transform: translate(-50%, 0);
@@ -4671,14 +4696,14 @@ table p {
 @media only screen and (max-width: 991px) {
   .team-member .thumb img {
     bottom: auto;
-    left: auto;
+    inset-inline-end: auto;
     position: relative;
     transform: none;
   }
 }
 @media only screen and (max-width: 767px) {
   .team-member .thumb img {
-    left: 50%;
+    inset-inline-end: 50%;
     transform: translate(-50%, 0);
     -webkit-transform: translate(-50%, 0);
     -moz-transform: translate(-50%, 0);
@@ -4689,7 +4714,7 @@ table p {
 .team-member .thumb .member-icons {
   position: absolute;
   bottom: 30px;
-  right: 30px;
+  inset-inline-end: 30px;
 }
 
 .team-member .thumb .member-icons a {
@@ -4802,7 +4827,7 @@ table p {
 }
 .testimonial-area.testimonial-default-area .thumb-style {
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   position: absolute;
   min-height: 155px;
   width: 100%;
@@ -4828,7 +4853,9 @@ table p {
 
 .testimonial-item .client-content .inner-content {
   overflow: hidden;
-  padding: 32px 18px 31px 30px;
+  padding-block: 32px 31px;
+  padding-inline-start: 30px;
+  padding-inline-end: 18px;
   position: relative;
 }
 
@@ -4836,7 +4863,7 @@ table p {
   max-width: 85px;
   position: absolute;
   top: -7px;
-  left: -11px;
+  inset-inline-start: -11px;
 }
 
 .testimonial-item .client-content p {
@@ -4849,7 +4876,7 @@ table p {
 
 .testimonial-item .client-content .shape-group .shape-style1 {
   bottom: -34px;
-  left: 0;
+  inset-inline-end: 0;
   position: absolute;
 }
 
@@ -4861,13 +4888,13 @@ table p {
 
 .testimonial-item .client-info .thumb img {
   border-radius: 50%;
-  margin-right: 25px;
-  margin-left: 4px;
+  margin-inline-end: 25px;
+  margin-inline-start: 4px;
 }
 
 .testimonial-item .client-info .desc {
   margin-top: 8px;
-  margin-left: 1px;
+  margin-inline-start: 1px;
 }
 
 .testimonial-item .client-info .desc .title {
@@ -4893,8 +4920,8 @@ table p {
 }
 
 .brand-logo-area.brand-logo-default-area .container-fluid {
-  padding-left: 25px;
-  padding-right: 15px;
+  padding-inline-start: 25px;
+  padding-inline-end: 15px;
 }
 
 .brand-logo-area.brand-logo-default-area .brand-logo-item {
@@ -4996,17 +5023,17 @@ table p {
 }
 
 .divider-area.divider-style1-area .divider-content .countdown-content .countdown-timer li + li {
-  margin-left: 30px;
+  margin-inline-start: 30px;
 }
 
 @media only screen and (max-width: 1199px) {
   .divider-area.divider-style1-area .divider-content .countdown-content .countdown-timer li + li {
-    margin-left: 22px;
+    margin-inline-start: 22px;
   }
 }
 @media only screen and (max-width: 575px) {
   .divider-area.divider-style1-area .divider-content .countdown-content .countdown-timer li + li {
-    margin-left: 18px;
+    margin-inline-start: 18px;
   }
 }
 .divider-area.divider-style1-area .divider-content .countdown-content .countdown-timer li span {
@@ -5209,12 +5236,12 @@ table p {
   font-size: 30px;
   line-height: 43px;
   margin-bottom: 15px;
-  margin-right: -20px;
+  margin-inline-end: -20px;
 }
 
 @media only screen and (max-width: 1399px) {
   .divider-area.divider-style3-area .divider-content .title {
-    margin-right: 0;
+    margin-inline-end: 0;
   }
 }
 @media only screen and (max-width: 991px) {
@@ -5311,7 +5338,7 @@ table p {
   }
 }
 .divider-area.divider-style4-area .divider-wrap .newsletter-form {
-  margin-left: 20px;
+  margin-inline-start: 20px;
 }
 
 .divider-area.divider-style4-area .divider-wrap .newsletter-form form {
@@ -5325,7 +5352,9 @@ table p {
   box-shadow: none;
   font-size: 14px;
   height: 54px;
-  padding: 0px 130px 0 30px;
+  padding-block: 0px 0;
+  padding-inline-start: 30px;
+  padding-inline-end: 130px;
 }
 
 .divider-area.divider-style4-area .divider-wrap .newsletter-form form .form-control:focus {
@@ -5379,7 +5408,9 @@ table p {
 
 .divider-area.divider-style4-area .shape-group span:nth-child(2) {
   height: 80px;
-  margin: 0 3px -8px;
+  margin-block: 0 -8px;
+  margin-inline-end: 3px;
+  margin-inline-start: 0;
 }
 
 .divider-area.divider-style4-area .shape-group span:nth-child(3) {
@@ -5402,7 +5433,9 @@ table p {
 }
 .featured-item {
   border: 4px solid #f6f6f6;
-  padding: 36px 20px 31px;
+  padding-block: 36px 31px;
+  padding-inline-start: 0;
+  padding-inline-end: 20px;
   position: relative;
   text-align: center;
   transition: all 0.4s ease-in-out;
@@ -5440,7 +5473,7 @@ table p {
 .featured-item .shape-group .shape-style1 {
   bottom: -2px;
   position: absolute;
-  right: -4px;
+  inset-inline-end: -4px;
   z-index: -1;
 }
 
@@ -5459,8 +5492,8 @@ table p {
   }
 }
 .contact-form .contact-form-wrapper {
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-inline-start: 20px;
+  margin-inline-end: 20px;
 }
 
 .contact-form .contact-form-wrapper .section-title {
@@ -5644,21 +5677,21 @@ table p {
   }
 }
 .login-register-pr {
-  padding-right: 100px;
+  padding-inline-end: 100px;
 }
 
 @media only screen and (max-width: 1199px) {
   .login-register-pr {
-    padding-right: 0;
+    padding-inline-end: 0;
   }
 }
 .login-register-pl {
-  padding-left: 100px;
+  padding-inline-start: 100px;
 }
 
 @media only screen and (max-width: 1199px) {
   .login-register-pl {
-    padding-left: 0;
+    padding-inline-start: 0;
   }
 }
 @media only screen and (max-width: 767px) {
@@ -5667,7 +5700,7 @@ table p {
   }
 }
 .login-register-border {
-  border-right: 1px solid #e5e5e5;
+  border-inline-end: 1px solid #e5e5e5;
 }
 
 @media only screen and (max-width: 767px) {
@@ -5705,7 +5738,9 @@ table p {
   background-color: transparent;
   border: 1px solid #e5e5e5;
   font-family: "Rubik", sans-serif;
-  padding: 2px 80px 2px 16px;
+  padding-block: 2px 2px;
+  padding-inline-start: 16px;
+  padding-inline-end: 80px;
   font-size: 15px;
 }
 
@@ -5725,7 +5760,7 @@ table p {
 
 .login-register-content .login-register-style form .login-register-input .forgot {
   position: absolute;
-  right: 10px;
+  inset-inline-end: 10px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -5770,7 +5805,7 @@ table p {
   cursor: pointer;
   width: auto;
   height: auto;
-  margin-right: 10px;
+  margin-inline-end: 10px;
 }
 
 .login-register-content .login-register-style form .remember-me-btn label {
@@ -5794,7 +5829,9 @@ table p {
   line-height: 1;
   width: 100%;
   text-align: center;
-  padding: 19px 10px 22px;
+  padding-block: 19px 22px;
+  padding-inline-start: 0;
+  padding-inline-end: 10px;
   text-transform: uppercase;
 }
 
@@ -5853,14 +5890,14 @@ table p {
 .login-register-content .login-register-style .register-benefits ul li i {
   font-size: 20px;
   color: #95b3e0;
-  margin-right: 15px;
+  margin-inline-end: 15px;
   position: relative;
   top: 4px;
 }
 
 @media only screen and (max-width: 1199px) {
   .login-register-content .login-register-style .register-benefits ul li i {
-    margin-right: 0;
+    margin-inline-end: 0;
   }
 }
 .my-account-area {
@@ -5891,7 +5928,7 @@ table p {
   font-size: 15px;
   display: block;
   padding: 10px 15px;
-  text-align: left;
+  text-align: start;
   text-transform: capitalize;
 }
 
@@ -6170,7 +6207,10 @@ table p {
 }
 
 .product-item .product-thumb {
-  border-radius: 5px 5px 0 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
   align-items: center;
   background-color: #e4f6fe;
   display: flex;
@@ -6202,8 +6242,8 @@ table p {
   transform: translate(0, 40px);
   top: 50%;
   opacity: 0;
-  left: 50%;
-  margin-right: 5px;
+  inset-inline-start: 50%;
+  margin-inline-end: 5px;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
   -moz-transition: all 0.3s ease-in-out;
@@ -6212,7 +6252,7 @@ table p {
 }
 
 .product-item .product-thumb .product-action a:last-child {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 .product-item .product-thumb .product-action a[class*=action-] {
@@ -6241,9 +6281,13 @@ table p {
 
 .product-item .product-info {
   background-color: #e4f6fe;
-  border-radius: 0 0 5px 5px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   min-height: 117px;
-  padding: 0 31px 33px;
+  padding-block: 0 33px;
+  padding-inline: 31px;
 }
 
 .product-item .product-info .rating {
@@ -6310,7 +6354,7 @@ table p {
   border-radius: 21px;
   color: #393939;
   font-family: "Fredoka One", cursive;
-  margin-right: 25px;
+  margin-inline-end: 25px;
   height: 43px;
   line-height: 25px;
   padding: 5px 29px;
@@ -6319,7 +6363,7 @@ table p {
 @media only screen and (max-width: 991px) {
   .product-tab-content .nav-tabs .nav-item .nav-link {
     font-size: 14px;
-    margin-right: 18px;
+    margin-inline-end: 18px;
   }
 }
 .product-tab-content .nav-tabs .nav-item .nav-link:hover {
@@ -6339,7 +6383,7 @@ table p {
 }
 
 .product-items-list .product-item .product-thumb {
-  float: left;
+  float: right;
   width: 50%;
 }
 
@@ -6351,11 +6395,12 @@ table p {
 }
 .product-items-list .product-item .product-info {
   background-color: transparent;
-  float: left;
-  padding-left: 45px;
+  float: right;
+  padding-inline-start: 45px;
   width: 50%;
-  padding: 0px 0px 0px 45px;
-  text-align: left;
+  padding: 0px 0px 0px;
+  padding-inline-start: 45px;
+  text-align: start;
 }
 
 @media only screen and (max-width: 575px) {
@@ -6388,7 +6433,7 @@ table p {
 }
 
 .product-description-review .product-description-tab-menu .nav-item {
-  margin-right: 10px;
+  margin-inline-end: 10px;
 }
 
 .product-description-review .product-description-tab-menu .nav-item .nav-link {
@@ -6410,7 +6455,10 @@ table p {
 
 .product-description-review .product-description-tab-menu .nav-item .nav-link:before {
   bottom: 0;
-  border-radius: 5px 5px 0px 0px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   color: #fff;
   content: "";
   background-color: #f379a7;
@@ -6418,7 +6466,7 @@ table p {
   height: 0;
   position: absolute;
   z-index: -1;
-  left: 0;
+  inset-inline-start: 0;
   opacity: 0;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
@@ -6449,7 +6497,9 @@ table p {
 }
 
 .product-description-review .tab-content .product-desc {
-  padding: 51px 25px 50px;
+  padding-block: 51px 50px;
+  padding-inline-start: 0;
+  padding-inline-end: 25px;
   text-align: center;
 }
 
@@ -6491,12 +6541,12 @@ table p {
 
 .product-description-review .tab-content .product-review .review-header .review-info .review-caption {
   font-size: 14px;
-  margin-left: 10px;
+  margin-inline-start: 10px;
 }
 
 .product-description-review .tab-content .product-review .review-header .review-info .review-write-btn {
   font-size: 14px;
-  float: right;
+  float: left;
   transition: 0.3s;
   -webkit-transition: 0.3s;
   -moz-transition: 0.3s;
@@ -6605,7 +6655,7 @@ table p {
 .product-description-review .tab-content .product-review .review-content .review-item .review-report {
   color: #242424;
   font-size: 11px;
-  text-align: right;
+  text-align: end;
   display: block;
 }
 
@@ -6630,7 +6680,7 @@ table p {
 }
 
 .product-tab1-slider .slick-prev {
-  left: -81px;
+  inset-inline-start: -81px;
   top: 33%;
   z-index: 1;
 }
@@ -6646,7 +6696,7 @@ table p {
   width: 50px;
   height: 50px;
   position: absolute;
-  left: -13px;
+  inset-inline-start: -13px;
   top: -9px;
   z-index: -1;
   transition: all 0.3s ease-in-out;
@@ -6658,7 +6708,7 @@ table p {
 
 .product-tab1-slider .slick-prev:before {
   color: #fff;
-  content: "\f104";
+  content: "\f105";
   font-family: "FontAwesome";
   font-size: 30px;
   opacity: 1;
@@ -6674,7 +6724,7 @@ table p {
 }
 
 .product-tab1-slider .slick-next {
-  right: -81px;
+  inset-inline-end: -81px;
   top: 33%;
   z-index: 1;
 }
@@ -6690,7 +6740,7 @@ table p {
   width: 50px;
   height: 50px;
   position: absolute;
-  left: -15px;
+  inset-inline-start: -15px;
   top: -9px;
   z-index: -1;
   transition: all 0.3s ease-in-out;
@@ -6702,7 +6752,7 @@ table p {
 
 .product-tab1-slider .slick-next:before {
   color: #fff;
-  content: "\f105";
+  content: "\f104";
   font-family: "FontAwesome";
   font-size: 30px;
   opacity: 1;
@@ -6750,10 +6800,10 @@ table p {
   font-weight: 800;
   font-size: 12px;
   height: 25px;
-  left: 9px;
+  inset-inline-start: 9px;
   line-height: 25px;
   position: absolute;
-  right: auto;
+  inset-inline-end: auto;
   text-align: center;
   top: 10px;
   width: 45px;
@@ -6772,7 +6822,7 @@ table p {
   font-size: 20px;
   font-weight: 700;
   height: 150px;
-  left: 50%;
+  inset-inline-start: 50%;
   line-height: 150px;
   opacity: 0.8;
   position: absolute;
@@ -6835,13 +6885,17 @@ table p {
   .shop-toolbar-wrap {
     display: block;
     height: auto;
-    padding: 23px 20px 10px;
+    padding-block: 23px 10px;
+    padding-inline-start: 0;
+    padding-inline-end: 20px;
     text-align: center;
   }
 }
 @media (max-width: 418px) {
   .shop-toolbar-wrap {
-    padding: 25px 15px 22px;
+    padding-block: 25px 22px;
+    padding-inline-start: 0;
+    padding-inline-end: 15px;
   }
 }
 .shop-toolbar-wrap .product-showing-status .count-result {
@@ -6855,8 +6909,8 @@ table p {
 }
 
 .shop-toolbar-wrap .product-view-mode {
-  border-right: 1px solid #e0e0e0;
-  border-left: 1px solid #e0e0e0;
+  border-inline-end: 1px solid #e0e0e0;
+  border-inline-start: 1px solid #e0e0e0;
   padding: 0 50px;
 }
 
@@ -6889,7 +6943,7 @@ table p {
   color: #9e9e9e;
   font-size: 18px;
   padding: 0;
-  margin-right: 23px;
+  margin-inline-end: 23px;
 }
 
 .shop-toolbar-wrap .product-view-mode nav .nav-tabs .nav-link:hover {
@@ -6901,7 +6955,7 @@ table p {
 }
 
 .shop-toolbar-wrap .product-view-mode nav .nav-tabs .nav-link:last-child {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 .shop-toolbar-wrap .product-sorting-menu {
@@ -6928,19 +6982,19 @@ table p {
 .shop-toolbar-wrap .product-sorting-menu .current span i {
   color: #ee3231;
   font-size: 18px;
-  margin-left: 54px;
+  margin-inline-start: 54px;
   position: relative;
 }
 
 @media only screen and (max-width: 767px) {
   .shop-toolbar-wrap .product-sorting-menu .current span i {
-    margin-left: 15px;
+    margin-inline-start: 15px;
   }
 }
 .shop-toolbar-wrap .product-sorting-menu ul {
   background-color: #fff;
   border: 1px solid #d5d5d5;
-  right: 0;
+  inset-inline-end: 0;
   opacity: 0;
   position: absolute;
   top: 44px;
@@ -7047,7 +7101,7 @@ table p {
   width: 9px;
   height: 14px;
   position: absolute;
-  left: -31px;
+  inset-inline-start: -31px;
   top: 4px;
 }
 
@@ -7061,7 +7115,7 @@ table p {
   width: 14px;
   height: 14px;
   margin-top: 8px;
-  margin-right: 11px;
+  margin-inline-end: 11px;
 }
 
 .sidebar-area.shop-sidebar-area .widget-filter .widget-body .widget-form-check .form-check .form-check-input:checked {
@@ -7094,7 +7148,7 @@ table p {
   background-color: #fff;
   border: 3px solid #f379a7;
   top: -5px;
-  left: 0;
+  inset-inline-start: 0;
   width: 9px;
   height: 9px;
 }
@@ -7112,14 +7166,14 @@ table p {
   justify-content: space-between;
   margin-bottom: 6px;
   margin-top: 17px;
-  padding-right: 13px;
+  padding-inline-end: 13px;
 }
 
 .sidebar-area.shop-sidebar-area .widget-filter .widget-body .widget-price-filter .slider-labels .price {
   color: #656565;
   font-weight: 400;
   font-size: 16px;
-  margin-right: 5px;
+  margin-inline-end: 5px;
 }
 
 .sidebar-area.shop-sidebar-area .widget-filter .widget-body .widget-price-filter .slider-labels .range-separator {
@@ -7178,7 +7232,7 @@ table p {
 .sidebar-area.shop-sidebar-area .widget-color .form-check .form-check-label {
   color: #737070;
   cursor: pointer;
-  margin-left: -4px;
+  margin-inline-start: -4px;
 }
 
 .sidebar-area.shop-sidebar-area .widget-size .form-check .form-check-input {
@@ -7208,17 +7262,17 @@ table p {
 .sidebar-area.shop-sidebar-area .widget-size .form-check .form-check-label {
   color: #737070;
   cursor: pointer;
-  margin-left: -4px;
+  margin-inline-start: -4px;
 }
 
 .single-product-info {
-  margin-left: 20px;
+  margin-inline-start: 20px;
   margin-top: -5px;
 }
 
 @media only screen and (max-width: 991px) {
   .single-product-info {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
 }
 .single-product-info .title {
@@ -7267,7 +7321,7 @@ table p {
 }
 
 .single-product-info .product-rating .rating {
-  margin-right: 8px;
+  margin-inline-end: 8px;
 }
 
 .single-product-info .product-rating .rating span {
@@ -7337,12 +7391,12 @@ table p {
 .single-product-info .single-product-featured ul li i {
   color: #f379a7;
   font-size: 18px;
-  margin-right: 10px;
+  margin-inline-end: 10px;
 }
 
 @media only screen and (max-width: 575px) {
   .single-product-info .single-product-featured ul li i {
-    margin-right: 2px;
+    margin-inline-end: 2px;
   }
 }
 @media only screen and (max-width: 479.98px) {
@@ -7389,7 +7443,9 @@ table p {
 }
 .single-product-info .group-product-list table tbody tr td {
   font-weight: 500;
-  padding: 10px 10px 10px 0;
+  padding-block: 10px 10px;
+  padding-inline-start: 0;
+  padding-inline-end: 10px;
   border-width: 0 0 1px 0;
   border-style: dotted;
   border-color: #e5e5e5;
@@ -7415,8 +7471,8 @@ table p {
 }
 
 .single-product-info .group-product-list table tbody tr .price {
-  padding-right: 0;
-  text-align: right;
+  padding-inline-end: 0;
+  text-align: end;
 }
 
 .single-product-info .group-product-list table tbody tr .price .pro-price span {
@@ -7428,7 +7484,7 @@ table p {
 .single-product-info .group-product-list table tbody tr .price .pro-price .old {
   color: #f379a7;
   font-size: 14px;
-  margin-right: 5px;
+  margin-inline-end: 5px;
   opacity: 0.5;
   font-style: italic;
   text-decoration: line-through;
@@ -7449,7 +7505,7 @@ table p {
 }
 
 .single-product-info .table tbody tr th {
-  border-right: 1px solid #e9e9e9;
+  border-inline-end: 1px solid #e9e9e9;
   color: #3d3d3d;
   font-weight: 600;
   font-size: 16px;
@@ -7470,7 +7526,9 @@ table p {
 }
 @media only screen and (max-width: 479.98px) {
   .single-product-info .table tbody tr th {
-    padding: 7px 5px 5px;
+    padding-block: 7px 5px;
+    padding-inline-end: 5px;
+    padding-inline-start: 0;
     text-align: center;
     max-width: 83px;
   }
@@ -7480,18 +7538,24 @@ table p {
   color: #3d3d3d;
   font-weight: 500;
   font-size: 16px;
-  padding: 5px 20px 5px 29px;
+  padding-block: 5px 5px;
+  padding-inline-start: 29px;
+  padding-inline-end: 20px;
 }
 
 @media only screen and (max-width: 1199px) {
   .single-product-info .table tbody tr td {
-    padding: 5px 10px 5px 19px;
+    padding-block: 5px 5px;
+    padding-inline-start: 19px;
+    padding-inline-end: 10px;
   }
 }
 @media only screen and (max-width: 991px) {
   .single-product-info .table tbody tr td {
     font-size: 14px;
-    padding: 5px 10px 5px 15px;
+    padding-block: 5px 5px;
+    padding-inline-start: 15px;
+    padding-inline-end: 10px;
   }
 }
 .single-product-info .table tbody tr td i {
@@ -7504,7 +7568,7 @@ table p {
   line-height: 20px;
   font-weight: 500;
   font-size: 18px;
-  float: right;
+  float: left;
   margin-top: 6px;
   text-align: center;
   transition: all 0.3s ease-in-out;
@@ -7552,7 +7616,7 @@ table p {
   display: inline-block;
   position: relative;
   margin-bottom: 15px;
-  margin-right: 7px;
+  margin-inline-end: 7px;
   top: 2px;
 }
 
@@ -7564,7 +7628,9 @@ table p {
   font-family: "Fredoka One", cursive;
   font-weight: 500;
   font-size: 16px;
-  padding: 0px 28px 0;
+  padding-block: 0px 0;
+  padding-inline-start: 0;
+  padding-inline-end: 28px;
   max-width: 132px;
   max-height: 50px;
   line-height: 50px;
@@ -7579,12 +7645,12 @@ table p {
 }
 
 .single-product-info .quick-product-action .action-top .pro-qty .qty-btn.inc {
-  right: 30px;
+  inset-inline-end: 30px;
   top: 35%;
 }
 
 .single-product-info .quick-product-action .action-top .pro-qty .qty-btn.dec {
-  left: 30px;
+  inset-inline-start: 30px;
   top: 36%;
 }
 
@@ -7597,13 +7663,13 @@ table p {
   line-height: 38px;
   padding: 5px 44px;
   margin-bottom: 15px;
-  margin-left: 10px;
-  margin-right: 27px;
+  margin-inline-start: 10px;
+  margin-inline-end: 27px;
 }
 
 @media only screen and (max-width: 575px) {
   .single-product-info .quick-product-action .btn-theme {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
 }
 .single-product-info .quick-product-action .btn-theme:hover {
@@ -7665,11 +7731,11 @@ table p {
 }
 
 .single-product-info .widget .widget-tags.widget-share {
-  margin-left: 15px;
+  margin-inline-start: 15px;
 }
 
 .single-product-info .widget .widget-tags.widget-share span {
-  margin-right: 24px;
+  margin-inline-end: 24px;
   cursor: pointer;
 }
 
@@ -7678,7 +7744,7 @@ table p {
 }
 
 .single-product-info .widget .widget-tags.widget-share span:last-child {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 @media only screen and (max-width: 479.98px) {
@@ -7733,7 +7799,7 @@ table p {
 
 .category-area.product-category1-area .category-items1 .category-item .thumb.thumb-style1 img {
   bottom: 20px;
-  right: 16px;
+  inset-inline-end: 16px;
 }
 
 @media only screen and (max-width: 1199px) {
@@ -7744,7 +7810,7 @@ table p {
 }
 .category-area.product-category1-area .category-items1 .category-item .thumb.thumb-style2 img {
   bottom: 10px;
-  right: 10px;
+  inset-inline-end: 10px;
 }
 
 @media only screen and (max-width: 1199px) {
@@ -7758,7 +7824,7 @@ table p {
   }
 }
 .category-area.product-category1-area .category-items1 .category-item .thumb.thumb-style3 img {
-  right: 6px;
+  inset-inline-end: 6px;
   bottom: 0px;
 }
 
@@ -7782,7 +7848,7 @@ table p {
 
 .category-area.product-category1-area .category-items1 .category-item .thumb .content .contact-info {
   margin-top: 33px;
-  margin-left: 31px;
+  margin-inline-start: 31px;
 }
 
 .category-area.product-category1-area .category-items1 .category-item .thumb .content .contact-info .title {
@@ -7811,7 +7877,7 @@ table p {
   font-weight: 400;
   font-size: 16px;
   margin-bottom: 25px;
-  margin-left: 31px;
+  margin-inline-start: 31px;
   text-transform: capitalize;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
@@ -7852,7 +7918,7 @@ table p {
   position: absolute;
   top: 49%;
   transform: translate(0px, -50%);
-  right: 70px;
+  inset-inline-end: 70px;
   text-align: center;
 }
 
@@ -7942,7 +8008,9 @@ table p {
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
-  padding: 14px 23px 14px;
+  padding-block: 14px 14px;
+  padding-inline-start: 0;
+  padding-inline-end: 23px;
 }
 
 .cart-table-wrap .cart-table table thead > tr th.width-thumbnail {
@@ -8082,7 +8150,7 @@ table p {
 
 .cart-shiping-update-wrapper .cart-shiping-btn a i {
   font-size: 22px;
-  margin-right: 2px;
+  margin-inline-end: 2px;
   position: relative;
   top: 4px;
 }
@@ -8120,8 +8188,8 @@ table p {
   line-height: 52px;
   color: #495057;
   font-family: "Rubik", sans-serif;
-  padding-left: 16px;
-  padding-right: 20px;
+  padding-inline-start: 16px;
+  padding-inline-end: 20px;
 }
 
 .select-style .select2-container--default {
@@ -8137,14 +8205,14 @@ table p {
 
 .select-style .select2-container--default .select2-selection--single .select2-selection__arrow {
   top: 13px;
-  right: 10px;
+  inset-inline-end: 10px;
 }
 
 .select-style .select2-container--default .select2-selection--single .select2-selection__rendered {
   color: #495057;
   line-height: 52px;
-  padding-left: 16px;
-  padding-right: 20px;
+  padding-inline-start: 16px;
+  padding-inline-end: 20px;
 }
 
 .select2-container--default .select2-search--dropdown .select2-search__field {
@@ -8218,8 +8286,8 @@ table p {
 }
 
 .grand-total-wrap .grand-total-content {
-  padding: 30px;
-  padding: 34px 30px 33px;
+  padding-inline: 30px;
+  padding-block: 34px 33px;
   background-color: #f5f5f5;
 }
 
@@ -8277,7 +8345,7 @@ table p {
   font-size: 16px;
   font-weight: 400;
   color: #666;
-  margin-left: 10px;
+  margin-inline-start: 10px;
 }
 
 .grand-total-wrap .grand-total-content .shipping-country {
@@ -8295,7 +8363,7 @@ table p {
   color: #fff;
   font-size: 14px;
   line-height: 1.7;
-  border-left: 6px solid #3198b6;
+  border-inline-start: 6px solid #3198b6;
 }
 
 .grand-total-wrap .grand-total h4 {
@@ -8336,7 +8404,9 @@ table p {
 
 @media only screen and (max-width: 1199px) {
   .grand-total-wrap .grand-total-btn a.btn {
-    padding: 10px 10px 10px;
+    padding-block: 10px 10px;
+    padding-inline-start: 0;
+    padding-inline-end: 10px;
   }
 }
 .grand-total-wrap .grand-total-btn a.btn-link {
@@ -8489,7 +8559,7 @@ table p {
 .compare-table .table tbody tr td.product-image-title {
   min-width: 310px;
   vertical-align: bottom;
-  text-align: left;
+  text-align: start;
 }
 
 .compare-table .table tbody tr td.product-image-title .image {
@@ -8504,7 +8574,7 @@ table p {
 }
 
 .compare-table .table tbody tr td.product-image-title .category {
-  float: left;
+  float: right;
   clear: both;
   color: #f379a7;
   font-family: "Rubik", sans-serif;
@@ -8515,7 +8585,7 @@ table p {
 .compare-table .table tbody tr td.product-image-title .title {
   color: #000;
   clear: both;
-  float: left;
+  float: right;
   font-size: 16px;
   line-height: 1.2;
   font-family: "Rubik", sans-serif;
@@ -8531,7 +8601,7 @@ table p {
   font-family: "Rubik", sans-serif;
   margin: 0;
   line-height: 30px;
-  text-align: left;
+  text-align: start;
 }
 
 .compare-table .table tbody tr td a.check-btn {
@@ -8584,7 +8654,7 @@ table p {
 .checkout-coupon-wrap > p a {
   font-family: "Rubik", sans-serif;
   color: #4bb1cf;
-  margin-left: 6px;
+  margin-inline-start: 6px;
   font-size: 14px;
 }
 
@@ -8685,7 +8755,7 @@ table p {
 .billing-info-wrap .checkout-account input {
   border: 1px solid #e5e5e5;
   display: inline-block;
-  float: left;
+  float: right;
   height: 10px;
   font-family: "Rubik", sans-serif;
   width: 10px;
@@ -8695,7 +8765,8 @@ table p {
 }
 
 .billing-info-wrap .checkout-account span {
-  margin: 0 0 0 12px;
+  margin: 0 0 0;
+  margin-inline-start: 12px;
   font-size: 14px;
 }
 
@@ -8841,7 +8912,7 @@ table p {
   font-family: "Rubik", sans-serif;
   font-size: 16px;
   font-weight: 400;
-  margin-left: 10px;
+  margin-inline-start: 10px;
 }
 
 .your-order-area .your-order-wrap .your-order-total {
@@ -8879,7 +8950,7 @@ table p {
   cursor: pointer;
   width: auto;
   display: inline-block;
-  float: left;
+  float: right;
   height: auto;
   margin-top: 7px;
 }
@@ -8888,7 +8959,8 @@ table p {
   cursor: pointer;
   font-family: "Rubik", sans-serif;
   font-size: 15px;
-  margin: 0px 0 0 21px;
+  margin: 0px 0 0;
+  margin-inline-start: 21px;
   display: flex;
   align-items: center;
 }
@@ -8909,7 +8981,8 @@ table p {
 }
 
 .your-order-area .your-order-wrap .payment-method .sin-payment .payment-box {
-  margin: 6px 0 0 21px;
+  margin: 6px 0 0;
+  margin-inline-start: 21px;
   display: none;
 }
 
@@ -8956,7 +9029,7 @@ table p {
   color: #888;
   font-family: "Rubik", sans-serif;
   font-size: 14px;
-  margin-left: 10px;
+  margin-inline-start: 10px;
 }
 
 .your-order-area .your-order-wrap .payment-checkbox span a {
@@ -8974,7 +9047,9 @@ table p {
 }
 
 .your-order-area .place-order a {
-  padding: 18px 43px 18px;
+  padding-block: 18px 18px;
+  padding-inline-start: 0;
+  padding-inline-end: 43px;
   font-size: 24px;
   line-height: 1;
   color: #fff;
@@ -8998,11 +9073,11 @@ table p {
 .product-quick-view-modal {
   position: fixed;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   opacity: 0;
   visibility: hidden;
-  left: 0;
+  inset-inline-start: 0;
   z-index: 1050;
   overflow-x: hidden;
   overflow-y: auto;
@@ -9032,9 +9107,9 @@ table p {
   position: fixed;
   top: 0;
   opacity: 0.5;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   z-index: 1040;
   background-color: #000;
 }
@@ -9091,13 +9166,13 @@ table p {
   margin: 0;
   color: #fff;
   cursor: pointer;
-  float: right;
+  float: left;
   font-size: 30px;
   font-weight: 700;
   line-height: 1;
   opacity: 1;
   position: absolute;
-  right: -25px;
+  inset-inline-end: -25px;
   text-shadow: 0 1px 0 #fff;
   top: -25px;
   transition: all 0.3s ease 0s;
@@ -9109,7 +9184,7 @@ table p {
 @media (max-width: 1559px) {
   .product-quick-view-content .btn-close {
     top: 10px;
-    right: 10px;
+    inset-inline-end: 10px;
     font-size: 25px;
     height: 40px;
     width: 40px;
@@ -9117,7 +9192,7 @@ table p {
 }
 @media only screen and (max-width: 1199px) {
   .product-quick-view-content .btn-close {
-    left: 10px;
+    inset-inline-start: 10px;
   }
 }
 .product-quick-view-content .btn-close:hover {
@@ -9134,22 +9209,30 @@ table p {
 }
 
 .product-quick-view-content .single-product-info {
-  padding: 60px 35px 20px;
+  padding-block: 60px 20px;
+  padding-inline-start: 0;
+  padding-inline-end: 35px;
 }
 
 @media (max-width: 1559px) {
   .product-quick-view-content .single-product-info {
-    padding: 40px 35px 20px;
+    padding-block: 40px 20px;
+    padding-inline-start: 0;
+    padding-inline-end: 35px;
   }
 }
 @media only screen and (max-width: 1399px) {
   .product-quick-view-content .single-product-info {
-    padding: 25px 35px 20px;
+    padding-block: 25px 20px;
+    padding-inline-start: 0;
+    padding-inline-end: 35px;
   }
 }
 @media only screen and (max-width: 1199px) {
   .product-quick-view-content .single-product-info {
-    padding: 0 17px 0 30px;
+    padding-block: 0 0;
+    padding-inline-start: 30px;
+    padding-inline-end: 17px;
   }
 }
 @media only screen and (max-width: 1199px) {
@@ -9234,7 +9317,7 @@ table p {
 }
 @media only screen and (max-width: 1199px) {
   .product-quick-view-content .single-product-info .product-rating .rating {
-    margin-right: 10px;
+    margin-inline-end: 10px;
   }
 }
 @media only screen and (max-width: 1199px) {
@@ -9297,7 +9380,9 @@ table p {
 }
 @media only screen and (max-width: 1199px) {
   .product-quick-view-content .single-product-info table tbody tr td {
-    padding: 7px 20px 5px 29px;
+    padding-block: 7px 5px;
+    padding-inline-start: 29px;
+    padding-inline-end: 20px;
   }
 }
 @media only screen and (max-width: 991px) {
@@ -9308,7 +9393,9 @@ table p {
 @media only screen and (max-width: 359.98px) {
   .product-quick-view-content .single-product-info table tbody tr td {
     font-size: 10px;
-    padding: 7px 13px 5px 19px;
+    padding-block: 7px 5px;
+    padding-inline-start: 19px;
+    padding-inline-end: 13px;
   }
 }
 @media only screen and (max-width: 1199px) {
@@ -9355,31 +9442,31 @@ table p {
 }
 @media only screen and (max-width: 1199px) {
   .product-quick-view-content .single-product-info .single-product-desc .quick-product-action .action-top .pro-qty-area .pro-qty-style2 .inc {
-    right: 6px;
+    inset-inline-end: 6px;
     top: 29%;
   }
 }
 @media only screen and (max-width: 359.98px) {
   .product-quick-view-content .single-product-info .single-product-desc .quick-product-action .action-top .pro-qty-area .pro-qty-style2 .inc {
-    right: 15px;
+    inset-inline-end: 15px;
     top: 38%;
   }
 }
 @media only screen and (max-width: 1199px) {
   .product-quick-view-content .single-product-info .single-product-desc .quick-product-action .action-top .pro-qty-area .pro-qty-style2 .dec {
-    left: 4px;
+    inset-inline-start: 4px;
     top: 26%;
   }
 }
 @media only screen and (max-width: 359.98px) {
   .product-quick-view-content .single-product-info .single-product-desc .quick-product-action .action-top .pro-qty-area .pro-qty-style2 .dec {
-    left: 14px;
+    inset-inline-start: 14px;
     top: 32%;
   }
 }
 @media only screen and (max-width: 359.98px) {
   .product-quick-view-content .single-product-info .single-product-desc .quick-product-action .action-bottom {
-    margin-left: 5px;
+    margin-inline-start: 5px;
   }
 }
 @media only screen and (max-width: 1199px) {
@@ -9413,7 +9500,7 @@ table p {
 }
 @media only screen and (max-width: 359.98px) {
   .product-quick-view-content .single-product-info .single-product-desc .quick-product-action a {
-    margin-left: 5px;
+    margin-inline-start: 5px;
     font-size: 20px;
     height: 40px;
     padding: 4px 13px;
@@ -9514,7 +9601,7 @@ table p {
 .post-item .content .meta .author {
   color: #f379a7;
   font-weight: 400;
-  margin-right: 5px;
+  margin-inline-start: 5px;
 }
 
 .post-item .content .meta .author:hover {
@@ -9524,7 +9611,7 @@ table p {
 .post-item .content .meta .post-date {
   color: #424242;
   font-weight: 400;
-  margin-left: 15px;
+  margin-inline-end: 15px;
 }
 
 .post-item .content .meta .dots {
@@ -9539,7 +9626,7 @@ table p {
   width: 6px;
   height: 6px;
   bottom: 3px;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .post-item .content .title {
@@ -9615,12 +9702,14 @@ table p {
 }
 
 .post-details-content .post-details-body .content {
-  padding: 0 40px 20px;
+  padding-block: 0 20px;
+  padding-inline-end: 40px;
 }
 
 @media only screen and (max-width: 991px) {
   .post-details-content .post-details-body .content {
-    padding: 0 15px 20px;
+    padding-block: 0 20px;
+    padding-inline-end: 15px;
   }
 }
 .post-details-content .post-details-body .content .meta {
@@ -9633,7 +9722,7 @@ table p {
 .post-details-content .post-details-body .content .meta .author {
   color: #f379a7;
   font-weight: 400;
-  margin-right: 9px;
+  margin-inline-start: 9px;
 }
 
 .post-details-content .post-details-body .content .meta .author:hover {
@@ -9643,7 +9732,7 @@ table p {
 .post-details-content .post-details-body .content .meta .post-date {
   color: #424242;
   font-weight: 400;
-  margin-left: 20px;
+  margin-inline-end: 20px;
 }
 
 .post-details-content .post-details-body .content .meta .dots {
@@ -9658,7 +9747,7 @@ table p {
   width: 6px;
   height: 6px;
   bottom: 4px;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .post-details-content .post-details-body .content .title {
@@ -9679,7 +9768,7 @@ table p {
 .post-details-content .post-details-body .content p {
   color: #525252;
   margin-bottom: 33px;
-  margin-right: -5px;
+  margin-inline-end: -5px;
 }
 
 .post-details-content .post-details-body .content .blockquote-area .blockquote-style {
@@ -9704,7 +9793,7 @@ table p {
 .post-details-content .post-details-body .content .blockquote-area .blockquote-style .icon {
   position: absolute;
   top: 50%;
-  left: 50%;
+  inset-inline-start: 50%;
   transform: translate(-50%, -50%);
 }
 
@@ -9720,7 +9809,9 @@ table p {
 .comment-view-area {
   background-color: #f9f9f9;
   border-radius: 4px;
-  padding: 46px 30px 47px 40px;
+  padding-block: 46px 47px;
+  padding-inline-start: 40px;
+  padding-inline-end: 30px;
   margin-bottom: 100px;
   margin-top: 100px;
 }
@@ -9744,7 +9835,7 @@ table p {
   width: 9px;
   height: 17px;
   position: absolute;
-  left: -40px;
+  inset-inline-start: -40px;
   top: 4px;
 }
 
@@ -9753,7 +9844,7 @@ table p {
 }
 
 .comment-view-area .comment-content.comment-content-style2 {
-  margin-left: 60px;
+  margin-inline-start: 60px;
   margin-bottom: 40px;
 }
 
@@ -9773,13 +9864,13 @@ table p {
 
 .comment-view-area .comment-content .single-comment .author-info .author-details {
   position: relative;
-  margin-left: 30px;
+  margin-inline-start: 30px;
   top: -3px;
 }
 
 @media only screen and (max-width: 575px) {
   .comment-view-area .comment-content .single-comment .author-info .author-details {
-    margin-left: 12px;
+    margin-inline-start: 12px;
   }
 }
 .comment-view-area .comment-content .single-comment .author-info .author-details ul {
@@ -9854,22 +9945,23 @@ table p {
   width: 9px;
   height: 14px;
   position: absolute;
-  left: -25px;
+  inset-inline-start: -25px;
   top: 4px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-item .widget-title.blog-post-title .title {
-  margin-left: 5px;
+  margin-inline-start: 5px;
   margin-bottom: 27px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-item .widget-title.blog-post-title .title:before {
-  left: -30px;
+  inset-inline-start: -30px;
   top: 4px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-item.widget-item2 {
-  padding: 40px 25px 29px;
+  padding-block: 40px 29px;
+  padding-inline-end: 25px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-search-box form .form-input-item {
@@ -9882,7 +9974,9 @@ table p {
   border-radius: 30px;
   color: #969696;
   height: 60px;
-  padding: 10px 86px 10px 28px;
+  padding-block: 10px 10px;
+  padding-inline-start: 28px;
+  padding-inline-end: 86px;
   font-style: italic;
   width: 100%;
 }
@@ -9894,12 +9988,15 @@ table p {
 .sidebar-area.blog-sidebar-area .widget-body .widget-search-box form .form-input-item button {
   border: none;
   background-color: #f379a7;
-  border-radius: 0px 29px 29px 0px;
+  border-top-left-radius: 29px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 29px;
   color: #fff;
   height: 58px;
   padding: 11px 32.6px;
   position: absolute;
-  right: 1px;
+  inset-inline-end: 1px;
   top: 1px;
   transition: all 0.3s ease-in-out;
   -webkit-transition: all 0.3s ease-in-out;
@@ -9920,7 +10017,7 @@ table p {
   border-bottom: 1px dashed #e8e8e8;
   padding-bottom: 10px;
   margin-bottom: 11px;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-archives ul li:last-child {
@@ -9942,7 +10039,7 @@ table p {
   border-bottom: 1px dashed #e8e8e8;
   padding-bottom: 28px;
   margin-bottom: 25px;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-blog-post:last-child {
@@ -9971,7 +10068,7 @@ table p {
   }
 }
 .sidebar-area.blog-sidebar-area .widget-body .widget-blog-post .content {
-  padding-left: 120px;
+  padding-inline-start: 120px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-blog-post .content span {
@@ -10001,7 +10098,7 @@ table p {
   border-bottom: 1px dashed #e8e8e8;
   padding-bottom: 10px;
   margin-bottom: 11px;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-categories ul li:last-child {
@@ -10070,17 +10167,17 @@ table p {
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-tags ul {
   margin: 0;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-tags ul li {
   display: inline-block;
   margin-bottom: 7px;
-  margin-right: 2px;
+  margin-inline-end: 2px;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-tags ul li:last-child {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-tags ul li a {
@@ -10192,7 +10289,7 @@ table p {
   opacity: 0.2;
   position: absolute;
   top: 0;
-  left: 0;
+  inset-inline-start: 0;
   width: 100%;
   height: 100%;
 }
@@ -10276,11 +10373,11 @@ table p {
 .footer-area.default-style .widget-item .about-widget .widget-social-icons a {
   color: #fff;
   font-size: 16px;
-  margin-right: 30px;
+  margin-inline-end: 30px;
 }
 
 .footer-area.default-style .widget-item .about-widget .widget-social-icons a:last-child {
-  margin-right: 0;
+  margin-inline-end: 0;
 }
 
 .footer-area.default-style .widget-item .about-widget .widget-social-icons a:hover {
@@ -10314,21 +10411,21 @@ table p {
 }
 
 .footer-area.default-style .widget-item.item-style1 {
-  margin-left: 33px;
+  margin-inline-start: 33px;
 }
 
 @media only screen and (max-width: 1199px) {
   .footer-area.default-style .widget-item.item-style1 {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
 }
 .footer-area.default-style .widget-item.item-style2 {
-  margin-left: 39px;
+  margin-inline-start: 39px;
 }
 
 @media only screen and (max-width: 1199px) {
   .footer-area.default-style .widget-item.item-style2 {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
 }
 .footer-area.default-style .widget-item.item-style3 {
@@ -10417,7 +10514,7 @@ table p {
   font-size: 14px;
   content: "\f067";
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   height: 100%;
   width: 60px;
   text-align: center;
@@ -10448,4 +10545,4 @@ table p {
   }
 } 
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=style_rtl.css.map */

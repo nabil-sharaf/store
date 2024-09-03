@@ -7,7 +7,7 @@ return [
     'support' => 'الدعم',
     'helpline' => 'خط المساعدة',
     'courses' => 'الدورات',
-    'about' => 'حول',
+    'about' => 'من نحن',
     'event' => 'حدث',
     'other_page' => 'صفحات أخرى',
     'blog' => 'مدونة',
@@ -28,4 +28,7 @@ return [
     'made_with' => 'صنع ',
     'by' => 'بواسطة',
     'has_themes' => 'Engix',
+    'home'=>'الرئيسية',
+    'categories'=>'الأقسام',
+
 ];

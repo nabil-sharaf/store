@@ -29,4 +29,7 @@ return [
     'made_with' => 'Made with',
     'by' => 'by',
     'has_themes' => 'Engix',
+    'home'=>'Home',
+    'categories'=>'categories',
+
 ];

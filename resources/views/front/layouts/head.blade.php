@@ -8,8 +8,6 @@
 
     <title>الرئيسية</title>
 
-    @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
 
     @if (LaravelLocalization::getCurrentLocale() == 'ar')
 

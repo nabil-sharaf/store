@@ -18,52 +18,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-2">
+                <div class="col-md-3 col-lg-3">
                     <div class="widget-item item-style1">
                         <h4 class="widget-title">{{ __('footer.quick_links') }}</h4>
                         <h4 class="widget-title widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#dividerId-1">{{ __('footer.quick_links') }}</h4>
                         <div id="dividerId-1" class="collapse widget-collapse-body">
                             <nav class="widget-menu-wrap">
                                 <ul class="nav-menu nav item-hover-style">
-                                    <li><a href="index.html">{{ __('footer.support') }}</a></li>
-                                    <li><a href="index.html">{{ __('footer.helpline') }}</a></li>
-                                    <li><a href="index.html">{{ __('footer.courses') }}</a></li>
-                                    <li><a href="about.html">{{ __('footer.about') }}</a></li>
-                                    <li><a href="index.html">{{ __('footer.event') }}</a></li>
+                                    <li><a href="{{route('home.index')}}">{{ __('footer.home') }}</a></li>
+                                    <li><a href="{{route('home.contact')}}">{{ __('footer.support') }}</a></li>
+                                    <li><a href="#">{{ __('footer.about') }}</a></li>
                                 </ul>
                             </nav>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-lg-2">
+                <div class="col-md-4 col-lg-3">
                     <div class="widget-item item-style1">
-                        <h4 class="widget-title">{{ __('footer.other_page') }}</h4>
+                        <h4 class="widget-title">{{ __('footer.categories') }}</h4>
                         <h4 class="widget-title widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#dividerId-2">{{ __('footer.other_page') }}</h4>
                         <div id="dividerId-2" class="collapse widget-collapse-body">
                             <nav class="widget-menu-wrap item-hover-style">
                                 <ul class="nav-menu nav">
-                                    <li><a href="about.html">{{ __('footer.about') }}</a></li>
-                                    <li><a href="blog.html">{{ __('footer.blog') }}</a></li>
-                                    <li><a href="index.html">{{ __('footer.speakers') }}</a></li>
-                                    <li><a href="contact.html">{{ __('footer.contact') }}</a></li>
-                                    <li><a href="index.html">{{ __('footer.tricket') }}</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5 col-lg-2">
-                    <div class="widget-item item-style2">
-                        <h4 class="widget-title">{{ __('footer.company') }}</h4>
-                        <h4 class="widget-title widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#dividerId-3">{{ __('footer.company') }}</h4>
-                        <div id="dividerId-3" class="collapse widget-collapse-body">
-                            <nav class="widget-menu-wrap item-hover-style">
-                                <ul class="nav-menu nav">
-                                    <li><a href="index.html">{{ __('footer.jesco') }}</a></li>
-                                    <li><a href="shop.html">{{ __('footer.shop') }}</a></li>
-                                    <li><a href="contact.html">{{ __('footer.contact_us') }}</a></li>
-                                    <li><a href="login-register.html">{{ __('footer.log_in') }}</a></li>
-                                    <li><a href="index.html">{{ __('footer.help') }}</a></li>
+
+                                    @php $count = 0; @endphp
+                                    @foreach($categories as $category)
+                                        @if($count < 3)
+                                            <li><a href="{{route('category.show',$category->id)}}">{{ $category->name }}</a></li>
+                                            @php $count++; @endphp
+                                        @else
+                                            @break
+                                        @endif
+                                    @endforeach
+
+
                                 </ul>
                             </nav>
                         </div>
@@ -74,7 +62,7 @@
                         <h4 class="widget-title">{{ __('footer.store_information') }}</h4>
                         <h4 class="widget-title widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#dividerId-4">{{ __('footer.store_information') }}</h4>
                         <div id="dividerId-4" class="collapse widget-collapse-body">
-                            <p class="widget-address">{{\App\Models\Admin\Setting::getValue('address')}}</p>
+                            <p class="widget-address">{{\App\Models\Admin\Setting::getValue('email')}}</p>
                             <ul class="widget-contact-info">
                                 <li>{{ __('footer.phone_fax') }}: <a href="#">{{\App\Models\Admin\Setting::getValue('phone')}}</a></li>
                                 <li>{{ __('footer.email') }}: <a href="mailto://{{\App\Models\Admin\Setting::getValue('email')}}">{{\App\Models\Admin\Setting::getValue('email')}}</a></li>

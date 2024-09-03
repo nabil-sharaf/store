@@ -82,12 +82,6 @@ p:last-child {
   outline: none !important;
 }
 
-::-moz-selection {
-  background: #f379a7;
-  color: #fff;
-  text-shadow: none;
-}
-
 ::selection {
   background: #f379a7;
   color: #fff;
@@ -1010,12 +1004,12 @@ table p {
 
 @keyframes dot {
   50% {
-    transform: translateX(96px);
+    transform: translateX(-96px);
   }
 }
 @keyframes dots {
   50% {
-    transform: translateX(-31px);
+    transform: translateX(31px);
   }
 }
 /*-------- Custom Margin Padding Style Css --------*/
@@ -3833,19 +3827,27 @@ table p {
   position: relative;
 }
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .slider-content-area .content .inner-content {
+  -webkit-animation-delay: 0.3s;
   animation-delay: 0.3s;
+  -webkit-animation-name: fadeInUp;
   animation-name: fadeInUp;
 }
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .home-slider-item .thumb-two {
+  -webkit-animation-delay: 0.5s;
   animation-delay: 0.5s;
-  animation-name: fadeInRight;
+  -webkit-animation-name: fadeInLeft;
+  animation-name: fadeInLeft;
 }
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .home-slider-item .thumb-three {
+  -webkit-animation-delay: 0.2s;
   animation-delay: 0.2s;
-  animation-name: fadeInRight;
+  -webkit-animation-name: fadeInLeft;
+  animation-name: fadeInLeft;
 }
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .home-slider-item .thumb-four {
+  -webkit-animation-delay: 0.2s;
   animation-delay: 0.2s;
+  -webkit-animation-name: fadeInLeft;
   animation-name: fadeInLeft;
 }
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-pagination {
@@ -3898,11 +3900,14 @@ table p {
   }
 }
 .home-slider-area.slider-default .home-slider-item .thumb-two {
-  bottom: 24px;
+  transform: rotateY(180deg) !important;
+  bottom: 0px;
   inset-inline-start: calc(50% + 12px);
   position: absolute;
   pointer-events: none;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   z-index: 1;
   transition: 2s;
@@ -3940,7 +3945,9 @@ table p {
   position: absolute;
   pointer-events: none;
   inset-inline-end: -68px;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   transition: 2s;
   -webkit-transition: 2s;
@@ -3958,7 +3965,9 @@ table p {
   inset-inline-start: 129px;
   position: absolute;
   pointer-events: none;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   transition: 2s;
   -webkit-transition: 2s;
@@ -4060,7 +4069,9 @@ table p {
 .home-slider-area.slider-default .slider-content-area .content .inner-content {
   margin-inline-start: -1px;
   position: relative;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   transition: 2s;
   -webkit-transition: 2s;
@@ -4214,8 +4225,11 @@ table p {
   bottom: 0;
   max-width: none;
   position: absolute;
+  -webkit-animation-duration: 1s;
   animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
+  -webkit-animation-name: fadeOut;
   animation-name: fadeOut;
 }
 @media only screen and (max-width: 1199px) {
@@ -8167,6 +8181,7 @@ table p {
   visibility: visible;
 }
 .product-quick-view-modal.active .product-quick-view-inner {
+  -webkit-transform: translate(0, 0);
   transform: translate(0, 0);
 }
 .product-quick-view-modal .canvas-overlay {
@@ -8182,7 +8197,10 @@ table p {
 .product-quick-view-inner {
   margin: 150px auto;
   max-width: 1483px;
+  transition: -webkit-transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  -webkit-transform: translate(0, -25%);
   transform: translate(0, -25%);
   position: relative;
   z-index: 9999;
@@ -8671,7 +8689,7 @@ table p {
   width: 6px;
   height: 6px;
   bottom: 3px;
-  inset-inline-start: 0;
+  inset-inline-end: 0;
 }
 .post-item .content .title {
   font-family: "Rubik", sans-serif;
@@ -9467,4 +9485,6 @@ table p {
     background-color: #535353;
     padding: 22px 22px 20px;
   }
-}/*# sourceMappingURL=style_rtl.css.map */
+}
+
+/*# sourceMappingURL=style_rtl.css.map */
