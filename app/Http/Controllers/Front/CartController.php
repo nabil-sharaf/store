@@ -21,7 +21,7 @@ class CartController extends Controller
             'price' => $product->price,
             'quantity' => 1,
             'attributes' => [
-                        'url' => 'www.google.com',
+                        'url' => 'my-link',
                         'image'=>$product->images->first()->path,
                          ]
         ]);
@@ -75,6 +75,16 @@ class CartController extends Controller
     {
         Cart::clear();
         return redirect()->route('cart.index')->with('success', 'تمت تفريغ العربة بنجاح');
+    }
+
+
+    public function shoppingCartDetails()
+    {
+        $items = Cart::getContent();
+        $totalQuantity = Cart::getTotalQuantity();
+        $totalPrice = Cart::getTotal();
+
+            return view('front.shop-cart',compact(['items','totalPrice','totalQuantity']));
     }
 }
 

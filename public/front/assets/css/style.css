@@ -26,14 +26,13 @@
 body {
   color: #2d2d2d;
   font-size: 1rem;
-  font-family: "cairo", sans-serif;
+  font-family: "Rubik", sans-serif;
   font-weight: 400;
   line-height: 1.875;
   margin: 0;
   overflow-x: hidden;
   -ms-word-wrap: break-word;
   word-wrap: break-word;
-
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -105,10 +104,6 @@ p:last-child {
 
 img {
   max-width: 100%;
-}
-.logo-main {
-    min-width: 120px !important;
-    max-height: 80px;
 }
 
 iframe {
@@ -3522,9 +3517,6 @@ table p {
   width: 100%;
   border-top: 1px dashed #e5e5e5;
   border-bottom: 1px dashed #e5e5e5;
-    direction: rtl; /* لضبط اتجاه النصوص من اليمين إلى اليسار */
-    text-align: right; /* لمحاذاة النصوص إلى اليمين */
-    margin-top: 10px; /* إضافة مسافة أعلى */
 }
 .cart-content .cart-total.cart-total-padding-2 {
   padding: 15px 0;
@@ -3535,10 +3527,9 @@ table p {
   margin: 0;
   font-weight: 500;
   color: #000;
-    display: inline-block; /* لجعل العنوان والنص في نفس السطر */
 }
 .cart-content .cart-total h4 span {
-  font-size: 16px;
+  font-size: 18px;
   color: #f379a7;
   float: right;
   font-weight: 400;
@@ -3975,7 +3966,6 @@ table p {
   }
 }
 @media only screen and (max-width: 479.98px) {
-
   .home-slider-area.slider-default .home-slider-item .shape-bottom {
     height: 60px;
   }
@@ -3994,29 +3984,23 @@ table p {
   -ms-transition: 2s;
   -o-transition: 2s;
 }
-@media only screen and (min-width: 1200px) {
-  .home-slider-area.slider-default .home-slider-item .thumb-two {
-    max-width: 40%;
-  }
-}
 @media only screen and (max-width: 1199px) {
   .home-slider-area.slider-default .home-slider-item .thumb-two {
-    max-width: 40%;
+    width: 53%;
   }
-
 }
 @media only screen and (max-width: 991px) {
   .home-slider-area.slider-default .home-slider-item .thumb-two {
-    max-width: 40%;
+    width: 58%;
   }
 }
 @media only screen and (max-width: 575px) {
   .home-slider-area.slider-default .home-slider-item .thumb-two {
-    /*bottom: 0;*/
+    bottom: 0;
     position: relative;
-    /*padding: 0 0px;*/
-    left: 150px;
-   max-width:50%;
+    padding: 0 30px;
+    left: 0;
+    width: 100%;
   }
 }
 @media only screen and (max-width: 479.98px) {
@@ -4101,28 +4085,28 @@ table p {
 }
 @media (max-width: 1399px) {
   .home-slider-area.slider-default .slider-content-area {
-    max-height: 550px;
+    height: 840px;
   }
 }
 @media only screen and (max-width: 1199px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 550px;
+    height: 680px;
   }
 }
 @media only screen and (max-width: 991px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 450px;
+    height: 620px;
   }
 }
 @media only screen and (max-width: 767px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 450px;
+    height: 520px;
   }
 }
 @media only screen and (max-width: 575px) {
   .home-slider-area.slider-default .slider-content-area {
     height: auto;
-    padding: 50px 0 0;
+    padding: 80px 0 0;
     flex-direction: column;
   }
 }
@@ -9465,7 +9449,6 @@ table p {
     display: none;
   }
 }
-
 .footer-area .widget-title.widget-collapsed-title:before {
   font-family: "FontAwesome";
   font-size: 14px;
@@ -9497,74 +9480,4 @@ table p {
     background-color: #535353;
     padding: 22px 22px 20px;
   }
-}
-
-
-
-    /* changes from me*/
-.toast {
-    background-color: #333 !important; /* تغيير اللون الخلفي */
-    color: #fff !important; /* تغيير لون النص */
-    opacity: 1 !important; /* إزالة الشفافية */
-    border-radius: 4px; /* تعديل حواف الرسالة */
-}
-
-.toast-success {
-    background-color: #4CAF50 !important; /* لون الخلفية للنجاح */
-}
-.toast-error {
-    background-color: #f44336 !important; /* لون الخلفية للخطأ */
-}
-.toast-warning {
-    background-color: #ff9800 !important; /* لون الخلفية للتحذير */
-}
-.toast-info {
-    background-color: #2196F3 !important; /* لون الخلفية للمعلومات */
-}
-
-
- /*cart shopping in header*/
-
-
- .sidebar-cart-modal {
-     direction: rtl !important; /* لتغيير اتجاه العناصر والنصوص من اليمين لليسار */
-     text-align: right; /* لتأكيد محاذاة النصوص إلى اليمين */
- }
-
-.single-product-cart {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px; /* مسافة بين كل منتج */
-}
-
-.cart-img {
-    margin-left: 10px; /* ضبط المسافة بين الصورة وباقي العنصر */
-}
-
-.cart-title {
-    flex-grow: 1;
-    text-align: right; /* تأكيد المحاذاة إلى اليمين للنص */
-    margin-right: 10px;
-}
-
-.cart-delete {
-    margin-left: 5px; /* مسافة بين أيقونة الحذف والعناصر الأخرى */
-}
-
-.cart-total{
-    direction:rtl !important;
-    text-align:right;
-    margin-left:5px;
-}
-
-
-.cart-total span {
-    margin-left: 5px; /* إضافة مسافة بين النص والقيمة */
-}
-
-.cart-total .cart-label {
-    font-size: 18px !important; /* حجم الخط للنص "المجموع" */
-    font-weight: bold !important; /* لتغليظ الخط */
-    color:#1b1b1b!important;
 }

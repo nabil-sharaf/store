@@ -1,5 +1,5 @@
 <!--== Start Product Quick View ==-->
-<aside class="product-quick-view-modal" style="direction: rtl">
+<aside class="product-quick-view-modal">
     <div class="product-quick-view-inner">
         <div class="product-quick-view-content">
             <button type="button" class="btn-close">
@@ -8,14 +8,14 @@
             <div class="row row-gutter-0">
                 <div class="col-lg-6 col-md-6 col-12">
                     <div class="thumb product-images-slider">
-                        <img src="assets/img/shop/quick-view1.jpg" alt="Image">
+                        <img src="assets/img/shop/quick-view1.jpg" alt="{{ __('aside_menu.image_alt') }}">
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-12">
                     <div class="single-product-info">
-                        <h4 class="title product-name">product title</h4>
+                        <h4 class="title product-name">{{ __('aside_menu.product_title') }}</h4>
                         <div class="prices">
-                          <span class="price">$120.59</span>  <span  style="margin-right: 4px;"> ج </span>
+                            <span class="price">$120.59</span>  <span>{{ __('aside_menu.currency_symbol') }}</span>
                         </div>
                         <div class="product-rating">
                             <div class="rating">
@@ -26,39 +26,38 @@
                                 <span class="fa fa-star"></span>
                             </div>
                             <div class="review">
-                                <a href="#">( 5 Customer Review )</a>
+                                <a href="#">({{ __('aside_menu.customer_review_count', ['count' => 5]) }})</a>
                             </div>
                         </div>
                         <div class="single-product-featured">
                             <ul>
-                                <li><i class="fa fa-check"></i> شحن مجاني</li>
-                                <li><i class="fa fa-check"></i> دعم 24 ساعة</li>
-                                <li><i class="fa fa-check"></i> استرجاع خلال 14 يوم</li>
+                                <li><i class="fa fa-check"></i> {{ __('aside_menu.free_shipping') }}</li>
+                                <li><i class="fa fa-check"></i> {{ __('aside_menu.support_247') }}</li>
+                                <li><i class="fa fa-check"></i> {{ __('aside_menu.money_return') }}</li>
                             </ul>
                         </div>
-                        <p class="product-desc">Lorem ipsum dolor sit amet, consect adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quisll exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duisol aute irure dolor in reprehenderit.</p>
+                        <p class="product-desc">{{ __('aside_menu.product_description') }}</p>
                         <div class="quick-product-action">
                             <div class="action-top">
                                 <div class="pro-qty">
-                                    <input type="text" id="quantity" title="Quantity" value="01" />
+                                    <input type="text" id="quantity" title="{{ __('aside_menu.quantity') }}" value="01" />
                                 </div>
-                                <button class="btn btn-theme font-weight-bold">أضف للسلة</button>
-                                <a class="btn-wishlist" href="shop-wishlist.html">Add to Wishlist</a>
+                                <button class="btn btn-theme font-weight-bold">{{ __('aside_menu.add_to_cart') }}</button>
+                                <a class="btn-wishlist" href="shop-wishlist.html">{{ __('aside_menu.add_to_wishlist') }}</a>
                             </div>
                         </div>
 
                         <div class="widget">
-                            <h3 class="title ">الأقسام:</h3>
+                            <h3 class="title">{{ __('aside_menu.categories') }}:</h3>
                             <div class="widget-tags product-categories">
-                                <a href="blog.html">Toys.</a>
+                                <a href="blog.html">{{ __('aside_menu.toys') }}</a>
                             </div>
                         </div>
 
-                        <div class="widget" style="direction: rtl">
-                            <h3 class="title">:</h3>
+                        <div class="widget">
+                            <h3 class="title">{{ __('aside_menu.share') }}:</h3>
                             <div class="widget-tags widget-share">
                                 <span class="fa fa-facebook"></span>
-                                <span class="fa fa-dribbble"></span>
                                 <span class="fa fa-pinterest-p"></span>
                                 <span class="fa fa-twitter"></span>
                                 <span class="fa fa-linkedin"></span>
@@ -78,30 +77,29 @@
     <div class="search-box-content-inner">
         <div class="search-box-form-wrap">
             <div class="search-note">
-                <p>Start typing and press Enter to search</p>
+                <p>{{ __('aside_menu.start_typing_press_enter') }}</p>
             </div>
             <form action="#" method="post">
                 <div class="search-form position-relative">
-                    <label for="search-input" class="sr-only">Search</label>
-                    <input type="search" class="form-control" placeholder="Search" id="search-input">
+                    <label for="search-input" class="sr-only">{{ __('aside_menu.search') }}</label>
+                    <input type="search" class="form-control" placeholder="{{ __('aside_menu.search') }}" id="search-input">
                     <button class="search-button"><i class="pe-7s-search"></i></button>
                 </div>
             </form>
         </div>
     </div>
-    <!--== End Aside Search Menu ==-->
     <a href="javascript:;" class="search-close"><i class="pe-7s-close"></i></a>
 </div>
 <!--== End Aside Search Menu ==-->
 
 <!--== Start Sidebar Cart Menu ==-->
-<aside class="sidebar-cart-modal" >
+<aside class="sidebar-cart-modal">
     <div class="sidebar-cart-inner">
         <div class="sidebar-cart-content">
             <a class="cart-close" href="javascript:void(0);"><i class="pe-7s-close"></i></a>
             <div class="sidebar-cart-all">
                 <div class="cart-header">
-                    <h3 style="margin-right: 40px; font-weight: bold">سلة المشتريات</h3>
+                    <h3>{{ __('aside_menu.shopping_cart') }}</h3>
                     <div class="close-style-wrap">
                         <span class="close-style close-style-width-1 cart-close"></span>
                     </div>
@@ -111,11 +109,11 @@
                         <!-- العناصر سيتم إضافتها ديناميكيًا بواسطة JavaScript -->
                     </ul>
                     <div class="cart-total">
-                        <h4> <span class="cart-label">المجموع : </span>  <span id="cart-total-price"> 0.00 ج</span> </h4>
+                        <h4>{{ __('aside_menu.total') }}: <span id="cart-total-price">$278.90</span></h4>
                     </div>
                     <div class="cart-checkout-btn">
-                        <a class="cart-btn" href="shop-cart.html">عرض السلة</a>
-                        <a class="checkout-btn" href="shop-checkout.html">الدفع</a>
+                        <a class="cart-btn" href="{{ route('home.shop-cart') }}">{{ __('aside_menu.view_cart') }}</a>
+                        <a class="checkout-btn" href="{{ route('checkout.index') }}">{{ __('aside_menu.checkout') }}</a>
                     </div>
                 </div>
             </div>
@@ -152,4 +150,3 @@
     </div>
 </aside>
 <!--== End Side Menu ==-->
-</div>

@@ -1,11 +1,18 @@
 <?php
 
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\CategoryController;
+use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\homeController;
+use App\Http\Controllers\Front\ProductController;
 use App\Http\Controllers\Front\WishlistController;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+
+Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
 
 Route::get('/', [HomeController::class,'index'])->name('home.index');
 Route::get('/contact', [HomeController::class,'contact'])->name('home.contact');
@@ -20,7 +27,16 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::get('/cart/details', [CartController::class, 'getCartDetails'])->name('cart.details');
+
+Route::get('/cart/shop-cart',[CartController::class,'shoppingCartDetails'])->name('home.shop-cart');
 //---------------------------------------------------------------------------------
+
+//-----------------------------------checkout Routes-----------------------------------------
+
+Route::get('/shop/checkout',[CheckoutController::class,'index'])->name('checkout.index');
+
+//-------------------------------------------------------------------------------------------
+
 Route::get('/dashboard', function () {
     return view('front/dashboard');
 })->middleware(['auth','verified'])->name('dashboard');
@@ -37,6 +53,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });
 
+//    ------------------------------------ Products Routes ------------------------
 
-require __DIR__.'/admin.php';
+    Route::get('/categories/{category}', [CategoryController::class, 'categoryProducts'])->name('category.show');
+    Route::get('/products/{product}', [ProductController::class, 'showProduct'])->name('product.show');
+    Route::get('/search', [ProductController::class, 'search'])->name('product.search');
+
+
+});
+
+;require __DIR__.'/admin.php';
 require __DIR__.'/auth.php';

@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
  *                  Start Users Auth Routes
  *---------------------------------------------------------
  */
+Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
+
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');
@@ -72,15 +74,15 @@ Route::middleware('auth')->group(function () {
 Route::prefix('admin')->name('admin.')->
    namespace('App\Http\Controllers\Auth\Admin')->
    middleware('guest.admin')->group(function () {
-    
+
     Route::get('register', [Admin\RegisteredAdminController::class, 'create'])
                 ->name('register');
     Route::post('register', [Admin\RegisteredAdminController::class, 'store']);
 
     Route::get('/login', [Admin\AdminAuthController::class, 'showLoginForm'])->name('login');
-    
+
     Route::post('/login', [Admin\AdminAuthController::class, 'login'])->name('login.submit');
-    
+
     Route::get('forgot-password', [Admin\PasswordResetLinkController::class, 'create'])
                 ->name('password.request');
 
@@ -92,13 +94,14 @@ Route::prefix('admin')->name('admin.')->
 
     Route::post('reset-password', [Admin\NewPasswordController::class, 'store'])
                 ->name('password.store');
-   
+
 
 });
 
 Route::prefix('admin')->name('admin.')->
   middleware('admin')->group(function () {
-      
+
     Route::post('logout', [Admin\AdminAuthController::class, 'logout'])
                 ->name('logout');
+});
 });

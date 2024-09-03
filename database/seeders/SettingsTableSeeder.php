@@ -45,6 +45,23 @@ class SettingsTableSeeder extends Seeder
                 'description' => 'من نحن '
             ],
             [
+                'setting_key' => 'facebook',
+                'setting_value' => 'https://www.facebook.com',
+                'setting_type' => 'text',
+                'description' => 'facebook'
+            ],
+            [
+                'setting_key' => 'twitter',
+                'setting_value' => 'https://www.twitter.com',
+                'setting_type' => 'text',
+                'description' => 'twitter'
+            ],            [
+                'setting_key' => 'insta',
+                'setting_value' => 'https://www.instagram.com/',
+                'setting_type' => 'text',
+                'description' => 'instagram'
+            ],
+            [
                 'setting_key' => 'Maintenance_mode',
                 'setting_value' => 0,
                 'setting_type' => 'integer',

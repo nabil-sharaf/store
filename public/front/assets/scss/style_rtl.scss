@@ -1,0 +1,41 @@
+﻿// Table of contents
+@import "tableofcontent";
+
+// Base
+@import "rtl/common/variables";
+@import "rtl/common/mixins";
+@import "rtl/common/rfs";
+
+// Typography
+@import "rtl/common/typography";
+
+// Common Styles
+@import "rtl/kidol/common";
+@import "rtl/kidol/navbar";
+
+// Header
+@import "rtl/header/header";
+
+// Banner Styles
+@import "rtl/kidol/banner";
+
+// Components
+@import "rtl/kidol/about";
+@import "rtl/kidol/team";
+@import "rtl/kidol/testimonial";
+@import "rtl/kidol/brand-logo";
+@import "rtl/kidol/divider";
+@import "rtl/kidol/featured";
+@import "rtl/kidol/form";
+@import "rtl/kidol/shop";
+
+
+
+// Blog
+@import "rtl/kidol/blog";
+
+// Contact
+@import "rtl/kidol/contact";
+
+// Footer
+@import "rtl/footer/footer";

@@ -7,8 +7,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-12 m-auto">
                     <div class="page-title-content text-center">
-                        مرحبا بك سجل دخولك الشخصي
-                        او انشئ حسابك الجديد وتمتع بكل مزايا عملائنا
+                        {{ __('auth.welcome_message') }}
                     </div>
                 </div>
             </div>
@@ -16,7 +15,7 @@
     </section>
     <!--== End Page Title Area ==-->
 
-    {{--register Form--}}
+    {{-- Register Form --}}
     <div id="register-form" style="display: none;">
         <section class="login-register-area">
             <div class="container">
@@ -26,41 +25,47 @@
                         <div class="login-register-content login-register-pl" style="direction: rtl;">
                             <div class="login-register-style">
                                 <div class="login-register-title mb-30">
-                                    <h2>تسجيل حساب جديد</h2>
-                                    <p>ليس لديك حساب سجل الان وتمتع بكل مزايا وخصومات العملاء المميزين</p>
+                                    <h2>{{ __('auth.register_title') }}</h2>
+                                    <p>{{ __('auth.register_description') }}</p>
                                 </div>
                                 <form action="{{ route('register') }}" method="post">
                                     @csrf
                                     <div class="login-register-input">
-                                        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="اسم المستخدم"/>
+                                        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="{{ __('auth.username_placeholder') }}"/>
                                         @error('name', 'registerErrors')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="login-register-input">
-                                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="البريد الالكتروني"/>
+                                        <input id="phone" type="text" name="phone" value="{{ old('phone') }}" required autocomplete="phone" placeholder="{{ __('auth.phone_placeholder') }}"/>
+                                        @error('phone', 'registerErrors')
+                                        <div style="color: red; font-size: 12px;">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="login-register-input">
+                                        <input id="email" type="text" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="{{ __('auth.email_placeholder') }}"/>
                                         @error('email', 'registerErrors')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="login-register-input">
-                                        <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="كلمة السر"/>
+                                        <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="{{ __('auth.password_placeholder') }}"/>
                                         @error('password', 'registerErrors')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="login-register-input">
-                                        <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="تأكيد كلمة السر"/>
+                                        <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="{{ __('auth.confirm_password_placeholder') }}"/>
                                         @error('password_confirmation', 'registerErrors')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="btn-style-3">
-                                        <button class="btn" type="submit"><strong>تسجيل</strong></button>
+                                        <button class="btn" type="submit"><strong>{{ __('auth.register_button') }}</strong></button>
                                     </div>
                                 </form>
                                 <div class="text-center mt-3">
-                                    <a href="#" id="show-login" class="btn btn-link">لديك حساب بالفعل؟ سجل الدخول</a>
+                                    <a href="#" id="show-login" class="btn btn-link">{{ __('auth.login_link') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -70,8 +75,7 @@
         </section>
     </div>
 
-
-    {{--    login form--}}
+    {{-- Login form --}}
     <div id="login-form">
         <section class="login-register-area">
             <div class="container">
@@ -81,33 +85,33 @@
                         <div class="login-register-content">
                             <div class="login-register-style login-register-pr" style="direction: rtl;">
                                 <div class="login-register-title mb-30">
-                                    مرحبا بعودتك مرة أخرى
-                                    <a href="#" id="show-register" class="btn btn-link">ليس لديك حساب؟ سجل الآن</a>
-                                    <h2 class=""><strong>تسجيل الدخول</strong></h2>
+                                    {{ __('auth.login_welcome') }}
+                                    <a href="#" id="show-register" class="btn btn-link">{{ __('auth.no_account') }}</a>
+                                    <h2 class=""><strong>{{ __('auth.login_button') }}</strong></h2>
                                 </div>
                                 <form id="login-form" action="{{ route('login') }}" method="post">
                                     @csrf
                                     <div class="login-register-input">
-                                        <input type="text" name="email" value="{{ old('email') }}" placeholder="البريد الالكتروني">
-                                        @error('email', 'loginErrors')
+                                        <input type="text" name="phone" value="{{ old('phone') }}" placeholder="{{ __('auth.phone_placeholder') }}">
+                                        @error('phone')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="login-register-input">
-                                        <input type="password" name="password" placeholder="كلمة المرور">
-                                        @error('password', 'loginErrors')
+                                        <input type="password" name="password" placeholder="{{ __('auth.password_placeholder') }}">
+                                        @error('password')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="remember-me-btn">
                                         <input type="checkbox" name="remember">
-                                        <label>&nbsp;&nbsp;تذكرني &nbsp;</label>
+                                        <label>&nbsp;&nbsp;{{ __('auth.remember_me') }} &nbsp;</label>
                                     </div>
                                     <div class="forgot">
-                                        <a href="#">! forget password</a>
+                                        <a href="#">{{ __('auth.forgot_password') }}</a>
                                     </div>
                                     <div class="btn-style-3">
-                                        <button class="btn" type="submit"><strong>تسجيل دخول</strong></button>
+                                        <button class="btn" type="submit"><strong>{{ __('auth.login_button') }}</strong></button>
                                     </div>
                                 </form>
                             </div>
@@ -118,8 +122,8 @@
         </section>
     </div>
 
-
 @endsection
+
 
 @push('scripts')
     <script>
@@ -140,4 +144,3 @@
         });
     </script>
 @endpush
-

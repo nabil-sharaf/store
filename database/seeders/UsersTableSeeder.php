@@ -20,17 +20,15 @@ class UsersTableSeeder extends Seeder
 
         User::create([
             'name' => 'alaa',
-            'email' => 'user@gmail.com',
+            'phone' => '012345678910',
             'password' => bcrypt('12345678'),
-            'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ]);
 
         User::create([
             'name' => ' mohammed',
-            'email' => 'mmm@gmail.com',
+            'phone' => '01012345678',
             'password' => bcrypt('12345678'),
-            'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ]);
     }

@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'phone' => ['required', 'string', 'regex:/^(01)[0-9]{9}$/'], // تحقق من أن الجوال يبدأ بـ 01 ومكون من 11 رقمًا
             'password' => ['required', 'string'],
         ];
     }
@@ -41,12 +41,12 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('phone', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => 'غير موجود لدينا تأكد من الايميل وكلمة المرور',
-            ])->errorBag('loginErrors');
+                'phone' => 'غير موجود لدينا تأكد من رقم الموبايل وكلمة المرور',
+            ]);
         }
 
         RateLimiter::clear($this->throttleKey());
@@ -68,7 +68,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'phone' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -80,6 +80,21 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('phone')).'|'.$this->ip());
+    }
+
+    public function messages(): array
+    {
+        return [
+            'phone.required' => 'حقل الموبايل مطلوب.',
+            'phone.regex' => 'تأكد من  الرقم الذي ادخلته صحيح',
+            'password.required' => 'حقل كلمة المرور مطلوب.',
+        ];
+    }
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        // إعادة التوجيه مع الأخطاء باستخدام اسم المجموعة المحدد 'registerErrors'
+        throw new \Illuminate\Validation\ValidationException($validator, redirect()->route('login')->withErrors($validator)->withInput());
     }
 }

@@ -1,0 +1,36 @@
+
+.my-header-dropdown-item {
+    color: #333;
+    padding: 5px 4px; /* تقليل الحشو بين النص وجوانب القائمة */
+    text-decoration: none;
+    font-size: 14px; /* تحسين حجم الخط إذا لزم الأمر */
+}
+
+.header-info-left div.lang-dropdown-link{
+    margin-bottom: -8px !important;
+    margin-right:15px;
+    margin-left:15px
+}
+
+.header-info-left div.lang-dropdown-link a{
+    color:#404041;
+    font-size: 13px;
+}
+.header-info-left div.lang-dropdown-link a i{
+    color:#6c757d;
+}
+
+.header-info-left .dropdown-toggle::after {
+    font-size: 13px; /* تغيير حجم السهم حسب الحاجة */
+    margin-left: 2px; /* ضبط المسافة بين السهم والنص */
+    color: #333; /* تغيير لون السهم إذا لزم الأمر */
+}
+
+.header-info-left div.lang-dropdown-link a .fa-globe{
+    font-size: 12px;
+
+}
+
+.product-item .product-thumb img {
+    /*height:200px !important;*/
+}

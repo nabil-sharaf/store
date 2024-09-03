@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name','email','password','customer_type','vip_start_dae','vip_end_date','discount',
+        'name','phone','email','password','customer_type','vip_start_dae','vip_end_date','discount',
     ];
 
     /**
@@ -37,7 +37,6 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'vip_start_date'=>'datetime',
             'vip_end_date'=>'datetime',
@@ -57,6 +56,6 @@ class User extends Authenticatable
         return 0;
     }
 
-    
+
 
 }

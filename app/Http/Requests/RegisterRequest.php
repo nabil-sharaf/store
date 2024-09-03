@@ -23,7 +23,8 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email'=>['nullable','unique:users,email'],
+            'phone' => ['required','unique:users,phone', 'string', 'regex:/^(01)[0-9]{9}$/'], // تحقق من أن الجوال يبدأ بـ 01 ومكون من 11 رقمًا
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
@@ -37,9 +38,10 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name.required' => 'حقل الاسم مطلوب.',
-            'email.required' => 'حقل البريد الإلكتروني مطلوب.',
-            'email.email' => 'يجب أن يكون البريد الإلكتروني صالحاً.',
-            'email.unique' => 'هذا البريد الإلكتروني مسجل مسبقاً.',
+            'phone.required' => 'حقل الموبايل مطلوب.',
+            'phone.regex' => 'يجب أن يكون رقم الموبايل 11 رقم ويبدأ ب 01 =',
+            'phone.unique' => 'هذا الرقم مسجل مسبقاً.',
+            'email.unique' => 'البريد الالكتروني مسجل مسبقاً.',
             'password.required' => 'حقل كلمة المرور مطلوب.',
             'password.min' => 'يجب أن تكون كلمة المرور على الأقل 8 أحرف.',
             'password.confirmed' => 'تأكيد كلمة المرور لا يتطابق.',
@@ -51,6 +53,6 @@ class RegisterRequest extends FormRequest
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         // إعادة التوجيه مع الأخطاء باستخدام اسم المجموعة المحدد 'registerErrors'
-        throw new \Illuminate\Validation\ValidationException($validator, redirect()->back()->withErrors($validator, 'registerErrors')->withInput());
+        throw new \Illuminate\Validation\ValidationException($validator, redirect()->route('register')->withErrors($validator, 'registerErrors')->withInput());
     }
 }

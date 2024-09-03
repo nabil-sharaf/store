@@ -63,11 +63,7 @@
         });
 
         updateCartDetails();
-
     });
-
-
-
 
     // عرض مودال تفاصيل البروداكت
     function showProductDetails(element) {
@@ -75,14 +71,13 @@
         var categoriesContainer = $('.product-quick-view-modal .product-categories');
         var sliderContainer = $('.product-images-slider');
 
-// استدعاء AJAX للحصول على تفاصيل المنتج
+        // استدعاء AJAX للحصول على تفاصيل المنتج
         $.ajax({
             url: 'product/details/'+productId, // المسار للوصول إلى تفاصيل المنتج
             method: 'GET',
             success: function (response) {
-
                 $('.product-quick-view-modal .product-name').text(response.name);
-                $('.product-quick-view-modal .price').text (response.price);
+                $('.product-quick-view-modal .price').text(response.price);
                 $('.product-quick-view-modal .product-desc').text(response.description);
 
                 categoriesContainer.empty();
@@ -92,10 +87,8 @@
 
                 sliderContainer.empty();
                 response.images.forEach(function(image){
-
                     sliderContainer.append(`<div class="swiper-slide"><img src="{{asset('storage/')}}/${image.path}" alt="Product Image" /></div>`);
                 });
-
 
                 $('.product-quick-view-modal').show();
             },
@@ -103,11 +96,11 @@
                 console.log('Error fetching product details:', error);
             }
         });
-    }    // عرض مودال تفاصيل البروداكت
+    }
 
-   // اضافة المنتجات للويش ليست
-    function wishListAdd(event,element) {
-    event.preventDefault();
+    // إضافة المنتجات للويش ليست
+    function wishListAdd(event, element) {
+        event.preventDefault();
 
         var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
 
@@ -118,44 +111,39 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-                if(response.message){
-
-                toastr.success(response.message);
+                if(response.message) {
+                    toastr.success(response.message);
                 }
-
-                if(response.err){
-
-                toastr.error(response.err);
+                if(response.err) {
+                    toastr.error(response.err);
                 }
-
             },
             error: function(xhr) {
                 if (xhr.status === 401) {
-                    toastr.warning('يرجى تسجيل الدخول لإضافة منتجاتك الى قائمة الأمنيات');
+                    toastr.warning('{{ __('scripts.login_required') }}');
                 } else {
-                    toastr.error('حدث خطأ، يرجى المحاولة مرة أخرى.', 'خطأ');
+                    toastr.error('{{ __('scripts.error') }}', 'خطأ');
                 }
             }
         });
     }
 
     function wishListMessage(event) {
-    // عرض رسالة اذا لم يكن المستخدم مسجل دخول
-
+        // عرض رسالة اذا لم يكن المستخدم مسجل دخول
         // منع إعادة توجيه الرابط
         event.preventDefault();
 
         // عرض رسالة باستخدام Toastr
-        toastr.warning('سجل معنا لتتمكن من اضافة منتجاتك إلى قائمة قائمة الأمنيات');
+        toastr.warning('{{ __('scripts.wishlist_message') }}');
     }
 
-// ------------------------------ Shopping Cart--------------------------------
+    // ------------------------------ Shopping Cart--------------------------------
 
     // إضافة منتج إلى السلة
-   function addToCart(event,productId) {
-      event.preventDefault();
+    function addToCart(event, productId) {
+        event.preventDefault();
 
-       $.ajax({
+        $.ajax({
             url: '{{ route("cart.add") }}',
             type: 'POST',
             data: {
@@ -163,13 +151,12 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-               toastr.success(response.message);
-
+                toastr.success('{{ __('scripts.cart_update_success') }}');
                 // تحديث تفاصيل السلة بعد إضافة المنتج
                 updateCartDetails();
             },
             error: function(error) {
-                console.log(error);
+                toastr.error('{{ __('scripts.cart_update_error') }}');
             }
         });
     }
@@ -181,7 +168,7 @@
             success: function(response) {
                 // تحديث عدد المنتجات والإجمالي في الواجهة
                 $('#cart-total-quantity').text(response.totalQuantity);
-                $('#cart-total-price').text(response.totalPrice.toFixed(2) + ' ج ');
+                $('#cart-total-price').text(response.totalPrice.toFixed(2) + ' {{ __('scripts.currency_symbol') }} ');
 
                 // إذا كانت items كائنًا، قم بالتكرار على خصائصه
                 var itemsList = $('#cart-items-list');
@@ -193,13 +180,13 @@
                         var url = item.attributes.url;
                         var image = item.attributes.image;
                         itemsList.append(`
-                        <li class="single-product-cart"">
+                        <li class="single-product-cart">
                             <div class="cart-img">
                                 <a href="${url}"><img src="{{asset('storage')}}/${image}" alt=""></a>
                             </div>
                             <div class="cart-title">
                                 <h4><a href="${url}">${item.name}</a></h4>
-                                <span>${item.quantity} × <span class="price">${item.price.toFixed(2)} ج</span></span>
+                                <span>${item.quantity} × <span class="price">${item.price.toFixed(2)}  {{ __('scripts.currency_symbol') }} </span></span>
                             </div>
                             <div class="cart-delete">
                                 <a href="javascript:void(0);" data-id="${item.id}" onclick="removeFromCart(${item.id})" class="remove-item"><i class="pe-7s-trash icons"></i></a>
@@ -210,16 +197,13 @@
                 }
             },
             error: function(error) {
-                toastr.error('Failed to fetch cart details.');
+                toastr.error('{{ __('scripts.cart_details_error') }}');
             }
         });
     }
 
-
-
-
     // تحديث كمية المنتج في السلة
-   function updateCart(productId, quantity) {
+    function updateCart(productId, quantity) {
         $.ajax({
             url: '{{ route("cart.update") }}',
             type: 'POST',
@@ -229,17 +213,17 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-                alert(response.message);
+                toastr.success('{{ __('scripts.cart_update_success') }}');
                 getCartDetails();
             },
             error: function(error) {
-                alert('Failed to update cart.');
+                toastr.error('{{ __('scripts.cart_update_error') }}');
             }
         });
     }
 
     // حذف منتج من السلة
-   function removeFromCart(productId) {
+    function removeFromCart(productId) {
         $.ajax({
             url: '{{ route("cart.remove") }}',
             type: 'POST',
@@ -248,32 +232,17 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
+                toastr.success('{{ __('scripts.cart_remove_success') }}');
                 updateCartDetails();
             },
             error: function(error) {
-                console.log('Failed to remove product from cart.');
+                toastr.error('{{ __('scripts.cart_remove_error') }}');
             }
         });
     }
 
-    // الحصول على تفاصيل السلة وتحديث الواجهة
-   {{--function getCartDetails() {--}}
-   {{--     $.ajax({--}}
-   {{--         url: '{{ route("cart.details") }}',--}}
-   {{--         type: 'GET',--}}
-   {{--         success: function(response) {--}}
-   {{--             // تحديث عدد المنتجات والإجمالي في الواجهة--}}
-   {{--             $('#cart-total-quantity').text(response.totalQuantity);--}}
-   {{--             $('#cart-total-price').text(response.totalPrice.toFixed(2) + ' $');--}}
-   {{--         },--}}
-   {{--         error: function(error) {--}}
-   {{--             alert('Failed to fetch cart details.');--}}
-   {{--         }--}}
-   {{--     });--}}
-   {{-- }--}}
 
-
-// ------------------------------- Toastr options -------------------------------
+    // ------------------------------- Toastr options -------------------------------
 
 
     toastr.options = {
