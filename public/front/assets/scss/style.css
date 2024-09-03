@@ -3995,7 +3995,7 @@ table p {
 }
 @media (max-width: 1399px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 840px;
+    height: 770px !important;
   }
 }
 @media only screen and (max-width: 1199px) {

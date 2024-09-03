@@ -34,3 +34,9 @@
 .product-item .product-thumb img {
     /*height:200px !important;*/
 }
+
+@media (max-width: 1399px) {
+    .home-slider-area.slider-default .slider-content-area {
+        height: 840px;
+    }
+}

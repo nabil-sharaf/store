@@ -3901,7 +3901,7 @@ table p {
 }
 .home-slider-area.slider-default .home-slider-item .thumb-two {
   transform: rotateY(180deg) !important;
-  bottom: 0px;
+  bottom: 0;
   inset-inline-start: calc(50% + 12px);
   position: absolute;
   pointer-events: none;
@@ -4021,7 +4021,7 @@ table p {
 }
 @media (max-width: 1399px) {
   .home-slider-area.slider-default .slider-content-area {
-    height: 840px;
+    height: 770px !important;
   }
 }
 @media only screen and (max-width: 1199px) {
