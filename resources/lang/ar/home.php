@@ -8,7 +8,7 @@ return[
     'products' => 'المنتجات',
     'products_description' => 'اطلع على أحدث وأفضل منتجاتنا.',
     'all_products' => 'جميع المنتجات',
-    'newly_added' => 'الأحدث إضافة',
+    'newly_added' => 'المضاف حديثا',
     'best_sellers' => 'الأكثر مبيعًا',
     'currency'      =>' ج '
 ];

@@ -41,8 +41,11 @@
                             <nav class="widget-menu-wrap item-hover-style">
                                 <ul class="nav-menu nav">
 
-                                    @php $count = 0; @endphp
-                                    @foreach($categories as $category)
+                                    @php
+                                        $count = 0;
+                                    $categories3 =\app\Models\Admin\Category::all();
+                                    @endphp
+                                    @foreach($categories3 as $category)
                                         @if($count < 3)
                                             <li><a href="{{route('category.show',$category->id)}}">{{ $category->name }}</a></li>
                                             @php $count++; @endphp
@@ -62,7 +65,7 @@
                         <h4 class="widget-title">{{ __('footer.store_information') }}</h4>
                         <h4 class="widget-title widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#dividerId-4">{{ __('footer.store_information') }}</h4>
                         <div id="dividerId-4" class="collapse widget-collapse-body">
-                            <p class="widget-address">{{\App\Models\Admin\Setting::getValue('email')}}</p>
+                            <p class="widget-address">{{\App\Models\Admin\Setting::getValue('address')}}</p>
                             <ul class="widget-contact-info">
                                 <li>{{ __('footer.phone_fax') }}: <a href="#">{{\App\Models\Admin\Setting::getValue('phone')}}</a></li>
                                 <li>{{ __('footer.email') }}: <a href="mailto://{{\App\Models\Admin\Setting::getValue('email')}}">{{\App\Models\Admin\Setting::getValue('email')}}</a></li>

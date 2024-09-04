@@ -112,7 +112,7 @@
                                 <div class="header-action-area">
                                     <div class="header-action-wishlist">
                                         @if(auth()->check())
-                                            <button class="btn-wishlist" onclick="window.location.href= {{route('wishlist.index')}} " title="{{ __('main_header.wishlist') }}">
+                                            <button class="btn-wishlist" onclick="window.location.href= '{{route('wishlist.index')}}' " title="{{ __('main_header.wishlist') }}">
                                                 <i class="pe-7s-like"></i>
                                             </button>
                                         @else
@@ -123,7 +123,7 @@
                                     </div>
                                     <div class="header-action-cart">
                                         <button class="btn-cart cart-icon">
-                                            <span class="cart-count">01</span>
+{{--                                            <span class="cart-count">01</span>--}}
                                             <i class="pe-7s-shopbag"></i>
                                         </button>
                                     </div>
@@ -152,7 +152,7 @@
                         <div class="header-navigation-area d-none d-md-block">
                             <ul class="main-menu nav position-relative">
                                 <li><a class="ml--2" href="{{route('home.index')}}">{{ __('main_header.home') }}</a></li>
-                                <li><a href="">{{ __('main_header.about') }}</a></li>
+                                <li><a href="{{route('home.about')}}">{{ __('main_header.about') }}</a></li>
                                 <li class="has-submenu"><a href="">{{ __('main_header.categories') }}</a>
                                     <ul class="submenu-nav">
                                         <?php $categories = \App\Models\Admin\Category::all();?>
@@ -199,7 +199,7 @@
                             </div>
                             <div class="header-action-cart">
                                 <button class="btn-cart cart-icon">
-                                    <span class="cart-count">01</span>
+{{--                                    <span class="cart-count">01</span>--}}
                                     <i class="pe-7s-shopbag"></i>
                                 </button>
                             </div>

@@ -1,4 +1,5 @@
 @extends('front.layouts.app')
+@section('title','صفحة البحث')
 @section('content')
     <!--== Start Page Title Area ==-->
     <section class="page-title-area">

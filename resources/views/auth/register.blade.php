@@ -43,7 +43,7 @@
                                         @enderror
                                     </div>
                                     <div class="login-register-input">
-                                        <input id="email" type="text" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="{{ __('auth.email_placeholder') }}"/>
+                                        <input id="email" type="text" name="email" value="{{ old('email') }}"  autocomplete="email" placeholder="{{ __('auth.email_placeholder') }}"/>
                                         @error('email', 'registerErrors')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror

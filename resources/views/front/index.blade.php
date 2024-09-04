@@ -1,4 +1,5 @@
 @extends('front.layouts.app')
+@section('title','الرئيسية')
 @section('content')
 
     <!--== Start Hero Area Wrapper ==-->
@@ -38,54 +39,7 @@
     <!--== End Hero Area Wrapper ==-->
 
     <!--== Start Category Area Wrapper ==-->
-    <section class="category-area product-category1-area" data-aos="fade-up" data-aos-duration="1000">
-        <div class="container">
-            <div class="row category-items1">
-                <div class="col-sm-6 col-md-4">
-                    <div class="category-item">
-                        <div class="thumb thumb-style1">
-                            <img src="{{asset('front/assets/img/category/1.png')}}" alt="Image">
-                            <div class="content">
-                                <div class="contact-info">
-                                    <h2 class="title">Tedy</h2>
-                                    <h4 class="price"> 30 {{ __('home.currency') }}</h4>
-                                </div>
-                                <a class="btn-link" href="shop.html">{{ __('home.shop_now') }}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-4">
-                    <div class="category-item mt-xs-25">
-                        <div class="thumb thumb-style2">
-                            <img src="{{asset('front/assets/img/category/2.png')}}" alt="Image">
-                            <div class="content">
-                                <div class="contact-info">
-                                    <h2 class="title">Baby Toys</h2>
-                                    <h4 class="price"> 200 {{ __('home.currency') }}
-                                </div>
-                                <a class="btn-link" href="shop.html">{{ __('home.shop_now') }}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-4">
-                    <div class="category-item mt-sm-25">
-                        <div class="thumb thumb-style3">
-                            <img src="{{asset('front/assets/img/category/3.png')}}" alt="Image">
-                            <div class="content">
-                                <div class="contact-info">
-                                    <h2 class="title">Dress</h2>
-                                    <h4 class="price"> 150 {{ __('home.currency') }}
-                                </div>
-                                <a class="btn-link" href="shop.html">{{ __('home.shop_now') }}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
     <!--== End Category Area Wrapper ==-->
 
     <!--== Start Product Tab Area Wrapper ==-->
@@ -101,7 +55,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="direction: rtl">
+            <div class="row"">
                 <div class="col-md-12">
                     <div class="product-tab-content">
                         <ul class="nav nav-tabs" id="myTab" role="tablist" data-aos="fade-up" data-aos-duration="1000">

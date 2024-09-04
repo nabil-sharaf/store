@@ -1,5 +1,5 @@
 @extends('front.layouts.app')
-@section('content')
+@section('content','تفاصيل المنج')
     <!--== Start Page Title Area ==-->
     <section class="page-title-area">
         <div class="container">

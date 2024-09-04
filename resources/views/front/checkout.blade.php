@@ -1,4 +1,5 @@
 @extends('front.layouts.app')
+@section('title','اتمام الطلب')
 
 @section('content')
 

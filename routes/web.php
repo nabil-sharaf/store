@@ -16,6 +16,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
 
 Route::get('/', [HomeController::class,'index'])->name('home.index');
 Route::get('/contact', [HomeController::class,'contact'])->name('home.contact');
+Route::get('/about', [HomeController::class,'aboutUs'])->name('home.about');
 Route::get('/product/details/{id}', [HomeController::class, 'productDetails'])->name('product.details');
 
 
@@ -60,7 +61,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/search', [ProductController::class, 'search'])->name('product.search');
 
 
+
+
 });
 
-;require __DIR__.'/admin.php';
+require __DIR__.'/admin.php';
 require __DIR__.'/auth.php';

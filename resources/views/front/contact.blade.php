@@ -1,4 +1,5 @@
 @extends('front.layouts.app')
+@section('title',' اتصل بنا')
 @section('content')
 
     <!--== Start Page Title Area ==-->

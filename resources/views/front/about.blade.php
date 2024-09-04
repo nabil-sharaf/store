@@ -1,0 +1,162 @@
+@extends('front.layouts.app')
+@section('title','من نحن')
+@section('content')
+
+    <!--== Start Page Title Area ==-->
+    <section class="page-title-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12 m-auto">
+                    <div class="page-title-content text-center">
+                        <h2 class="title">{{ __('about.about_us') }}</h2>
+                        <div class="bread-crumbs">
+                            <a href="{{ route("home.index") }}">{{ __('home.title') }}</a>
+                            <span class="breadcrumb-sep"> // </span>
+                            <span class="active">{{ __('about.about_us') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--== End Page Title Area ==-->
+
+    <!--== Start Divider Area Wrapper ==-->
+    <section class="divider-area divider-style3-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="thumb">
+                        <img src="{{ asset('front/assets/img/divider/mama.png') }}" alt="Image">
+                        <div class="shape-group">
+                            <div class="shape-style1">
+                                <img src="{{ asset('front/assets/img/divider/shape3.png') }}" alt="Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="divider-content">
+                        <h4 class="subtitle">{{ __('about.hello_there') }}</h4>
+                        <h2 class="title">{{ __('about.subject') }}</h2>
+                        <p>{{ __('about.description') }}</p>
+                        <a class="btn-theme" href="{{ route('home.contact') }}">{{ __('contact_us.title') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--== End Divider Area Wrapper ==-->
+
+    <!--== Start Brand Logo Area ==-->
+    <div class="brand-logo-area brand-logo-default-area" data-aos="fade-up" data-aos-duration="1000">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="swiper-container brand-logo-slider-container">
+                        <div class="swiper-wrapper brand-logo-slider">
+                            <div class="swiper-slide brand-logo-item">
+                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
+                            </div>
+                            <div class="swiper-slide brand-logo-item">
+                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
+                            </div>
+                            <div class="swiper-slide brand-logo-item">
+                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
+                            </div>
+                            <div class="swiper-slide brand-logo-item">
+                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
+                            </div>
+                            <div class="swiper-slide brand-logo-item">
+                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
+                            </div>
+                            <div class="swiper-slide brand-logo-item">
+                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--== End Brand Logo Area ==-->
+
+    <!--== Start Team Area ==-->
+    <section class="team-area team-default-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-lg-6 m-auto">
+                    <div class="section-title text-center" data-aos="fade-up" data-aos-duration="1000">
+                        <h2 class="title">Team Member</h2>
+                        <div class="desc">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod incididunt ut labore et dolore magna aliqua. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" data-aos="fade-up" data-aos-duration="1300">
+                <div class="col-md-4">
+                    <div class="team-member">
+                        <div class="thumb">
+                            <img src="{{asset('front/assets')}}/img/team/1.png" alt="Image">
+                            <div class="member-icons">
+                                <a href="#/"><i class="fa fa-facebook"></i></a>
+                                <a href="#/"><i class="fa fa-dribbble"></i></a>
+                                <a href="#/"><i class="fa fa-pinterest-p"></i></a>
+                                <a href="#/"><i class="fa fa-twitter"></i></a>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="member-info">
+                                <h4 class="name"><a href="#/">Alyana Thomson</a></h4>
+                                <h6 class="designation">Customer</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="team-member mt-sm-50">
+                        <div class="thumb">
+                            <img src="{{asset('front/assets')}}/img/team/2.png" alt="Image">
+                            <div class="member-icons">
+                                <a href="#/"><i class="fa fa-facebook"></i></a>
+                                <a href="#/"><i class="fa fa-dribbble"></i></a>
+                                <a href="#/"><i class="fa fa-pinterest-p"></i></a>
+                                <a href="#/"><i class="fa fa-twitter"></i></a>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="member-info">
+                                <h4 class="name"><a href="#/">Phoenix Walker</a></h4>
+                                <h6 class="designation">Customer</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="team-member mt-sm-50">
+                        <div class="thumb style-two">
+                            <img src="{{asset('front/assets')}}/img/team/3.png" alt="Image">
+                            <div class="member-icons">
+                                <a href="#/"><i class="fa fa-facebook"></i></a>
+                                <a href="#/"><i class="fa fa-dribbble"></i></a>
+                                <a href="#/"><i class="fa fa-pinterest-p"></i></a>
+                                <a href="#/"><i class="fa fa-twitter"></i></a>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="member-info">
+                                <h4 class="name"><a href="#/">Oscar Thomsen</a></h4>
+                                <h6 class="designation">Customer</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--== End Team Area ==-->
+
+
+
+@endsection

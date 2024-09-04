@@ -41,4 +41,9 @@ class homeController extends Controller
         return view('front.contact',compact('setting'));
     }
 
+    public function aboutUs()
+    {
+        return view('front.about');
+    }
+
 }

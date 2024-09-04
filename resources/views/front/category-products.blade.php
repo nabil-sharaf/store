@@ -1,4 +1,7 @@
 @extends('front.layouts.app')
+
+@section('title'){{$title}} @endsection
+
 @section('content')
     <!--== Start Page Title Area ==-->
     <section class="page-title-area">
@@ -6,8 +9,8 @@
             <div class="row align-items-center">
                 <div class="col-lg-12 m-auto">
                     <div class="page-title-content text-center">
-                        <h2 class="title">منتجات قسم {{$title}}</h2>
-                        <div class="bread-crumbs"><a href="{{ route('home.index') }}"> Home </a><span class="breadcrumb-sep"> / </span><span class="active"> {{$title}}</span></div>
+                        <h2 class="title">{{$title}}</h2>
+                        <div class="bread-crumbs"><a href="{{ route('home.index') }}"> الرئيسية </a><span class="breadcrumb-sep"> / </span><span class="active"> {{$title}}</span></div>
                     </div>
                 </div>
             </div>

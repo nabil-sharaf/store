@@ -1,0 +1,17 @@
+/* تحميل خط Cairo من Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap');
+
+/* تطبيق الخط على جميع العناصر */
+* {
+    font-family: 'Cairo', sans-serif;
+}
+
+/* يمكنك أيضًا تحديد أوزان مختلفة للخط لعناصر مختلفة */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+
+body {
+    font-weight: 400;
+}
+

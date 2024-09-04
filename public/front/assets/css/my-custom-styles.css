@@ -36,7 +36,29 @@
 }
 
 @media (max-width: 1399px) {
-    .home-slider-area.slider-default .slider-content-area {
-        height: 840px;
+     {
+        height: 755px;
+    }
+}
+
+.cart-content.cart-content-padding .cart-checkout-btn{
+    padding-inline-start: 30px !important;
+}
+
+@media only screen and (max-width: 767px) {
+    .header-top .header-info a i {
+        font-size: 12px;
+        margin-inline-end: 5px;
+        margin-inline-start: 5px;
+        margin-top: 0;
+    }
+}
+
+@media (min-width: 992px) {
+    .collapse.widget-collapse-body {
+        display: block !important;
+        height: auto !important;
+        visibility: visible !important;
+        overflow: visible !important;
     }
 }
