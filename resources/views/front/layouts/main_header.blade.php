@@ -4,16 +4,16 @@
 <div class="wrapper home-default-wrapper">
 
     <!--== Start Preloader Content ==-->
-    <div class="preloader-wrap">
-        <div class="preloader">
-            <span class="dot"></span>
-            <div class="dots">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </div>
+{{--    <div class="preloader-wrap">--}}
+{{--        <div class="preloader">--}}
+{{--            <span class="dot"></span>--}}
+{{--            <div class="dots">--}}
+{{--                <span></span>--}}
+{{--                <span></span>--}}
+{{--                <span></span>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
     <!--== End Preloader Content ==-->
 
     <!--== Start Header Wrapper ==-->

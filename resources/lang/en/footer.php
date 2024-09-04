@@ -2,8 +2,9 @@
 
 return [
     'logo_alt' => 'Logo',
-    'description' => 'Lorem ipsum dolor sit amet, consecl adipisicing elit, sed do eiusmod teml incididunt ut labore et dolore magna aliqua Ut enim',
+    'description' => \App\Models\Admin\Setting::getValue('site_disc_footer_en'),
     'quick_links' => 'Quick Links',
+    'store_information' => 'Site Info',
     'support' => 'Support',
     'helpline' => 'Helpline',
     'courses' => 'Courses',
@@ -13,14 +14,8 @@ return [
     'blog' => 'Blog',
     'speakers' => 'Speakers',
     'contact' => 'Contact',
-    'tricket' => 'Tricket',
-    'company' => 'Company',
-    'jesco' => 'Jesco',
-    'shop' => 'Shop',
+
     'contact_us' => 'Contact us',
-    'log_in' => 'Log in',
-    'help' => 'Help',
-    'store_information' => 'Store Information',
     'address' => '2005 Your Address Goes Here. 896, Address 10010, HGJ',
     'phone_fax' => 'Phone',
     'email' => 'Email',

@@ -14,8 +14,13 @@ class homeController extends Controller
 
         $categories = Category::with('products')->get();
         $products = Product::with('images')->get();
+        // جلب المنتجات المضافة حديثاً بترتيب تاريخ الإضافة تنازلياً
+        $newProducts = Product::orderBy('created_at', 'desc')->take(4)->get();
 
-        return view('front.index', compact('categories','products'));
+        // جلب المنتجات الأكثر مبيعاً بترتيب الكمية المباعة تنازلياً
+        $bestProducts = Product::withCount('orderDetails')->orderBy('order_details_count', 'desc')->take(4)->get();
+
+        return view('front.index', compact('categories','products','bestProducts','newProducts'));
     }
 
     public function productDetails($id)

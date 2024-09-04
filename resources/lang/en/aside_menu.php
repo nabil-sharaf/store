@@ -21,4 +21,7 @@ return [
     'money_return' => 'Money Return',
     'product_description' => 'Product Description',
     'customer_review_count' => '(:count reviews)',
+    'information'=>'معلومات',
+    'reviews'=> 'Reviews',
+
 ];

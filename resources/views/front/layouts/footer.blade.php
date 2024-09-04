@@ -26,7 +26,7 @@
                             <nav class="widget-menu-wrap">
                                 <ul class="nav-menu nav item-hover-style">
                                     <li><a href="{{route('home.index')}}">{{ __('footer.home') }}</a></li>
-                                    <li><a href="{{route('home.contact')}}">{{ __('footer.support') }}</a></li>
+                                    <li><a href="{{route('home.contact')}}">{{ __('footer.contact') }}</a></li>
                                     <li><a href="#">{{ __('footer.about') }}</a></li>
                                 </ul>
                             </nav>

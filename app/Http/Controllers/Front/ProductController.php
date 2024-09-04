@@ -10,7 +10,8 @@ class ProductController extends Controller
 {
     public function showProduct(Product $product)
     {
-        return view('front.product-show');
+        $product->load('categories','images');
+        return view('front.product-show',compact('product'));
     }
 
 

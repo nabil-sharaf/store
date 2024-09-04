@@ -25,7 +25,6 @@
 body {
   color: #2d2d2d;
   font-size: 1rem;
-  font-family: "Rubik", sans-serif;
   font-weight: 400;
   line-height: 1.875;
   margin: 0;
@@ -37,7 +36,6 @@ body {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   color: #000;
-  font-family: "Fredoka One", cursive;
   font-weight: 400;
   line-height: 1.2;
   margin-bottom: 10px;
@@ -10446,6 +10444,6 @@ table p {
     background-color: #535353;
     padding: 22px 22px 20px;
   }
-} 
+}
 
 /*# sourceMappingURL=style.css.map */

@@ -2,9 +2,8 @@
 
 return [
     'logo_alt' => 'الشعار',
-    'description' => 'مرحبًا بكم في متجرنا المكان الأفضل لطفلك تسوق الأن واستمتع معنا',
+    'description' => \App\Models\Admin\Setting::getValue('site_disc_footer_ar'),
     'quick_links' => 'روابط سريعة',
-    'support' => 'الدعم',
     'helpline' => 'خط المساعدة',
     'courses' => 'الدورات',
     'about' => 'من نحن',

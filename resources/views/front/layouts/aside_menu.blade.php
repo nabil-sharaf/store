@@ -46,23 +46,6 @@
                                 <a class="btn-wishlist" href="shop-wishlist.html">{{ __('aside_menu.add_to_wishlist') }}</a>
                             </div>
                         </div>
-
-                        <div class="widget">
-                            <h3 class="title">{{ __('aside_menu.categories') }}:</h3>
-                            <div class="widget-tags product-categories">
-                                <a href="blog.html">{{ __('aside_menu.toys') }}</a>
-                            </div>
-                        </div>
-
-                        <div class="widget">
-                            <h3 class="title">{{ __('aside_menu.share') }}:</h3>
-                            <div class="widget-tags widget-share">
-                                <span class="fa fa-facebook"></span>
-                                <span class="fa fa-pinterest-p"></span>
-                                <span class="fa fa-twitter"></span>
-                                <span class="fa fa-linkedin"></span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

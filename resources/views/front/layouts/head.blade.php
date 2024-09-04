@@ -14,10 +14,6 @@
     <!--== Favicon ==-->
     <link rel="shortcut icon" href="{{asset('front/assets')}}/img/favicon.ico" type="image/x-icon" />
 
-    <!--== Google Fonts ==-->
-    <link href="https://fonts.googleapis.com/css?family=Fredoka+One:400" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
     <!--== Bootstrap CSS ==-->
     <link href="{{asset('front/assets')}}/css/bootstrap.min.css" rel="stylesheet"/>
     <!--== Font-awesome Icons CSS ==-->
@@ -52,9 +48,6 @@
         <!--== Favicon ==-->
         <link rel="shortcut icon" href="{{asset('front/assets')}}/img/favicon.ico" type="image/x-icon" />
 
-        <!--== Google Fonts ==-->
-        <link href="https://fonts.googleapis.com/css?family=Fredoka+One:400" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
         <!--== Bootstrap CSS ==-->
         <link href="{{asset('front/assets')}}/css/bootstrap.min.css" rel="stylesheet"/>

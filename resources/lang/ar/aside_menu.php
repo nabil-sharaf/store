@@ -21,4 +21,7 @@ return [
     'money_return' => 'إرجاع المال',
     'product_description' => 'وصف المنتج',
     'customer_review_count' => '(:عدد الريفيوز)',
+    'information'=>'معلومات',
+    'reviews'=> 'المراجعات'
+
 ];
