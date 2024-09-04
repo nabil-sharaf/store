@@ -9,5 +9,5 @@ return [
     'enter_email' => 'أدخل بريدك الإلكتروني',
     'subscribe_button' => 'اشترك',
     'subject' => 'ماما ستور',
-    'description'=>'ماما ستور متجر متخصص لكل مستلزمات اطفالك تمتع معنا بتجربة رائعة '
+    'description'=>\App\Models\Admin\Setting::getValue('about_us'),
 ];

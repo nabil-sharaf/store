@@ -56,7 +56,7 @@
                     <div class="swiper-container brand-logo-slider-container">
                         <div class="swiper-wrapper brand-logo-slider">
                             <div class="swiper-slide brand-logo-item">
-                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
+                                <a href="#"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
                             </div>
                             <div class="swiper-slide brand-logo-item">
                                 <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
@@ -82,79 +82,6 @@
     <!--== End Brand Logo Area ==-->
 
     <!--== Start Team Area ==-->
-    <section class="team-area team-default-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-lg-6 m-auto">
-                    <div class="section-title text-center" data-aos="fade-up" data-aos-duration="1000">
-                        <h2 class="title">Team Member</h2>
-                        <div class="desc">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod incididunt ut labore et dolore magna aliqua. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" data-aos="fade-up" data-aos-duration="1300">
-                <div class="col-md-4">
-                    <div class="team-member">
-                        <div class="thumb">
-                            <img src="{{asset('front/assets')}}/img/team/1.png" alt="Image">
-                            <div class="member-icons">
-                                <a href="#/"><i class="fa fa-facebook"></i></a>
-                                <a href="#/"><i class="fa fa-dribbble"></i></a>
-                                <a href="#/"><i class="fa fa-pinterest-p"></i></a>
-                                <a href="#/"><i class="fa fa-twitter"></i></a>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <div class="member-info">
-                                <h4 class="name"><a href="#/">Alyana Thomson</a></h4>
-                                <h6 class="designation">Customer</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="team-member mt-sm-50">
-                        <div class="thumb">
-                            <img src="{{asset('front/assets')}}/img/team/2.png" alt="Image">
-                            <div class="member-icons">
-                                <a href="#/"><i class="fa fa-facebook"></i></a>
-                                <a href="#/"><i class="fa fa-dribbble"></i></a>
-                                <a href="#/"><i class="fa fa-pinterest-p"></i></a>
-                                <a href="#/"><i class="fa fa-twitter"></i></a>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <div class="member-info">
-                                <h4 class="name"><a href="#/">Phoenix Walker</a></h4>
-                                <h6 class="designation">Customer</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="team-member mt-sm-50">
-                        <div class="thumb style-two">
-                            <img src="{{asset('front/assets')}}/img/team/3.png" alt="Image">
-                            <div class="member-icons">
-                                <a href="#/"><i class="fa fa-facebook"></i></a>
-                                <a href="#/"><i class="fa fa-dribbble"></i></a>
-                                <a href="#/"><i class="fa fa-pinterest-p"></i></a>
-                                <a href="#/"><i class="fa fa-twitter"></i></a>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <div class="member-info">
-                                <h4 class="name"><a href="#/">Oscar Thomsen</a></h4>
-                                <h6 class="designation">Customer</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <!--== End Team Area ==-->
 
 

@@ -9,5 +9,5 @@ return [
     'enter_email' => 'Enter Your Email',
     'subscribe_button' => 'Subscribe',
     'subject' => 'mama store',
-    'description'=>'Mama store the best place for you and your kids enjoy with us'
+    'description'=>\App\Models\Admin\Setting::getValue('about_us'),
 ];
