@@ -70,10 +70,11 @@
         var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
         var categoriesContainer = $('.product-quick-view-modal .product-categories');
         var sliderContainer = $('.product-images-slider');
-
+        var url ="{{route('product.details',':productId')}}";
+        var myUrl= url.replace(':productId',productId)
         // استدعاء AJAX للحصول على تفاصيل المنتج
         $.ajax({
-            url: 'product/details/'+productId, // المسار للوصول إلى تفاصيل المنتج
+            url:  myUrl,// المسار للوصول إلى تفاصيل المنتج
             method: 'GET',
             success: function (response) {
                 $('.product-quick-view-modal .product-name').text(response.name);
@@ -86,10 +87,13 @@
                 });
 
                 sliderContainer.empty();
-                response.images.forEach(function(image){
+                if (response.images && response.images.length > 0) {
+                    const image = response.images[0]; // نأخذ الصورة الأولى فقط
                     sliderContainer.append(`<div class="swiper-slide"><img src="{{asset('storage/')}}/${image.path}" alt="Product Image" /></div>`);
-                });
-
+                } else {
+                    // إذا لم تكن هناك صور، يمكنك إضافة صورة افتراضية أو رسالة
+                    sliderContainer.append(`<div class="swiper-slide"><p>No image available</p></div>`);
+                }
                 $('.product-quick-view-modal').show();
             },
             error: function (error) {
@@ -103,9 +107,9 @@
         event.preventDefault();
 
         var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
-
+        var url ="{{route('wishlist.store',':productId')}}".replace(':productId',productId);
         $.ajax({
-            url: 'wishlist/' + productId,
+            url: url,
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}'
@@ -240,7 +244,6 @@
             }
         });
     }
-
 
     // ------------------------------- Toastr options -------------------------------
 

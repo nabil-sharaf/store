@@ -80,6 +80,11 @@
         overflow: visible !important;
     }
 }
+@media (max-width: 767px) {
+    .collapse.widget-collapse-body {
+        visibility: visible !important;
+    }
+}
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: 'Cairo', sans-serif !important;
@@ -98,4 +103,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 .single-product-thumb-slider .swiper-wrapper .zoom-hover .lightbox-image img{
     height:470px !important;
+}
+#cart-items-list {
+    max-height: 270px !important; /* حدد الارتفاع الأقصى للقائمة */
+    overflow-y: auto !important; /* إضافة شريط تمرير عمودي */
+    margin-top: 10px !important; /* إضافة هامش أعلى */
 }

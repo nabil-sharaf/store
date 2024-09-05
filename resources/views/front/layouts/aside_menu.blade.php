@@ -62,10 +62,10 @@
             <div class="search-note">
                 <p>{{ __('aside_menu.start_typing_press_enter') }}</p>
             </div>
-            <form action="#" method="post">
+            <form action="{{ route('product.search') }}" method="GET">
                 <div class="search-form position-relative">
                     <label for="search-input" class="sr-only">{{ __('aside_menu.search') }}</label>
-                    <input type="search" class="form-control" placeholder="{{ __('aside_menu.search') }}" id="search-input">
+                    <input type="search" name="search" class="form-control" placeholder="{{ __('aside_menu.search') }}" id="search-input">
                     <button class="search-button"><i class="pe-7s-search"></i></button>
                 </div>
             </form>

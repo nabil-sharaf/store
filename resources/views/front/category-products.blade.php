@@ -65,34 +65,35 @@
                             <div class="row">
 
                                 @forelse($products as $product)
-                                <div class="col-12 product-items-list">
-                                    <!-- Start Product Item -->
-                                    <div class="product-item">
-                                        <div class="product-thumb">
-                                            <img src="{{asset('storage/'.$product->images->first()->path)}}" alt="Image">
-                                            <div class="product-action">
-                                                <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
+                                    <div class="col-lg-3 col-md-4 col-sm-6">
+                                        <!-- Start Product Item -->
+                                        <div class="product-item">
+                                            <div class="product-thumb">
+                                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
 
-                                                <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
+                                                <div class="product-action">
+                                                    <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
+
+                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
+                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="product-info">
+                                                <div class="rating">
+                                                    <span class="fa fa-star"></span>
+                                                    <span class="fa fa-star"></span>
+                                                    <span class="fa fa-star"></span>
+                                                    <span class="fa fa-star"></span>
+                                                    <span class="fa fa-star"></span>
+                                                </div>
+                                                <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
+                                                <div class="prices">
+                                                    <span class="price">{{$product->price}} {{__('home.currency')}}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="product-info">
-                                            <div class="rating">
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                            </div>
-                                            <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
-                                            <div class="prices">
-                                                <span class="price">{{$product->price.' '.__('home.currency')}}</span>
-                                            </div>
-                                        </div>
+                                        <!-- End Product Item -->
                                     </div>
-                                    <!-- End Product Item -->
-                                </div>
                                 @empty
                                     <div> هذا القسم لا يحتوي على منتجات حاليا</div>
                                 @endforelse
