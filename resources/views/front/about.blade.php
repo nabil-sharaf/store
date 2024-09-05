@@ -39,8 +39,24 @@
                     <div class="divider-content">
                         <h4 class="subtitle">{{ __('about.hello_there') }}</h4>
                         <h2 class="title">{{ __('about.subject') }}</h2>
-                        <p>{{ __('about.description') }}</p>
-                        <a class="btn-theme" href="{{ route('home.contact') }}">{{ __('contact_us.title') }}</a>
+
+                 @php
+                       if (!function_exists('formatTextToHtml')) {
+                        function formatTextToHtml($text)
+                        {
+                            // تحويل السطور الجديدة إلى فقرات
+                            $paragraphs = explode("\n", $text);
+                            $html = '';
+                            foreach ($paragraphs as $paragraph) {
+                                $html .= '<p>' . e($paragraph) . '</p>';
+                            }
+                            return $html;
+                        }
+                    }
+                @endphp
+
+                        <p>{!! nl2br(e(__('about.description'))) !!}</p>
+                        <a class="btn-theme" href="{{ route('home.contact') }}"><strong>{{ __('contact_us.title') }}</strong></a>
                     </div>
                 </div>
             </div>
