@@ -18,7 +18,7 @@
                                                 <div class="inner-content text-center" style="direction: rtl">
                                                     <h2>{{ __('home.hero_title') }}</h2>
                                                     <p>{{ __('home.hero_description') }}</p>
-                                                    <a href="shop.html" class="btn-theme"><strong>{{ __('home.shop_now') }}</strong></a>
+                                                    <a href="{{route('products.all')}}" class="btn-theme"><strong>{{ __('home.shop_now') }}</strong></a>
                                                 </div>
                                             </div>
                                         </div>

@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function index()
+    {
+        $products = Product::paginate(8);
+        return view('front.products',compact('products'));
+    }
     public function showProduct(Product $product)
     {
         $product->load('categories','images');

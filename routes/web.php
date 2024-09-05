@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
 //    ------------------------------------ Products Routes ------------------------
 
     Route::get('/categories/{category}', [CategoryController::class, 'categoryProducts'])->name('category.show');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.all');
     Route::get('/products/{product}', [ProductController::class, 'showProduct'])->name('product.show');
     Route::get('/search', [ProductController::class, 'search'])->name('product.search');
 
