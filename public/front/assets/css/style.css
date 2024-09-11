@@ -25,6 +25,7 @@
 body {
   color: #2d2d2d;
   font-size: 1rem;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   line-height: 1.875;
   margin: 0;
@@ -80,12 +81,6 @@ p:last-child {
 :focus {
   box-shadow: none;
   outline: none !important;
-}
-
-::-moz-selection {
-  background: #f379a7;
-  color: #fff;
-  text-shadow: none;
 }
 
 ::selection {
@@ -732,7 +727,7 @@ table p {
 }
 .page-title-area .page-title-content .bread-crumbs a {
   color: #fff;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 18px;
   font-weight: 400;
 }
@@ -752,7 +747,7 @@ table p {
 }
 
 .page-title-area .page-title-content .bread-crumbs span {
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 18px;
   font-weight: 400;
   position: relative;
@@ -831,7 +826,7 @@ table p {
   }
 }
 .error-content h1 {
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 42px;
   margin: 0;
@@ -853,7 +848,7 @@ table p {
   }
 }
 .error-content p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   line-height: 35px;
   color: #666;
   width: 90%;
@@ -866,7 +861,7 @@ table p {
   }
 }
 .error-content p a {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   color: #f379a7;
 }
 
@@ -888,7 +883,7 @@ table p {
 }
 
 .error-content .error-search form input {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   width: 100%;
   height: 48px;
   padding: 2px 70px 2px 16px;
@@ -1024,7 +1019,7 @@ table p {
 .subscribe-form form .input-content .submit-btn input {
   width: auto;
   height: auto;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 13px;
   font-weight: 600;
   border: none;
@@ -2114,7 +2109,7 @@ table p {
 */
 .main-menu {
   align-content: center;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
 }
 
 .main-menu > li {
@@ -4170,22 +4165,30 @@ table p {
 }
 
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .slider-content-area .content .inner-content {
+  -webkit-animation-delay: 0.3s;
   animation-delay: 0.3s;
+  -webkit-animation-name: fadeInUp;
   animation-name: fadeInUp;
 }
 
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .home-slider-item .thumb-two {
+  -webkit-animation-delay: 0.5s;
   animation-delay: 0.5s;
+  -webkit-animation-name: fadeInRight;
   animation-name: fadeInRight;
 }
 
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .home-slider-item .thumb-three {
+  -webkit-animation-delay: 0.2s;
   animation-delay: 0.2s;
+  -webkit-animation-name: fadeInRight;
   animation-name: fadeInRight;
 }
 
 .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .home-slider-item .thumb-four {
+  -webkit-animation-delay: 0.2s;
   animation-delay: 0.2s;
+  -webkit-animation-name: fadeInLeft;
   animation-name: fadeInLeft;
 }
 
@@ -4250,7 +4253,9 @@ table p {
   left: calc(50% + 12px);
   position: absolute;
   pointer-events: none;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   z-index: 1;
   transition: 2s;
@@ -4289,7 +4294,9 @@ table p {
   position: absolute;
   pointer-events: none;
   right: -68px;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   transition: 2s;
   -webkit-transition: 2s;
@@ -4308,7 +4315,9 @@ table p {
   left: 129px;
   position: absolute;
   pointer-events: none;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   transition: 2s;
   -webkit-transition: 2s;
@@ -4415,7 +4424,9 @@ table p {
 .home-slider-area.slider-default .slider-content-area .content .inner-content {
   margin-left: -1px;
   position: relative;
+  -webkit-animation-duration: 1.25s;
   animation-duration: 1.25s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   transition: 2s;
   -webkit-transition: 2s;
@@ -4463,7 +4474,7 @@ table p {
 }
 .home-slider-area.slider-default .slider-content-area .content .inner-content p {
   color: #252525;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 24px;
   font-weight: 400;
   line-height: 1.875;
@@ -4500,7 +4511,7 @@ table p {
   color: #fff;
   height: 60px;
   line-height: 59px;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   padding: 0 44px;
@@ -4581,8 +4592,11 @@ table p {
   bottom: 0;
   max-width: none;
   position: absolute;
+  -webkit-animation-duration: 1s;
   animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
+  -webkit-animation-name: fadeOut;
   animation-name: fadeOut;
 }
 
@@ -4742,7 +4756,7 @@ table p {
 }
 
 .team-member .content .member-info .name {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 24px;
   margin-bottom: 8px;
@@ -4763,7 +4777,7 @@ table p {
 
 .team-member .content .member-info .designation {
   color: #3b3a3a;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 18px;
 }
@@ -4870,7 +4884,7 @@ table p {
 
 .testimonial-item .client-info .desc .title {
   color: #3b3a3a;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 18px;
   margin-bottom: 1px;
 }
@@ -4927,7 +4941,7 @@ table p {
 }
 .divider-area.divider-style1-area .divider-content p {
   color: #000;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 18px;
   margin-bottom: 50px;
   text-transform: uppercase;
@@ -5009,7 +5023,7 @@ table p {
 }
 .divider-area.divider-style1-area .divider-content .countdown-content .countdown-timer li span {
   color: #fff;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 30px;
   line-height: 1;
 }
@@ -5034,7 +5048,7 @@ table p {
 .divider-area.divider-style1-area .divider-content .btn-theme {
   border-radius: 27px;
   color: #fff;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 16px;
   padding: 5px 47px;
   height: 55px;
@@ -5202,7 +5216,7 @@ table p {
   }
 }
 .divider-area.divider-style3-area .divider-content .title {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 500;
   font-size: 30px;
   line-height: 43px;
@@ -5235,7 +5249,7 @@ table p {
 .divider-area.divider-style3-area .divider-content .btn-theme {
   border-radius: 30px;
   color: #fff5ec;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   height: 60px;
@@ -5333,7 +5347,7 @@ table p {
 .divider-area.divider-style4-area .divider-wrap .newsletter-form form .btn-theme {
   border-radius: 23px;
   color: #fff;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   height: 46px;
@@ -5598,7 +5612,7 @@ table p {
 
 .form-group .btn-theme {
   border-radius: 32px;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   margin-top: 30px;
@@ -5621,7 +5635,7 @@ table p {
   }
 }
 .login-register-title h2 {
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 36px;
   margin: 0 0 15px;
@@ -5629,7 +5643,7 @@ table p {
 }
 
 .login-register-title p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   line-height: 1.6;
   color: #999;
@@ -5685,7 +5699,7 @@ table p {
 
 .login-register-content .login-register-style p {
   color: #000;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 15px;
   line-height: 1.8;
   margin: 0 0 35px;
@@ -5702,7 +5716,7 @@ table p {
   height: 51px;
   background-color: transparent;
   border: 1px solid #e5e5e5;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   padding: 2px 80px 2px 16px;
   font-size: 15px;
 }
@@ -5730,7 +5744,7 @@ table p {
 
 .login-register-content .login-register-style form .login-register-input .forgot a {
   color: #4bb1cf;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 15px;
 }
 
@@ -5742,7 +5756,7 @@ table p {
 }
 
 .login-register-content .login-register-style form .login-register-paragraph p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   color: #666;
   line-height: 1.9;
@@ -5773,7 +5787,7 @@ table p {
 
 .login-register-content .login-register-style form .remember-me-btn label {
   color: #000;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 15px;
 }
 
@@ -5782,7 +5796,7 @@ table p {
 }
 
 .login-register-content .login-register-style form .btn-style-3 button {
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 16px;
   border-radius: 3px;
   font-weight: 400;
@@ -5813,7 +5827,7 @@ table p {
 }
 .login-register-content .login-register-style .register-benefits h3 {
   color: #000;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 20px;
   text-transform: uppercase;
@@ -5822,7 +5836,7 @@ table p {
 
 .login-register-content .login-register-style .register-benefits p {
   line-height: 1.6;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   color: #666;
   margin: 0 0 28px;
@@ -5833,7 +5847,7 @@ table p {
 }
 
 .login-register-content .login-register-style .register-benefits ul li {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 18px;
   color: #000;
   margin: 0 0 16px;
@@ -5885,7 +5899,7 @@ table p {
   border-bottom: none;
   border-radius: 0;
   color: #000;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 15px;
   display: block;
   padding: 10px 15px;
@@ -5926,7 +5940,7 @@ table p {
 }
 
 .myaccount-content h3 {
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 20px;
   border-bottom: 1px dashed #ccc;
@@ -5935,7 +5949,7 @@ table p {
 }
 
 .myaccount-content .welcome a {
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
 }
 
 .myaccount-content .welcome a:hover {
@@ -5943,13 +5957,13 @@ table p {
 }
 
 .myaccount-content .welcome strong {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   color: #f379a7;
 }
 
 .myaccount-content p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   line-height: 28px;
   margin-bottom: 2px;
 }
@@ -5959,7 +5973,7 @@ table p {
 }
 
 .myaccount-content fieldset legend {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   margin-bottom: 20px;
   font-weight: 400;
@@ -5976,7 +5990,7 @@ table p {
 }
 
 .myaccount-content .account-details-form .single-input-item label {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   text-transform: capitalize;
   display: block;
@@ -5990,7 +6004,7 @@ table p {
   background-color: transparent;
   padding: 2px 20px;
   color: #1f2226;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 13px;
 }
 
@@ -6001,7 +6015,7 @@ table p {
 .myaccount-content .account-details-form .single-input-item button {
   border: none;
   background-color: #f379a7;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   padding: 9px 25px;
   color: #fff;
@@ -6019,14 +6033,14 @@ table p {
 
 .myaccount-table {
   white-space: nowrap;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
 }
 
 .myaccount-table table th,
 .myaccount-table .table th {
   padding: 10px;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 600;
   background-color: #f8f8f8;
   border-color: #ccc;
@@ -6043,7 +6057,7 @@ table p {
 
 .myaccount-table table td a,
 .myaccount-table .table td a {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   color: #000;
 }
@@ -6051,7 +6065,7 @@ table p {
 .saved-message {
   background-color: #fff;
   border-top: 3px solid #f379a7;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   padding: 20px 0;
   color: #333;
@@ -6256,7 +6270,7 @@ table p {
 }
 
 .product-item .product-info .title {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 500;
   font-size: 16px;
   line-height: 1;
@@ -6307,7 +6321,7 @@ table p {
   border: 1px solid #e5e5e5;
   border-radius: 21px;
   color: #393939;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   margin-right: 25px;
   height: 43px;
   line-height: 25px;
@@ -6392,7 +6406,7 @@ table p {
 .product-description-review .product-description-tab-menu .nav-item .nav-link {
   border: none;
   color: #363636;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 18px;
   position: relative;
@@ -7220,7 +7234,7 @@ table p {
   }
 }
 .single-product-info .title {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 500;
   font-size: 24px;
   margin-bottom: 1px;
@@ -7317,7 +7331,7 @@ table p {
 }
 .single-product-info .single-product-featured ul li {
   color: #494949;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 16px;
 }
 
@@ -7559,7 +7573,7 @@ table p {
   border: none;
   border-radius: 25px;
   color: #494949;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 500;
   font-size: 16px;
   padding: 0px 28px 0;
@@ -7588,7 +7602,7 @@ table p {
 
 .single-product-info .quick-product-action .btn-theme {
   border-radius: 25px;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   height: 50px;
@@ -7611,7 +7625,7 @@ table p {
 
 .single-product-info .quick-product-action .btn-wishlist {
   color: #494949;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   display: inline-block;
   margin-bottom: 15px;
   min-width: 117px;
@@ -7805,7 +7819,7 @@ table p {
 }
 .category-area.product-category1-area .category-items1 .category-item .thumb .content .btn-link {
   color: #000;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   margin-bottom: 25px;
@@ -7880,7 +7894,7 @@ table p {
 
 .category-area.product-category2-area .category-items2 .category-item .thumb .content .btn-theme {
   border-radius: 20px;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   height: 43px;
@@ -7936,7 +7950,7 @@ table p {
 
 .cart-table-wrap .cart-table table thead > tr th {
   color: #000;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
@@ -7985,7 +7999,7 @@ table p {
 
 .cart-table-wrap .cart-table table tbody > tr td.product-name h5 {
   display: block;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 15px;
   color: #000;
@@ -8000,7 +8014,7 @@ table p {
 }
 
 .cart-table-wrap .cart-table table tbody > tr td.product-price span, .cart-table-wrap .cart-table table tbody > tr td.product-total span {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: #f379a7;
@@ -8012,7 +8026,7 @@ table p {
   color: #495057;
   width: 60px;
   height: 50px;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 600;
   padding: 0 10px;
 }
@@ -8028,7 +8042,7 @@ table p {
 }
 
 .cart-calculate-discount-wrap h4 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 20px;
   margin: 0 0 40px;
@@ -8117,7 +8131,7 @@ table p {
   height: 52px;
   line-height: 52px;
   color: #495057;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   padding-left: 16px;
   padding-right: 20px;
 }
@@ -8156,7 +8170,7 @@ table p {
   margin-bottom: 18px;
   display: block;
   color: #666;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
 }
 
 .calculate-discount-content .input-style {
@@ -8168,7 +8182,7 @@ table p {
   height: 52px;
   border: 1px solid #e5e5e5;
   background-color: transparent;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   padding: 2px 16px;
   width: 100%;
 }
@@ -8185,7 +8199,7 @@ table p {
 
 .calculate-discount-content .calculate-discount-btn a {
   background-color: #95b3e0;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   font-weight: 600;
   text-transform: capitalize;
@@ -8222,7 +8236,7 @@ table p {
 }
 
 .grand-total-wrap .grand-total-content h3 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   margin: 0;
   border-bottom: 1px solid #ccc;
@@ -8242,7 +8256,7 @@ table p {
 }
 
 .grand-total-wrap .grand-total-content .grand-shipping > span {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
 }
 
@@ -8271,7 +8285,7 @@ table p {
 }
 
 .grand-total-wrap .grand-total-content .grand-shipping ul li label {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: #666;
@@ -8285,7 +8299,7 @@ table p {
 }
 
 .grand-total-wrap .grand-total-content .shipping-country p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   display: block;
   padding: 10px 20px;
   background-color: #4bb1cf;
@@ -8297,7 +8311,7 @@ table p {
 }
 
 .grand-total-wrap .grand-total h4 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 20px;
   font-weight: 600;
   display: flex;
@@ -8314,7 +8328,7 @@ table p {
 }
 
 .grand-total-wrap .grand-total-btn a {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 18px;
   text-transform: uppercase;
   background-color: #f379a7;
@@ -8356,7 +8370,7 @@ table p {
 
 .wishlist-table-content .table-content table thead > tr th {
   color: #000;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
@@ -8405,7 +8419,7 @@ table p {
 
 .wishlist-table-content .table-content table tbody > tr td.product-name h5 {
   display: block;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 15px;
   color: #000;
@@ -8420,14 +8434,14 @@ table p {
 }
 
 .wishlist-table-content .table-content table tbody > tr td.product-price span {
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-size: 16px;
   font-weight: 400;
   color: #95b3e0;
 }
 
 .wishlist-table-content .table-content table tbody > tr td.stock-status span {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #690;
@@ -8438,7 +8452,7 @@ table p {
 }
 
 .wishlist-table-content .table-content table tbody > tr td.product-remove a {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 28px;
   color: #c3c3c3;
   display: inline-block;
@@ -8450,7 +8464,7 @@ table p {
 
 .wishlist-table-content .table-content table tbody > tr td.wishlist-cart a {
   display: inline-block;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 14px;
   color: #fff;
@@ -8469,7 +8483,7 @@ table p {
 }
 
 .compare-table .table tbody tr td {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   padding: 20px 20px;
   vertical-align: middle;
   border-color: #e5e5e5;
@@ -8478,7 +8492,7 @@ table p {
 
 .compare-table .table tbody tr td.first-column {
   min-width: 175px;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   font-weight: 500;
   margin: 0;
@@ -8505,7 +8519,7 @@ table p {
   float: left;
   clear: both;
   color: #f379a7;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   text-transform: capitalize;
   letter-spacing: 0.5px;
 }
@@ -8516,7 +8530,7 @@ table p {
   float: left;
   font-size: 16px;
   line-height: 1.2;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   margin-top: 5px;
   text-transform: capitalize;
 }
@@ -8526,7 +8540,7 @@ table p {
 }
 
 .compare-table .table tbody tr td.pro-desc p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   margin: 0;
   line-height: 30px;
   text-align: left;
@@ -8567,7 +8581,7 @@ table p {
 }
 
 .checkout-coupon-wrap > p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   background-color: #f3f3f3;
   padding: 1.188rem 1.25rem;
   border-radius: 3px;
@@ -8580,14 +8594,14 @@ table p {
 }
 
 .checkout-coupon-wrap > p a {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   color: #4bb1cf;
   margin-left: 6px;
   font-size: 14px;
 }
 
 .checkout-coupon-wrap .checkout-coupon-content form p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   color: #666;
   margin: 0;
 }
@@ -8598,7 +8612,7 @@ table p {
   border: 1px solid #e5e5e5;
   background-color: transparent;
   color: #495057;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 15px;
   padding: 2px 16px;
   margin: 25px 0 15px;
@@ -8609,7 +8623,7 @@ table p {
   background-color: #f379a7;
   color: #fff;
   font-size: 16px;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 500;
   line-height: 1;
   padding: 15px 40px;
@@ -8627,14 +8641,14 @@ table p {
 }
 
 .billing-info-wrap h3 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 20px;
   margin: 0 0 23px;
 }
 
 .billing-info-wrap .billing-info label {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   color: #000;
   display: block;
   margin: 0 0 15px;
@@ -8650,7 +8664,7 @@ table p {
   border: 1px solid #e5e5e5;
   background-color: transparent;
   color: #495057;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   padding: 2px 16px;
 }
@@ -8671,7 +8685,7 @@ table p {
 
 .billing-info-wrap .billing-select label {
   color: #000;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   display: block;
   margin: 0 0 15px;
 }
@@ -8685,7 +8699,7 @@ table p {
   display: inline-block;
   float: left;
   height: 10px;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   width: 10px;
   position: relative;
   top: 10px;
@@ -8702,7 +8716,7 @@ table p {
 }
 
 .billing-info-wrap .additional-info-wrap label {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   color: #000;
   display: block;
   margin: 0 0 15px;
@@ -8714,7 +8728,7 @@ table p {
   background-color: transparent;
   padding: 12px 16px;
   color: #495057;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   border: 1px solid #e5e5e5;
 }
@@ -8725,7 +8739,7 @@ table p {
 }
 
 .your-order-area h3 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 20px;
   margin: 0 0 21px;
@@ -8744,7 +8758,7 @@ table p {
 .your-order-area .your-order-wrap .your-order-title h4 {
   display: flex;
   justify-content: space-between;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 14px;
   text-transform: uppercase;
@@ -8762,7 +8776,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .your-order-product ul li {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   display: flex;
   justify-content: space-between;
   margin: 0 0 16px;
@@ -8773,7 +8787,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .your-order-product ul li span {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   color: #f379a7;
   font-weight: 600;
@@ -8786,7 +8800,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .your-order-subtotal h3 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 15px;
   font-weight: 500;
   margin: 0;
@@ -8796,7 +8810,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .your-order-subtotal h3 span {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 18px;
   font-weight: 600;
   color: #f379a7;
@@ -8807,7 +8821,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .your-order-shipping > span {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 15px;
   font-weight: 500;
 }
@@ -8836,7 +8850,7 @@ table p {
 .your-order-area .your-order-wrap .your-order-shipping ul li label {
   color: #666;
   cursor: pointer;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-left: 10px;
@@ -8849,7 +8863,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .your-order-total h3 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 20px;
   font-weight: 500;
   margin: 0;
@@ -8859,7 +8873,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .your-order-total h3 span {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 22px;
   font-weight: 600;
   color: #f379a7;
@@ -8884,7 +8898,7 @@ table p {
 
 .your-order-area .your-order-wrap .payment-method .sin-payment label {
   cursor: pointer;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 15px;
   margin: 0px 0 0 21px;
   display: flex;
@@ -8912,7 +8926,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .payment-method .sin-payment .payment-box p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   line-height: 24px;
   margin: 0;
@@ -8926,7 +8940,7 @@ table p {
 }
 
 .your-order-area .your-order-wrap .payment-condition p {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   line-height: 1.9;
 }
@@ -8952,13 +8966,13 @@ table p {
 
 .your-order-area .your-order-wrap .payment-checkbox span {
   color: #888;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-size: 14px;
   margin-left: 10px;
 }
 
 .your-order-area .your-order-wrap .payment-checkbox span a {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   color: #f379a7;
   font-size: 14px;
 }
@@ -8977,7 +8991,7 @@ table p {
   line-height: 1;
   color: #fff;
   text-transform: uppercase;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 600;
   display: block;
   text-align: center;
@@ -9023,6 +9037,7 @@ table p {
 }
 
 .product-quick-view-modal.active .product-quick-view-inner {
+  -webkit-transform: translate(0, 0);
   transform: translate(0, 0);
 }
 
@@ -9040,7 +9055,10 @@ table p {
 .product-quick-view-inner {
   margin: 150px auto;
   max-width: 1483px;
+  transition: -webkit-transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  -webkit-transform: translate(0, -25%);
   transform: translate(0, -25%);
   position: relative;
   z-index: 9999;
@@ -9541,7 +9559,7 @@ table p {
 }
 
 .post-item .content .title {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 400;
   font-size: 30px;
   line-height: 1.44;
@@ -9571,7 +9589,7 @@ table p {
   border-radius: 21px;
   height: 43px;
   line-height: 33px;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   padding: 5px 29.2px;
@@ -9661,7 +9679,7 @@ table p {
 
 .post-details-content .post-details-body .content .title {
   color: #424242;
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 500;
   font-size: 36px;
   line-height: 49px;
@@ -9803,7 +9821,7 @@ table p {
 .comment-view-area .comment-content .single-comment .author-info .author-details .btn-theme {
   background-color: #95b3e0;
   border-radius: 14px;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   height: 30px;
@@ -9977,7 +9995,7 @@ table p {
 }
 
 .sidebar-area.blog-sidebar-area .widget-body .widget-blog-post .content h4 {
-  font-family: "Rubik", sans-serif;
+  font-family: "Cairo", sans-serif;
   font-weight: 500;
   font-size: 18px;
   margin-bottom: 0;
@@ -10059,7 +10077,7 @@ table p {
 .sidebar-area.blog-sidebar-area .widget-body .widget-newsletter .newsletter-form form button {
   border-radius: 10px;
   width: 100%;
-  font-family: "Fredoka One", cursive;
+  font-family: "Cairo", cursive;
   font-weight: 400;
   font-size: 16px;
   height: 50px;
@@ -10445,5 +10463,6 @@ table p {
     padding: 22px 22px 20px;
   }
 }
+
 
 /*# sourceMappingURL=style.css.map */

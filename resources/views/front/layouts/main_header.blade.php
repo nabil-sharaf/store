@@ -3,19 +3,6 @@
 <!--wrapper start-->
 <div class="wrapper home-default-wrapper">
 
-    <!--== Start Preloader Content ==-->
-{{--    <div class="preloader-wrap">--}}
-{{--        <div class="preloader">--}}
-{{--            <span class="dot"></span>--}}
-{{--            <div class="dots">--}}
-{{--                <span></span>--}}
-{{--                <span></span>--}}
-{{--                <span></span>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-    <!--== End Preloader Content ==-->
-
     <!--== Start Header Wrapper ==-->
 
     <header class="header-wrapper">
@@ -57,7 +44,7 @@
                                 <!-- Dropdown items -->
                                 <ul class="dropdown-menu text-center" aria-labelledby="accountDropdown">
                                     <li>
-                                        <a class="dropdown-item my-header-dropdown-item" href="">{{ __('main_header.account_settings') }}</a>
+                                        <a class="dropdown-item my-header-dropdown-item" href="{{route('profile.index')}}">{{ __('main_header.account_settings') }}</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item my-header-dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -123,7 +110,6 @@
                                     </div>
                                     <div class="header-action-cart">
                                         <button class="btn-cart cart-icon">
-{{--                                            <span class="cart-count">01</span>--}}
                                             <i class="pe-7s-shopbag"></i>
                                         </button>
                                     </div>
@@ -135,9 +121,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="row d-md-none mt-3">
+                    <div class="col-12">
+                        <div class="header-search-box">
+                            <form action="{{ route('product.search') }}" method="GET">
+                                <div class="form-input-item">
+                                    <label for="search-mobile" class="sr-only">{{ __('main_header.search_placeholder') }}</label>
+                                    <input type="text" id="search-mobile" name="search" placeholder="{{ __('main_header.search_placeholder') }}">
+                                    <button type="submit" class="btn-src">
+                                        <i class="pe-7s-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="header-area header-default sticky-header">
+        </div>        <div class="header-area header-default sticky-header">
             <div class="container">
                 <div class="row row-gutter-0 align-items-center">
                     <div class="col-4 col-sm-6 col-lg-2">

@@ -38,11 +38,7 @@
     </section>
     <!--== End Hero Area Wrapper ==-->
 
-    <!--== Start Category Area Wrapper ==-->
-
-    <!--== End Category Area Wrapper ==-->
-
-    <!--== Start Product Tab Area Wrapper ==-->
+    <!--== Start Products Area ==-->
     <section class="product-area product-style1-area">
         <div class="container">
             <div class="row">
@@ -81,7 +77,7 @@
                                                         <!-- Start Product Item -->
                                                         <div class="product-item">
                                                             <div class="product-thumb">
-                                                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
 
                                                                 <div class="product-action">
                                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
@@ -122,7 +118,7 @@
                                                     <!-- Start Product Item -->
                                                     <div class="product-item">
                                                         <div class="product-thumb">
-                                                            <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                                                            <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
 
                                                             <div class="product-action">
                                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
@@ -164,7 +160,7 @@
                                                         <!-- Start Product Item -->
                                                         <div class="product-item">
                                                             <div class="product-thumb">
-                                                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
 
                                                                 <div class="product-action">
                                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
@@ -202,7 +198,293 @@
             </div>
         </div>
     </section>
+    <!--== End  Products ==-->
+
+    <!--== Start Divider Area Wrapper ==-->
+    <section class="divider-area divider-style1-area bg-img" data-bg-img={{asset('front/assets')}}/img/divider/bg1.png" data-aos="fade-up" data-aos-duration="1000">
+        <div class="container position-relative">
+            <div class="row">
+                <div class="col-lg-6 m-auto">
+                    <div class="divider-content">
+                        <h2 class="title">Deal Of The Day</h2>
+                        <p><span>UPTO 35%  OFF </span> On All Other Baby Products</p>
+                        <div class="countdown-content">
+                            <ul class="countdown-timer">
+                                <li><span class="days">00</span><p class="days_text">Days</p></li>
+                                <li><span class="hours">00</span><p class="hours_text">Hours</p></li>
+                                <li><span class="minutes">00</span><p class="minutes_text">MINUTES</p></li>
+                                <li><span class="seconds">00</span><p class="seconds_text">SECONDS</p></li>
+                            </ul>
+                        </div>
+                        <a class="btn-theme" href="shop.html">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="shape-group divider-image">
+                <div class="shape-style3 ">
+                    <img src="{{asset('front/assets')}}/img/divider/2.png" alt="Image">
+                </div>
+                <div class="shape-style4">
+                    <img src="{{asset('front/assets')}}/img/divider/1.png" alt="Image">
+                </div>
+            </div>
+        </div>
+        <div class="shape-group">
+            <div class="shape-style1" data-bg-img="{{asset('front/assets')}}/img/divider/shape1.png"></div>
+            <div class="shape-style2" data-bg-img="{{asset('front/assets')}}/img/divider/shape2.png"></div>
+        </div>
+    </section>
+    <!--== End Divider Area Wrapper ==-->
+
+
+
+    <!--== Start Product Tab Area Wrapper ==-->
+    <section class="product-area product-style2-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 m-auto">
+                    <div class="section-title text-center" data-aos="fade-up" data-aos-duration="1000">
+                        <h2 class="title">Trending Product</h2>
+                        <div class="desc">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod incididunt ut labore et dolore magna aliqua. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="product-tab1-slider" data-aos="fade-up" data-aos-duration="1500">
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/9.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Funskool Teddy Brown</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/10.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Newborn Kit Set</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/11.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Classic Fisher Gift</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/12.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Sassy Crib and Floor Mirror</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/9.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Funskool Teddy Brown</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/10.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Newborn Kit Set</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/11.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Classic Fisher Gift</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                        <div class="slide-item">
+                            <!-- Start Product Item -->
+                            <div class="product-item">
+                                <div class="product-thumb">
+                                    <img src="{{asset('front/assets')}}/img/shop/12.png" alt="Image">
+                                    <div class="product-action">
+                                        <a class="action-quick-view" href="shop-cart.html"><i class="ion-ios-cart"></i></a>
+                                        <a class="action-quick-view" href="javascript:void(0)"><i class="ion-arrow-expand"></i></a>
+                                        <a class="action-quick-view" href="shop-wishlist.html"><i class="ion-heart"></i></a>
+                                        <a class="action-quick-view" href="shop-compare.html"><i class="ion-shuffle"></i></a>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="rating">
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <h4 class="title"><a href="shop-single-product.html">Sassy Crib and Floor Mirror</a></h4>
+                                    <div class="prices">
+                                        <span class="price">$190.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product Item -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <!--== End Product Tab Area Wrapper ==-->
+
 
 @endsection
 

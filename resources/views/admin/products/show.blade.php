@@ -38,13 +38,37 @@
 
                         <h4 class="text-primary mt-4">التفاصيل</h4>
                         <ul class="list-group">
-                            <li class="list-group-item"><strong>السعر:</strong> {{ $product->price }} ريال</li>
+                            <li class="list-group-item"><strong>السعر:</strong> {{ $product->price }}  ج</li>
                             <li class="list-group-item"><strong>الكمية المتاحة:</strong> {{ $product->quantity }}</li>
                             <li class="list-group-item"><strong>القسم:</strong> {{ $product->categories->pluck('name')->implode(', ') }}</li>
 
                             <!-- الحقول الجديدة -->
-                            <li class="list-group-item"><strong>قيمة الخصم:</strong> {{ $product->productDiscount->discount }} {{ $product->productDiscount->discount_type == 'fixed' ? 'ريال' : '%' }}</li>
-                            <li class="list-group-item"><strong>نوع الخصم:</strong> {{ $product->productDiscount->discount_type == 'fixed' ? 'ثابت' : 'نسبة مئوية' }}</li>
+                            <li class="list-group-item"><strong>قيمة الخصم:</strong>
+                                @php
+                                    $discount = $product->productDiscount->discount;
+                                    if($discount==0){
+                                        $text = 'لا يوجد ';
+                                    }else{
+                                       if($product->productDiscount->discount_type=='fixed'){
+                                           $text=' ج ';
+                                       }else{
+                                           $text = ' %';
+                                       }
+                                    }
+                                @endphp
+                                    {{$product->productDiscount->discount ==0 ? $text :$discount . ' '.$text}}
+                            </li>
+                            <li class="list-group-item"><strong>نوع الخصم:</strong>
+                                @php
+                                    $discountType = $product->productDiscount->discount_type ?? '';
+                                    $discountText = match($discountType) {
+                                        'fixed' => 'ثابت',
+                                        'percentage' => 'نسبة مئوية',
+                                        default => 'لا يوجد'
+                                    };
+                                @endphp
+                                {{ $discountText }}
+                            </li>
                             <li class="list-group-item"><strong>تاريخ البدء:</strong> {{ $product->productDiscount->start_date ? $product->productDiscount->start_date->format('Y-m-d') : 'لا يوجد' }}</li>
                             <li class="list-group-item"><strong>تاريخ الانتهاء:</strong> {{ $product->productDiscount->end_date ? $product->productDiscount->end_date->format('Y-m-d') : 'لا يوجد' }}</li>
                         </ul>

@@ -1,4 +1,5 @@
 
+
 .my-header-dropdown-item {
     color: #333;
     padding: 5px 4px; /* تقليل الحشو بين النص وجوانب القائمة */
@@ -35,7 +36,7 @@
 @media (max-width: 1399px) {
     .home-slider-area.slider-default .slider-content-area
      {
-        height: 755px !important;
+        height: 680px !important;
     }
 }
 @media (max-width: 768px) {
@@ -108,4 +109,104 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     max-height: 270px !important; /* حدد الارتفاع الأقصى للقائمة */
     overflow-y: auto !important; /* إضافة شريط تمرير عمودي */
     margin-top: 10px !important; /* إضافة هامش أعلى */
+}
+
+
+/*Search Box*/
+
+.header-search-box {
+    max-width: 100% !important;
+}
+.header-search-box .form-input-item {
+    display: flex !important;
+    align-items: center !important;
+    background-color: #f8f8f8 !important;
+    border-radius: 30px !important;
+    overflow: hidden !important;
+    margin-bottom: 10px!important;
+}
+.header-search-box .form-input-item .btn-src {
+    background-color: #f379a7 !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+.header-search-box .form-input-item .btn-src i {
+    color: white !important;
+    font-size: 20px !important;
+}
+.header-search-box .form-input-item input {
+    flex-grow: 1 !important;
+    border: none !important;
+    background-color: transparent !important;
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+    text-align: center;
+}
+.header-search-box .form-input-item input::placeholder {
+    color: #999 !important;
+    text-align: center;
+}
+.header-search-box .form-input-item,
+.header-search-box .form-input-item input {
+    transition: all 0.3s ease !important;
+}
+.header-search-box .form-input-item:focus-within {
+    box-shadow: 0 0 0 1px rgba(243, 121, 167, 0.66) !important;
+    background-color: #ffffff !important;
+}
+.header-search-box .form-input-item input:focus {
+    outline: none !important;
+    text-align: left !important;
+    box-shadow: none !important; /* إلغاء الحدود الزرقاء */
+
+}
+.header-search-box .form-input-item input:focus::placeholder {
+    color: transparent !important;
+}
+
+@media (max-width: 767px) {
+    .header-align-center {
+        display: none !important;
+    }
+    .header-middle .row + .row {
+        display: block !important;
+    }
+    .header-middle .row + .row .header-search-box {
+        margin-top: 15px !important;
+    }
+    .header-search-box .form-input-item .btn-src{
+        padding: 12px 14px 4px 14px !important
+
+    }
+}
+@media (min-width: 768px) {
+    .header-middle .row + .row {
+        display: none !important;
+    }
+}
+
+.divider-image img{
+    height: auto !important;
+    display: flex !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+@media only screen and (max-width: 767px) {
+    .product-tab-content .nav-tabs .nav-item .nav-link {
+        padding: 9px 15px;
+        font-size: 14px;
+        margin-right: 8px;
+    }
+}
+
+@media only screen and (min-width: 575px) {
+    .home-slider-area.slider-default .home-slider-content .swiper-container .swiper-wrapper .swiper-slide-active .home-slider-item .thumb-two {
+        position: absolute !important;
+        bottom: -5px !important;
+    }
+}
+
+.product-area.product-style2-area {
+    margin-top: 58px;
 }

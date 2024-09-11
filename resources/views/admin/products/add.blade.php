@@ -34,10 +34,18 @@
 
                 <!-- السعر -->
                 <div class="form-group row mt-4">
-                    <label for="inputPrice" class="col-sm-2 control-label">السعر</label>
+                    <label for="inputPrice" class="col-sm-2 control-label">سعر القطاعي</label>
                     <div class="col-sm-10">
                         <input type="number" step="0.01" class="form-control @error('price') is-invalid @enderror" id="inputPrice" placeholder="أدخل سعر المنتج" name='price' value="{{ old('price') }}">
                         @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <!-- سعر الجملة -->
+                <div class="form-group row mt-4">
+                    <label for="inputGoomlaPrice" class="col-sm-2 control-label">سعر الجملة</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="0.01" class="form-control @error('goomla_price') is-invalid @enderror" id="inputGoomlaPrice" placeholder="أدخل سعر الجملة للمنتج" name='goomla_price' value="{{ old('goomla_price') }}">
+                        @error('goomla_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
@@ -65,20 +73,12 @@
                     </div>
                 </div>
 
-                <!-- الخصم -->
-                <div class="form-group row mt-4">
-                    <label for="inputDiscount" class="col-sm-2 control-label">قيمة الخصم</label>
-                    <div class="col-sm-10">
-                        <input type="number" step="0.01" class="form-control @error('discount') is-invalid @enderror" id="inputDiscount" placeholder="أدخل قيمة الخصم" name='discount' value="{{ old('discount',0)}}" min="0">
-                        @error('discount')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                </div>
-
                 <!-- نوع الخصم -->
                 <div class="form-group row mt-4">
                     <label for="inputDiscountType" class="col-sm-2 control-label">نوع الخصم</label>
                     <div class="col-sm-10">
                         <select class="select2 form-control @error('discount_type') is-invalid @enderror" id="inputDiscountType" name="discount_type">
+                            <option value="" {{ old('discount_type') == '' ? 'selected' : '' }}>لا يوجد</option>
                             <option value="fixed" {{ old('discount_type') == 'fixed' ? 'selected' : '' }}>ثابت</option>
                             <option value="percentage" {{ old('discount_type') == 'percentage' ? 'selected' : '' }}>نسبة مئوية</option>
                         </select>
@@ -86,20 +86,29 @@
                     </div>
                 </div>
 
-                <!-- تاريخ البدء -->
-                <div class="form-group row mt-4">
-                    <label for="inputStartDate" class="col-sm-2 control-label">تاريخ البدء</label>
+                <!-- قيمة الخصم -->
+                <div class="form-group row mt-4 discount-fields" style="display: none;">
+                    <label for="inputDiscount" class="col-sm-2 control-label">قيمة الخصم</label>
                     <div class="col-sm-10">
-                        <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="inputStartDate" name='start_date' value="{{ old('start_date') }}">
+                        <input type="number" step="0.01" class="form-control @error('discount') is-invalid @enderror" id="inputDiscount" placeholder="أدخل قيمة الخصم" name='discount' value="{{ old('discount',0)}}" min="0">
+                        @error('discount')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <!-- تاريخ البدء -->
+                <div class="form-group row mt-4 discount-fields" style="display: none";>
+                    <label for="inputStartDate" class="col-sm-2 control-label ">تاريخ البدء</label>
+                    <div class="col-sm-10">
+                        <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="inputStartDate" name='start_date' value="{{ old('start_date','') }}">
                         @error('start_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
                 <!-- تاريخ الانتهاء -->
-                <div class="form-group row mt-4">
-                    <label for="inputEndDate" class="col-sm-2 control-label">تاريخ الانتهاء</label>
+                <div class="form-group row mt-4 discount-fields" style="display: none;">
+                    <label for="inputEndDate" class="col-sm-2 control-label ">تاريخ الانتهاء</label>
                     <div class="col-sm-10">
-                        <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="inputEndDate" name='end_date' value="{{ old('end_date') }}">
+                        <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="inputEndDate" name='end_date' value="{{ old('end_date','') }}">
                         @error('end_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
@@ -161,11 +170,41 @@
         document.getElementById('inputImages').addEventListener('change', previewImages);
 
         $(document).ready(function() {
+            var discountTypeSelector = $('#inputDiscountType');
+
+            // اظهار أو إخفاء حقول الخصم بناءً على القيمة المحددة
+            function toggleDiscountFields() {
+                var selectedType = discountTypeSelector.val();
+                if (selectedType === "") {
+                    $('.discount-fields').hide(); // إخفاء الحقول
+                    $('#inputDiscount').val(null); // تعيين قيمة الخصم إلى null
+                    $('#inputStartDate').val(null); // تعيين تاريخ البدء إلى null
+                    $('#inputEndDate').val(null); // تعيين تاريخ الانتهاء إلى null
+                } else {
+                    $('.discount-fields').show(); // إظهار الحقول عند اختيار نوع الخصم
+                }
+            }
+
+            // استدعاء الوظيفة عند تغيير نوع الخصم
+            discountTypeSelector.change(function() {
+                toggleDiscountFields();
+            });
+
+            // تشغيل الوظيفة عند تحميل الصفحة لتعيين الحالة الأولية
+            toggleDiscountFields();
+
             // تقديم النموذج عبر AJAX
             $('#product-form').submit(function(event) {
                 event.preventDefault(); // منع إرسال النموذج بالطريقة التقليدية
 
                 var formData = new FormData(this);
+
+                // تحقق من القيم وإضافة قيم افتراضية إذا كانت الحقول مخفية
+                if (discountTypeSelector.val() === "") {
+                    formData.delete('discount'); // حذف قيمة الخصم
+                    formData.delete('start_date'); // حذف تاريخ البدء
+                    formData.delete('end_date'); // حذف تاريخ الانتهاء
+                }
 
                 $.ajax({
                     url: "{{ route('admin.products.store') }}",
@@ -177,13 +216,10 @@
                         toastr.success(response.success);
                         resetForm();
                     },
-                    error: function(xhr) {
-                        console.log(xhr)
-                        var errors = xhr.responseJSON.errors;
-                        for (var key in errors) {
-                            toastr.error(errors[key][0]);
+                    error: function(response) {
+                        console.log(response)
                         }
-                    }
+
                 });
             });
 

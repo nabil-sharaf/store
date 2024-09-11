@@ -4,7 +4,7 @@ return [
     'free_returns_shipping' => 'Free Returns and Free Shipping',
     'logout' => 'Logout',
     'login' => 'Login',
-    'search_placeholder' => 'Search Everything',
+    'search_placeholder' => ' Search anything here',
     'home' => 'Home',
     'about' => 'About',
     'categories' => 'Categories',

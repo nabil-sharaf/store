@@ -5,10 +5,9 @@ use App\Http\Controllers\Front\CategoryController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\homeController;
 use App\Http\Controllers\Front\ProductController;
+use App\Http\Controllers\Front\ProfileController;
 use App\Http\Controllers\Front\WishlistController;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -43,8 +42,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth','verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.Update');
+    Route::post('/profile', [ProfileController::class, 'updateAddress'])->name('profile.updateAddress');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 //    ------------------------------------ Wishlist Routes ------------------------

@@ -5,7 +5,7 @@ return [
 'contact_us' => 'اتصل بنا',
 'address' => 'العنوان',
 'phone' => 'رقم الهاتف',
-'email_web' => 'البريد الإلكتروني / الموقع',
+'email_web' => 'البريد الإلكتروني',
 'send_your_request' => 'ارسل لنا طلبك',
 'name_placeholder' => 'الاسم هنا',
 'email_placeholder' => 'بريدك الالكتروني *',

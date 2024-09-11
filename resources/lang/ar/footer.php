@@ -2,7 +2,7 @@
 
 return [
     'logo_alt' => 'الشعار',
-    'description' => \App\Models\Admin\Setting::getValue('site_disc_footer_ar'),
+    'description' => \App\Models\Admin\Setting::getValue('site_disc_footer_ar')??'مرحبًا بكم في ماما ستور المكان الأفضل لطفلك تسوق الأن واستمتع معنا',
     'quick_links' => 'روابط سريعة',
     'helpline' => 'خط المساعدة',
     'courses' => 'الدورات',

@@ -11,9 +11,10 @@
             <a href="{{ ''}}" class="btn btn-primary float-left mr-2">
                 <i class="fas fa-plus mr-1"></i> إضافة مستخدم جديد
             </a>
-            <button id="vip-selected" class="btn btn-secondary float-left mr-2">
-                <i class="fas fa-star -alt mr-1 ml-2 mt-1 float-right"></i> إضافة vip للمستخدمين المحددين
+            <button id="vip-selected-btn" class="btn btn-secondary float-left mr-2">
+                <i class="fas fa-star-alt mr-1 ml-2 mt-1 float-right"></i> إضافة VIP للمستخدمين المحددين
             </button>
+
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -23,9 +24,9 @@
                     <th><input type="checkbox" id="select-all"></th>
                     <th>#</th>
                     <th>الاسم</th>
-                    <th>البريد الإلكتروني</th>
+                    <th>رقم الموبايل</th>
                     <th>نوع المستخدم</th>
-                    <th>تاريخ بدء VIP</th>
+                    <th>تاريخ انتهاء VIP</th>
                     <th>نسبة الخصم</th>
                     <th>الحالة</th>
                     <th>العمليات</th>
@@ -34,25 +35,37 @@
                 <tbody>
                 @forelse($users as $user)
                     @if($user->customer_type == 'goomla')
-                        {{ $customer_type = 'جملة' }}
-                    @elseif($user->customer_type == 'vip')
-                        {{ $customer_type = 'vip' }}
-                   @elseif($user->customer_type == 'normal')
-                        {{ $customer_type = 'قطاعي' }}
+                        @php $customer_type = 'جملة' ; @endphp
+                    @elseif($user->customer_type == 'regular')
+                        @php $customer_type = 'قطاعي' ; @endphp
                     @endif
-                    <tr>
+                    <tr id="customer-data-{{$user->id}}" style="background-color:{{$user->status ? '#fff':'#ccc'}}">
                         <td><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
                         <td>{{ $loop->iteration }}.</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $customer_type}}</td>
-                        <td>{{ $user->vip_start_date ? $user->vip_start_date->format('Y-m-d') : 'N/A' }}</td>
-                        <td>{{ $user->discount!=0 ? $user->discount . '%' : 'لا يوجد' }}</td>
-                        <td><span class="btn btn-sm {{$user->status==1?'btn-success' : 'btn-danger'}}">{{$user->status==1?'مفعل' : 'غير مفعل'}}</span></td>
-                        <td>
-                            <a href="#" class=" btn btn-sm btn-light mr-1" title="Make Vip" data-toggle="modal" data-target="#modal-default{{$user->id}}" data-id="{{$user->id}}">
-                                <i class="fas fa-crown" style="color:darkviolet; background-color:#e2e2e2"></i>
-                            </a>
+                        <td id="user-name-{{$user->id}}">{{ $user->name }}</td>
+                        <td>{{ $user->phone }}</td>
+                        <td id="user-type-{{$user->id}}">
+                            @if($user->is_vip)
+                                {{$customer_type}}&nbsp; <i class="fas fa-crown" style="color:darkviolet; "></i>
+                            @else
+                                {{$customer_type}}
+                            @endif
+                        </td>
+                        <td id="vip-end-date-{{$user->id}}">
+                            {{ $user->is_vip && $user->vip_end_date ? $user->vip_end_date->format('Y-m-d') : 'N/A' }}
+                        </td>
+                        <td id="user-discount-{{$user->id}}">{{ $user->discount!=0 ? $user->discount . '%' : 'لا يوجد' }}</td>
+                        <td id="user-status-{{$user->id}}"><span  class="btn btn-sm {{$user->status==1?'btn-success' : 'btn-danger'}}">{{$user->status==1?'مفعل' : 'غير مفعل'}}</span></td>
+                        <td id="vip-td-change-{{$user->id}}">
+                            @if($user->is_vip)
+                                <a class="btn btn-sm btn-light mr-1 disabled" title="Make Vip" aria-disabled="true" data-target="#modal-default{{$user->id}}" data-id="{{$user->id}}">
+                                    <i  class="icon-changer-{{$user->id}} fas fa-crown" style="color:#5f5f5f;"></i>
+                                </a>
+                            @else
+                                <a href="#" class=" btn btn-sm btn-light mr-1" title="Make Vip" data-toggle="modal" data-target="#modal-default{{$user->id}}" data-id="{{$user->id}}">
+                                    <i class=" fas fa-crown" style="color:darkviolet; background-color:#e2e2e2"></i>
+                                 </a>
+                            @endif
 
                             <div class="modal fade" id="modal-default{{$user->id}}">
                                 <div class="modal-dialog">
@@ -67,22 +80,22 @@
 
 
                                             <div class="form-group row mt-4">
-                                                <label for="start_date" class="col-sm-2 control-label">تاريخ البدء</label>
+                                                <label for="start_date{{$user->id}}" class="col-sm-2 control-label">تاريخ البدء</label>
                                                 <div class="col-sm-10">
-                                                 <input type="date" class="form-control " name="start_date" value="">
+                                                 <input type="date" class="form-control "  id ='start_date{{$user->id}}' name="start_date" value="">
                                                  </div>
                                             </div>
                                             <div class="form-group row mt-4">
-                                                <label for="end_date" class="col-sm-2 control-label">تاريخ الانتهاء</label>
+                                                <label for="end_date{{$user->id}}" class="col-sm-2 control-label">تاريخ الانتهاء</label>
                                                 <div class="col-sm-10">
-                                                 <input type="date" class="form-control " name="end_date" value="">
+                                                 <input type="date" class="form-control " id = 'end_date{{$user->id}}' name="end_date" value="">
                                                  </div>
                                             </div>
 
                                             <div class="form-group row mt-4">
-                                                <label for="inputDiscount" class="col-sm-2 control-label">نسبة الخصم % </label>
+                                                <label for="userDiscount{{$user->id}}" class="col-sm-2 control-label">نسبة الخصم % </label>
                                                 <div class="col-sm-10">
-                                                    <input type="number" step="0.01" class="form-control inline-block " id="inputDiscount" placeholder="أدخل قيمة الخصم" name="discount" value="0" min="0">
+                                                    <input type="number" step="0.01" id = 'userDiscount{{$user->id}}' class="form-control inline-block "  placeholder="أدخل نسبة الخصم" name="userDiscount" value="0" min="0">
 
                                                 </div>
                                             </div>
@@ -102,15 +115,54 @@
                                 <i class="fas fa-eye"></i>
                             </a>
 
-                            @if($user->status==1)
-                            <a href="{{''}}" class="btn btn-sm btn-danger mr-1" title="تعطيل المستخدم">
-                               <i class="fas fa-user-slash "></i>
+                                <a href="#" class="btn-edit-customer btn btn-sm btn-info mr-1"
+                                   data-toggle="modal"
+                                   data-target="#editCustomerModal-{{ $user->id }}"
+                                   data-id="{{ $user->id }}"
+                                   data-name="{{ $user->name }}"
+                                   data-type="{{ $user->customer_type }}"
+                                   data-status="{{ $user->status }}"
+                                   title="تعديل">
+                               <i class="fas fa-user-edit "></i>
                             </a>
-                            @else
-                                <a href="{{''}}" class="btn btn-sm btn-info mr-1" title="تفعيل المستخدم">
-                                    <i class="fas fa-user " ></i>
-                                </a>
-                            @endif
+                                <!-- تعديل نموذج بيانات العميل لكل مستخدم -->
+                            <div class=" text-left modal fade" id="editCustomerModal-{{ $user->id }}" tabindex="-1" aria-labelledby="editCustomerModalLabel-{{ $user->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header customer-edit-label bg-primary text-white">
+                                        <h5 class="modal-title" id="editCustomerModalLabel-{{ $user->id }}">تعديل بيانات العميل</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="editCustomerForm-{{ $user->id }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="mb-4">
+                                                <label for="customerName-{{ $user->id }}" class="form-label mb-3">اسم العميل :</label>
+                                                <input type="text" class="form-control form-control-lg" id="customerName-{{ $user->id }}" name="name" value="{{ $user->name }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="customerType-{{ $user->id }}" class="form-label mb-3">نوع العميل :</label>
+                                                <select class="form-control form-select form-select-lg" id="customerType-{{ $user->id }}" name="type">
+                                                    <option value="goomla" {{ $user->customer_type == 'goomla' ? 'selected' : '' }}>جملة</option>
+                                                    <option value="regular" {{ $user->customer_type == 'regular' ? 'selected' : '' }}>قطاعي</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="customerStatus-{{ $user->id }}" class="form-label mb-3">حالة الحساب :</label>
+                                                <select class="form-control form-select form-select-lg" id="customerStatus-{{ $user->id }}" name="status">
+                                                    <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>مفعل</option>
+                                                    <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>غير مفعل</option>
+                                                </select>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" form="editCustomerForm-{{ $user->id }}" class="save-customerChanges btn btn-primary ">حفظ التغييرات</button>
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closeModalBtn-{{ $user->id }}">إغلاق</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         </td>
                     </tr>
                 @empty
@@ -118,6 +170,44 @@
                         <td colspan="9">لا يوجد مستخدمين حاليا</td>
                     </tr>
                 @endforelse
+
+                <div class="modal fade" id="modal-default-all" tabindex="-1" aria-labelledby="modal-default-all" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">تمييز العملاء المحددين كـ vip</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group row mt-4">
+                                    <label for="all_start_date" class="col-sm-2 control-label">تاريخ البدء</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="all_start_date" name="all_start_date" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-4">
+                                    <label for="all_end_date" class="col-sm-2 control-label">تاريخ الانتهاء</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="all_end_date" name="all_end_date" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-4">
+                                    <label for="all_userDiscount" class="col-sm-2 control-label">نسبة الخصم %</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" step="0.01" id="all_userDiscount" class="form-control inline-block" placeholder="أدخل نسبة الخصم" name="all_userDiscount" value="0" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
+                                <button type="button" id="confirm-vip-btn" class="btn btn-primary">تأكيد التغييرات</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 </tbody>
             </table>
         </div>
@@ -128,70 +218,222 @@
     </div>
 @endsection
 
+
 @push('scripts')
+
     <script>
         $(document).ready(function() {
-            // تحديد كل المستخدمين
+        // تحديد أو إلغاء تحديد كل المستخدمين
             $('#select-all').click(function() {
                 $('.user-checkbox').prop('checked', this.checked);
             });
 
-            // تنفيذ عملية vip الجماعية
-            $('#vip-selected').click(function() {
-
+        // التعامل مع الزر الوحيد لتحديد المستخدمين وفتح المودال وتنفيذ العملية
+            $('#vip-selected-btn').click(function(){
                 var selected = [];
-                url = "{{ route('admin.customers.vipAll') }}";
-
                 $('.user-checkbox:checked').each(function() {
                     selected.push($(this).val());
                 });
 
-                if (selected.length > 0) {
-                    if (confirm('هل أنت متأكد من اضافة vip المستخدمين المحددين؟')) {
-                        $.ajax({
-                            url: url,
-                            type: 'PUT',
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                "ids": selected
-                            },
-                            success: function(response) {
-                                toastr.success(response.success);
-                            },
-                            error: function(response) {
-                                console.log(response);
-                            }
-                        });
-
-                    }
+                if(selected.length < 1){
+                    toastr.error('لم يتم تحديد أي مستخدمين');
                 } else {
-                    alert('لم يتم تحديد أي مستخدمين');
+                    var modal = new bootstrap.Modal(document.getElementById('modal-default-all'));
+                    modal.show();
+
+                    // تنفيذ العملية بعد تحديد البيانات في المودال
+                    $('#confirm-vip-btn').off('click').click(function() {
+                        var all_startDate = $('#all_start_date').val();
+                        var all_endDate = $('#all_end_date').val();
+                        var all_discount = $('#all_userDiscount').val();
+
+                        if(all_startDate === "" || all_endDate === "" || all_userDiscount === ""){
+                            toastr.error('يرجى إدخال جميع البيانات المطلوبة');
+                            return;
+                        }
+
+                        var url = "{{ route('admin.customers.vipAll') }}";
+
+                        if (selected.length > 0) {
+                            $.ajax({
+                                url: url,
+                                type: 'post',
+                                data: {
+                                    "_token": "{{ csrf_token() }}",
+                                    "ids": selected,
+                                    'start_date': all_startDate,
+                                    'end_date': all_endDate,
+                                    'discount': all_discount,
+                                    'make_vip':true,
+                                },
+                                success: function(response) {
+                                    toastr.success(response.success);
+                                    $('#modal-default-all').fadeOut(600);
+                                    $('.modal-backdrop').remove(); // إزالة الخلفية للمودال
+
+                                    // تحديث حالة الأعضاء في الجدول
+                                    $.each(selected, function(index, userId) {
+                                        var userType = $('#user-type-' + userId);
+                                        // تحقق مما إذا كانت الأيقونة موجودة بالفعل
+                                        if (userType.find('i.fas.fa-crown').length === 0) {
+                                            userType.append(' <i class="fas fa-crown" style="color:darkviolet;"></i>'); // إضافة أيقونة التاج
+                                        }
+                                        $('#user-discount-' + userId).text(all_discount + ' %'); // تحديث نسبة الخصم
+                                        $('#vip-start-date-' + userId).text(all_startDate); // تحديث تاريخ البدء
+                                        $('#vip-end-date-' + userId).text(all_endDate); // تحديث تاريخ الانتهاء
+
+                                    });
+
+                                    // إعادة تعيين القيم في المودال
+                                    $('#all_start_date').val('');
+                                    $('#all_end_date').val('');
+                                    $('#all_userDiscount').val(0);
+                                    $('.user-checkbox').prop('checked', false); // إلغاء تحديد كل checkboxes
+                                },
+                                error: function(response) {
+                                    toastr.error('حدث خطأ أثناء التعديل، حاول مرة أخرى.');
+                                    console.log(response);
+                                }
+                            });
+                        } else {
+                            toastr.error('يجب اختيار عميل واحد على الأقل.');
+                        }
+                    });
                 }
             });
 
-            // make customer vip
+       // make customer vip
             $('.vip-user-btn').on('click', function() {
 
-                    var userId = $(this).data('id');
-                    var url = "{{ route('admin.customers.vip-customer', ':id') }}".replace(':id', userId);
-                    // var tr = $(this).closest('tr');
+                var userId = $(this).data('id');
+                var url = "{{ route('admin.customers.vip-customer', ':id') }}".replace(':id', userId);
+
+                // تخصيص الحقول بناءً على userId
+                var startDate = $( '#start_date' + userId).val();
+                var endDate = $('#end_date'+ userId).val();
+                var discount = $('#userDiscount' + userId ).val();
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'start_date': startDate,
+                        'end_date': endDate,
+                        'discount': discount,
+                        'make_vip':true,
+                    },
+                    success: function(response) {
+                        toastr.success(response.success);
+                        $('#modal-default'+userId).fadeOut(600);
+                        $('.modal-backdrop').remove(); // إزالة الخلفية للمودال
+
+                        // تحديث حالة العضو في الجدول
+                        var userType = $('#user-type-' + userId);
+                        userType.append(' <i class="fas fa-crown" style="color:darkviolet;"></i>'); // إضافة أيقونة التاج
+
+                        $('#user-discount-' + userId).text(discount+' %'); // تحديث تاريخ الانتهاء
+
+                        $('#vip-end-date-' + userId).text(endDate); // تحديث تاريخ الانتهاء
+
+                        // تعطيل الأيقونة وتغيير لونها
+                        var vipIcon = $('#vip-td-change-' + userId + ' a[data-target="#modal-default' + userId + '"]');
+                        vipIcon.addClass('disabled').attr('aria-disabled', 'true'); // جعل الأيقونة معطلة
+                        vipIcon.find('i').css('color', '#5f5f5f'); // تغيير لون الأيقونة للرمادي
+                    },
+                    error: function(response) {
+                        toastr.error('حدث خطأ أثناء التعديل تأكد من التواريخ وقيمة ')
+                        console.log(userId)
+                    }
+                });
+            });
+
+
+            // تعديل بيانات المستخدم
+            $('.btn-edit-customer').on('click', function(event) {
+                event.preventDefault();
+
+                var userId = $(this).data('id');
+                var modalId = '#editCustomerModal-' + userId;
+
+                // تعبئة بيانات المستخدم داخل المودال
+                $(modalId).find('#customerName-' + userId).val($(this).data('name'));
+                $(modalId).find('#customerType-' + userId).val($(this).data('type'));
+                $(modalId).find('#customerStatus-' + userId).val($(this).data('status'));
+
+                // ربط الحدث عند الضغط على زر الحفظ
+                $(modalId).find('.save-customerChanges').off('click').on('click', function(e) {
+                    e.preventDefault();
+
+                    // احصل على بيانات النموذج
+                    var formData = {
+                        _token: $('input[name="_token"]').val(),
+                        name: $(modalId).find('input[name="name"]').val(),
+                        customer_type: $(modalId).find('select[name="type"]').val(),
+                        status: $(modalId).find('select[name="status"]').val(),
+                        _method: 'PUT',
+                        'update_user': true,
+                    };
+
+
+                    var url = "{{ route('admin.customers.update', ':id') }}".replace(':id', userId);
+
+
+                    // إرسال طلب Ajax لتحديث البيانات
                     $.ajax({
                         url: url,
-                        type: 'PUT',
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                        },
+                        method: 'POST',
+                        data: formData,
                         success: function(response) {
-                            // toastr.success(response.success);
-                            console.log(response)
-                        },
+                            toastr.success(response.success);
+                            $(modalId).fadeOut(400);
+                            $('.modal-backdrop').remove(); // إزالة الخلفية للمودال
 
+                            // تحديث البيانات في الجدول
+                            var userRow = $('#customer-data-'+userId);
+
+                            var userType;
+                            switch (response.userType) {
+                                case 'goomla':
+                                    userType='جملة';
+                                    break;
+                                default:
+                                    userType='قطاعي';
+                                    break;
+                            }
+
+                            var vipIcon = response.is_vip ? '<i class="fas fa-crown" style="color:darkviolet;"></i>' : '';
+
+                            // تحديث البيانات في الجدول
+                            userRow.find('#user-status-' + userId).html(response.status == 1 ? '<span class="btn btn-sm btn-success">مفعل</span>' : '<span class="btn btn-sm btn-danger">غير مفعل</span>')
+                            userRow.find('#user-type-' + userId).html(userType + ' '+ vipIcon);
+                            userRow.find('#user-name-' + userId).text(response.userName);
+
+                        },
                         error: function(response) {
-                            console.log(response)
-                            alert('حدث خطأ أثناء التعديل');
+                            toastr.error(response.error);
                         }
                     });
+
+                    return false; // منع أي تحديث إضافي للصفحة
+                });
             });
+
         });
+
+
+
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        .customer-edit-label{
+            background-color: #17a2b8 !important;
+        }
+        .save-customerChanges{
+            background-color: #17a2b8 !important;
+        }
+
+    </style>
 @endpush

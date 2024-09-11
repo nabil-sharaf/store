@@ -45,6 +45,16 @@
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
+
+                <!-- سعر الجملة -->
+                <div class="form-group row mt-4">
+                    <label for="inputGoomlaPrice" class="col-sm-2 control-label">سعر الجملة</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="0.01" class="form-control @error('goomla_price') is-invalid @enderror" id="inputGoomlaPrice" placeholder="أدخل سعر الجملة للمنتج" name='goomla_price' value="{{ old('price', $product->goomla_price) }}">
+                        @error('goomla_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
                 <div class="form-group row mt-4">
                     <label for="inputQuantity" class="col-sm-2 control-label">الكمية</label>
                     <div class="col-sm-10">
@@ -73,46 +83,47 @@
                 </div>
                 <!-- إضافة الحقول الجديدة للخصم وتواريخه -->
                 <div class="form-group row mt-4">
-                    <label for="inputDiscount" class="col-sm-2 control-label">قيمة الخصم</label>
-                    <div class="col-sm-10">
-                        <input type="number" step="0.01" class="form-control @error('discount') is-invalid @enderror"
-                               id="inputDiscount" placeholder="أدخل قيمة الخصم" name='discount'
-                               value="{{ old('discount', $product->productDiscount->discount) }}" min="0">
-                        @error('discount')
-                        <div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                </div>
-
-                <div class="form-group row mt-4">
                     <label for="inputDiscountType" class="col-sm-2 control-label">نوع الخصم</label>
                     <div class="col-sm-10">
                         <select class="select2 form-control @error('discount_type') is-invalid @enderror"
                                 id="inputDiscountType" name="discount_type">
-                            <option value="fixed" {{ old('discount_type', $product->productDiscount->discount_type) == 'fixed' ? 'selected' : '' }}>ثابت</option>
-                            <option value="percentage" {{ old('discount_type', $product->productDiscount->discount_type) == 'percentage' ? 'selected' : '' }}>نسبة مئوية</option>
+                            <option value="" {{ old('discount_type', $product?->productDiscount?->discount_type) == '' ? 'selected' : '' }}>بدون خصم</option>
+                            <option value="fixed" {{ old('discount_type', $product?->productDiscount?->discount_type) == 'fixed' ? 'selected' : '' }}>ثابت</option>
+                            <option value="percentage" {{ old('discount_type', $product?->productDiscount?->discount_type) == 'percentage' ? 'selected' : '' }}>نسبة مئوية</option>
                         </select>
                         @error('discount_type')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
-                <div class="form-group row mt-4">
+                <div class="form-group row mt-4 discount-fields" style="display: none;">
+                    <label for="inputDiscount" class="col-sm-2 control-label">قيمة الخصم</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="0.01" class="form-control @error('discount') is-invalid @enderror"
+                               id="inputDiscount" placeholder="أدخل قيمة الخصم" name='discount'
+                               value="{{ old('discount', $product?->productDiscount?->discount) }}" min="0">
+                        @error('discount')
+                        <div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <div class="form-group row mt-4 discount-fields" style="display: none;">
                     <label for="inputStartDate" class="col-sm-2 control-label">تاريخ البدء</label>
                     <div class="col-sm-10">
                         <input type="date" class="form-control @error('start_date') is-invalid @enderror"
                                id="inputStartDate" name='start_date'
-                               value="{{ old('start_date', $product->productDiscount->start_date->format('Y-m-d')) }}">
+                               value="{{ old('start_date', $product?->productDiscount?->start_date?->format('Y-m-d')) }}">
                         @error('start_date')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
-                <div class="form-group row mt-4">
+                <div class="form-group row mt-4 discount-fields" style="display: none;">
                     <label for="inputEndDate" class="col-sm-2 control-label">تاريخ الانتهاء</label>
                     <div class="col-sm-10">
                         <input type="date" class="form-control @error('end_date') is-invalid @enderror"
                                id="inputEndDate" name='end_date'
-                               value="{{ old('end_date', $product->productDiscount->end_date->format('Y-m-d')) }}">
+                               value="{{ old('end_date', $product?->productDiscount?->end_date?->format('Y-m-d')) }}">
                         @error('end_date')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
@@ -202,5 +213,35 @@
                 });
             }
         }
+
+        $(document).ready(function(){
+
+
+            // إخفاء أو إظهار الحقول بناءً على قيمة نوع الخصم عند تحميل الصفحة
+            toggleDiscountFields();
+
+            // تنفيذ الدالة عند تغيير نوع الخصم
+            $('#inputDiscountType').change(function () {
+                toggleDiscountFields();
+            });
+
+            // دالة لإخفاء أو إظهار الحقول
+            function toggleDiscountFields() {
+                var discountType = $('#inputDiscountType').val();
+
+                if (discountType === '') {
+                    // إخفاء الحقول وتفريغ القيم عند اختيار "بدون خصم"
+                    $('.discount-fields').hide();
+                    $('#inputDiscount').val(null);
+                    $('#inputStartDate').val(null);
+                    $('#inputEndDate').val(null);
+                } else {
+                    // إظهار الحقول عند اختيار "ثابت" أو "نسبة مئوية"
+                    $('.discount-fields').show();
+                }
+            }
+
+
+        });
     </script>
 @endpush

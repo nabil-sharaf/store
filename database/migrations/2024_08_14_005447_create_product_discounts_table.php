@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->decimal('discount', 8, 2); // قيمة الخصم
-            $table->enum('discount_type', ['percentage', 'fixed'])->default('fixed'); // نوع الخصم
-            $table->datetime('start_date')->notNullable();
-            $table->datetime('end_date')->notNullable();
+            $table->enum('discount_type', ['percentage', 'fixed']);
+            $table->datetime('start_date');
+            $table->datetime('end_date');
             $table->timestamps();
         });
     }

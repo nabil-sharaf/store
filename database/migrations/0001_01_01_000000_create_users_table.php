@@ -14,14 +14,16 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('last_name')->nullable();
             $table->string('phone')->unique();
             $table->string('email')->unique()->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->enum('customer_type', ['normal', 'vip', 'goomla'])->default('normal');
+            $table->enum('customer_type', ['regular', 'goomla'])->default('regular');
+            $table->boolean('is_vip')->nullable();
             $table->date('vip_start_date')->nullable();
             $table->date('vip_end_date')->nullable();
-            $table->decimal('discount', 5, 2)->default(0);
+            $table->decimal('discount', 5, 2)->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

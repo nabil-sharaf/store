@@ -15,7 +15,9 @@ return new class extends Migration {
             $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->string('quantity');
+            $table->tinyInteger('is_trend')->nullable();
             $table->decimal('price', 8, 2);
+            $table->decimal('goomla_price', 8, 2);
             $table->timestamps();
         });
     }

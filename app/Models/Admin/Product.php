@@ -11,7 +11,9 @@ class Product extends Model
         'name',
         'description',
         'quantity',
-         'price'
+         'price',
+         'goomla_price',
+          'is_trend',
     ];
     public function categories()
     {

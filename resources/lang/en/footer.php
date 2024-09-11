@@ -2,17 +2,12 @@
 
 return [
     'logo_alt' => 'Logo',
-    'description' => \App\Models\Admin\Setting::getValue('site_disc_footer_en'),
+    'description' => \App\Models\Admin\Setting::getValue('site_disc_footer_en')??'welcome to mama store The best store for mother & Baby suppliers',
     'quick_links' => 'Quick Links',
     'store_information' => 'Site Info',
     'support' => 'Support',
-    'helpline' => 'Helpline',
-    'courses' => 'Courses',
     'about' => 'About',
-    'event' => 'Event',
-    'other_page' => 'Other Page',
-    'blog' => 'Blog',
-    'speakers' => 'Speakers',
+
     'contact' => 'Contact',
 
     'contact_us' => 'Contact us',

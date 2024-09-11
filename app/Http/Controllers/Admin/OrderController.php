@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\OrderRequest;
 use App\Models\Admin\Order;
 use App\Models\Admin\OrderDetail;
 use App\Models\Admin\Product;
+use App\Models\Admin\ProductDiscount;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,17 +17,17 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-            $query = Order::query();
+        $query = Order::query();
 
         if ($request->has('status') && !empty($request->status)) {
-            $query->where('status_id',$request->status);
+            $query->where('status_id', $request->status);
         }
 
         if ($request->has('sort')) {
             $query->orderBy($request->sort, 'asc');
         }
 
-        $orders =$query->with('orderDetails', 'user')->paginate(10);
+        $orders = $query->with('orderDetails', 'user')->paginate(10);
 
         return view('admin.orders.index', compact('orders'));
     }
@@ -34,7 +35,7 @@ class OrderController extends Controller
     public function create()
     {
         $users = User::all();
-        $products = Product::all();
+        $products = Product::with('discount')->get();
         return view('admin.orders.create', compact('users', 'products'));
     }
 
@@ -60,14 +61,31 @@ class OrderController extends Controller
                         throw new \Exception('الكمية لابد ان تكون واحد على الأقل ');
                     }
 
+                    // استرجاع خصم المنتج من قاعدة البيانات
+                    $productDiscount = $product->discount;
+
+                    $productPrice = $user->customer_type == 'goomla' ? $product->goomla_price : $product->price;
+
+                    $discountAmount = 0;
+                    if ($productDiscount) {
+                        if ($productDiscount->discount_type === 'percentage') {
+                            $discountAmount = ($productPrice * $productDiscount->discount) / 100;
+                        } elseif ($productDiscount->discount_type === 'fixed') {
+                            $discountAmount = $productDiscount->discount;
+                        }
+                    }
+
+                    $priceAfterDiscount = $productPrice - $discountAmount;
+                    $priceForProduct = $priceAfterDiscount * $productData['quantity'];
+
                     $orderDetail = new OrderDetail();
                     $orderDetail->order_id = $order->id;
                     $orderDetail->product_id = $productData['id'];
                     $orderDetail->Product_quantity = $productData['quantity'];
-                    $orderDetail->price = $product->price;
+                    $orderDetail->price = $productPrice;
                     $orderDetail->save();
 
-                    $totalPrice += $productData['quantity'] * $product->price;
+                    $totalPrice += $priceForProduct;
 
                     $product->quantity -= $productData['quantity'];
                     $product->save();
@@ -91,31 +109,28 @@ class OrderController extends Controller
 
     private function calculateDiscount(User $user, $totalPrice)
     {
-        switch($user->customer_type) {
-            case 'vip':
-                // تحقق من صلاحية فترة VIP
-                if ($user->vip_start_date<=now() && $user->vip_end_date >= now() ) {
-                    return $totalPrice * ($user->discount / 100);
-                }
-                // إذا انتهت فترة VIP، قم بتحديث نوع العميل
-                $user->customer_type = 'normal';
-                $user->save();
-                return 0;
-            case 'goomla':
+        if ($user->is_vip) {
+            // تحقق من صلاحية فترة VIP
+            if ($user->vip_start_date <= now() && $user->vip_end_date >= now()) {
                 return $totalPrice * ($user->discount / 100);
-            default:
-                return 0;
+            }
+            // إذا انتهت فترة VIP، قم بتحديث نوع العميل
+            $user->is_vip = null;
+            $user->discount = null;
+            $user->save();
+            return 0;
         }
+        return 0;
     }
 
     public function edit(Order $order)
     {
-        if($order->status->id==1){ // تعديل الطلب في حالة اذا لم  يتم شحنه
+        if ($order->status->id == 1) { // تعديل الطلب في حالة اذا لم  يتم شحنه
 
-        $users = User::all();
-        $products = Product::all();
-        $order->load('orderDetails');
-        return view('admin.orders.edit', compact('order', 'users', 'products'));
+            $users = User::all();
+            $products = Product::all();
+            $order->load('orderDetails');
+            return view('admin.orders.edit', compact('order', 'users', 'products'));
         }
         return redirect(route('admin.orders.index'));
     }
@@ -123,9 +138,10 @@ class OrderController extends Controller
     public function getProductField(Request $request)
     {
         $index = $request->get('index');
-       $products = Product::all();
+        $products = Product::all();
         return view('admin.orders.partials.product-field', compact('index', 'products'));
     }
+
     public function update(OrderRequest $request, Order $order)
     {
         try {
@@ -171,8 +187,8 @@ class OrderController extends Controller
                 $order->save();
 
                 return redirect()->route('admin.orders.index')->with('success', 'تم تحديث الطلب بنجاح');
-           });
-        }  catch (\Exception $e) {
+            });
+        } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
     }
@@ -200,9 +216,7 @@ class OrderController extends Controller
     public function getUserDiscount(User $user)
     {
         $discount = 0;
-        if ($user->customer_type == 'vip' && $user->vip_end_date >= now()) {
-            $discount = $user->discount;
-        } elseif ($user->customer_type == 'goomla') {
+        if ($user->is_vip && $user->vip_end_date >= now()) {
             $discount = $user->discount;
         }
 

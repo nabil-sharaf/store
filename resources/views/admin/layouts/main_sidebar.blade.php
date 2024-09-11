@@ -1,8 +1,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{route('admin.dashboard')}}" class="brand-link ">
-      <span class="brand-text font-weight-light">mama store</span>
-      <img src="{{asset('front/assets/img/logo.png')}}" alt="mama store Logo" class="brand-image img-circle elevation-3" style=" width:37px; ">
+      <img src="{{asset('front/assets/img/logo.png')}}" alt="mama store Logo" class="mama-logo  elevation-3">
     </a>
 
     <!-- Sidebar -->

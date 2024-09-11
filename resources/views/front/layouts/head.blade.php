@@ -79,6 +79,7 @@
         <link href="{{asset('front/assets')}}/scss/style.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @endif
+
     <link href="{{asset('front/assets')}}/css/my-custom-styles.css" rel="stylesheet" />
 
     <meta name="csrf-token" content="{{ csrf_token() }}">

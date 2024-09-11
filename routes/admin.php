@@ -39,14 +39,23 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
 
             Route::get('/reports', [Adm\SalesReportController::class, 'salesReport'])->name('reports.index');
 
-            //----------------------------- Reports Routes  ------------------------------
+            //----------------------------- Customers Routes  ------------------------------
 
             Route::get('/customers', [Adm\CustomerController::class, 'index'])->name('customers.index');
-            Route::get('/customers/{customer}', [Adm\CustomerController::class, 'show'])->name('customers.show');
-            Route::Put('/customers/vip-customer/{user}', [Adm\CustomerController::class, 'vipCustomer'])->name('customers.vip-customer');
-            Route::Put('/customers/vip-all', [Adm\CustomerController::class, 'vipAll'])->name('customers.vipAll');
-            Route::Put('/customers/change-status', [Adm\CustomerController::class, 'changeStatus'])->name('customers.changeStatus');
 
+            Route::get('/customers/{user}', [Adm\CustomerController::class, 'show'])->name('customers.show');
+
+            Route::get('/customers/{user}/edit', [Adm\CustomerController::class, 'edit'])->name('customers.edit');
+
+            Route::put('/customers/{user}', [Adm\CustomerController::class, 'update'])->name('customers.update');
+
+            Route::post('/customers/vip-customer/{user}', [Adm\CustomerController::class, 'vipCustomer'])->name('customers.vip-customer');
+
+            Route::post('/customers/vip-all', [Adm\CustomerController::class, 'vipAll'])->name('customers.vipAll');
+
+            Route::Put('/customers/change-status/{user}', [Adm\CustomerController::class, 'changeStatus'])->name('customers.changeStatus');
+
+            Route::post('/customers/vip-disable/{user}', [Adm\CustomerController::class, 'vipDisable'])->name('customer.vip.disable');
 
 //----------------------------- Settings Routes  ------------------------------
 

@@ -40,7 +40,10 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'quantity' => $request->quantity,
                 'price' => $request->price,
+                'goomla_price' => $request->goomla_price,
             ]);
+
+            if($request->discount_type && $request->discount > 0){
 
                 ProductDiscount::create([
                     'product_id' => $product->id,
@@ -49,6 +52,8 @@ class ProductController extends Controller
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
                 ]);
+            }
+
 
             // ربط الفئات بالمنتج
             $this->syncCategories($product, $request->categories);
@@ -64,7 +69,7 @@ class ProductController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة المنتج.'], 500);
+            return response()->json(['error' =>'حدث خطأ أثناء اضافة المنتج'], 500);
         }
     }
 
@@ -84,6 +89,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
 
+
         try {
             return DB::transaction(function () use ($request, $product) {
                 $product->update([
@@ -91,13 +97,35 @@ class ProductController extends Controller
                     'description'=>$request->description,
                     'price'=> $request->price,
                     'quantity'=>$request->quantity,
+                    'goomla_price' => $request->goomla_price,
+
                 ]);
-                ProductDiscount::where('product_id', $product->id)->update([
-                    'discount' => $request->discount,
-                    'discount_type' => $request->discount_type,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
+
+                if($request->discount_type && $request->discount > 0){
+
+                    ProductDiscount::updateOrCreate(
+                    // الشرط لتحديد إذا كان الريكورد موجودًا
+                        ['product_id' => $product->id],
+
+                        // البيانات التي سيتم تحديثها أو إنشاؤها
+                        [
+                            'discount' => $request->discount,
+                            'discount_type' => $request->discount_type,
+                            'start_date' => $request->start_date,
+                            'end_date' => $request->end_date,
+
                 ]);
+                }
+                else{
+                    // البحث عن الريكورد الذي يحتوي على المنتج المحدد
+                    $productDiscount = ProductDiscount::where('product_id', $product->id)->first();
+
+// التحقق من وجود الريكورد ثم حذفه
+                    if ($productDiscount) {
+                        $productDiscount->delete();
+                    }
+                }
+
 
                 $this->syncCategories($product, $request->categories);
                 $this->handleImages($request, $product);

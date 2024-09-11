@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Front\UserAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,7 +17,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name','phone','email','password','customer_type','vip_start_dae','vip_end_date','discount',
+        'name','last_name','phone','email',
+        'password','customer_type','vip_start_date',
+        'vip_end_date','discount','is_vip','status',
     ];
 
     /**
@@ -56,6 +59,10 @@ class User extends Authenticatable
         return 0;
     }
 
+    public function address()
+    {
+        return $this->hasOne(UserAddress::class); // العلاقة واحد لواحد
+    }
 
 
 }

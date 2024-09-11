@@ -20,15 +20,16 @@ class ProductRequest extends FormRequest
         return [
             'name' => 'required|max:255|'. Rule::unique('products','name')->ignore($id),
             'description' => 'required',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|gt:0',
+            'goomla_price' => 'required|numeric|gt:0',
             'quantity' => 'required|integer|min:0',
-            'discount' => 'nullable|numeric|min:0',
             'discount_type' => 'nullable|in:fixed,percentage',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date|after_or_equal:today',
+            'discount' => 'nullable|required_if:discount_type,fixed,percentage|numeric|gt:0',
+            'start_date' => 'nullable|required_if:discount_type,fixed,percentage|date',
+            'end_date' => 'nullable|required_if:discount_type,fixed,percentage|date|after_or_equal:start_date',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'images.*' => 'image|max:2048'
         ];
     }
 
@@ -43,7 +44,10 @@ class ProductRequest extends FormRequest
             'description.required' => 'وصف المنتج مطلوب',
             'price.required' => 'سعر المنتج مطلوب',
             'price.numeric' => 'يجب أن يكون السعر رقمًا',
-            'price.min' => 'يجب أن يكون السعر 0 أو أكثر',
+            'price.min' => 'يجب أن يكون السعرأكبر من الصفر',
+            'goomla_price.required' => 'سعر المنتج مطلوب',
+            'goomla_price.numeric' => 'يجب أن يكون السعر رقمًا',
+            'goomla_price.min' => 'يجب أن يكون السعر اكبر من الصفر',
             'quantity.required' => 'الكمية مطلوبة',
             'quantity.integer' => 'يجب أن تكون الكمية عددًا صحيحًا',
             'quantity.min' => 'يجب أن تكون الكمية 0 أو أكثر',

@@ -72,7 +72,7 @@
                             </ul>
                             <div class="widget-payment-info">
                                 <div class="thumb">
-                                    <a href="index.html"><img src="{{asset('front/assets')}}/img/photos/payment1.png" alt="{{ __('footer.payment_image_alt') }}"></a>
+                                    <a href=""><img src="{{asset('front/assets')}}/img/photos/payment1.png" alt="{{ __('footer.payment_image_alt') }}"></a>
                                 </div>
                             </div>
                         </div>

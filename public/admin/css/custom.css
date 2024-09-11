@@ -19,17 +19,17 @@
     padding-left: 1rem;
 }
 
-[class*=icheck-]>input:first-child:checked+input[type=hidden]+label::after, 
+[class*=icheck-]>input:first-child:checked+input[type=hidden]+label::after,
 [class*=icheck-]>input:first-child:checked+label::after {
     right: 15px;
     left: auto;
 }
-.nav-sidebar .nav-link>.right, 
+.nav-sidebar .nav-link>.right,
 .nav-sidebar .nav-link>p>.right {
     left: 1rem;
     right: auto;
 }
-.nav-sidebar .nav-link>.right:nth-child(2), 
+.nav-sidebar .nav-link>.right:nth-child(2),
 .nav-sidebar .nav-link>p>.right:nth-child(2) {
     left: 2.2rem;
     right: auto;
@@ -79,5 +79,18 @@
     border-bottom-right-radius: 0;
     border-top-left-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
+}
+
+a.brand-link{
+    border-bottom: none !important;
+}
+.mama-logo{
+    max-height: 52px;
+    width: 108%;
+    background-color: white;
+    margin-right: -4%;
+    margin-top: -8%;
+    margin-left: -3%;
+    margin-bottom: -3%;
 }
 

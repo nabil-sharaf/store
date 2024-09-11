@@ -6,67 +6,71 @@
     <!-- /.card -->
     <div class="card">
         <div class="card-header">
-            <a href="{{ route('admin.products.create') }}" class="btn btn-primary float-left mr-2">
-                <i class="fas fa-plus mr-1"></i> إضافة منتج جديد
-            </a>
-            <button  id="delete-selected" class=" btn btn-danger float-left mr-2">
-                <i class="fas fa-trash-alt mr-1 ml-2 mt-1 float-right "></i> حذف المنتجات المحددة
-            </button>
+            <div class="d-flex flex-wrap justify-content-start">
+                <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-2 mr-2">
+                    <i class="fas fa-plus mr-1"></i> إضافة منتج جديد
+                </a>
+                <button id="delete-selected" class="btn btn-danger mb-2 mr-2">
+                    <i class="fas fa-trash-alt mr-1 ml-2 mt-1 float-right"></i> حذف المنتجات المحددة
+                </button>
+            </div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <table class="table table-bordered text-center">
-                <thead>
-                <tr>
-                    <th><input type="checkbox" id="select-all"></th>
-                    <th>#</th>
-                    <th>اسم المنتج</th>
-                    <th>صورة المنتج</th>
-                    <th>سعر المنتج</th>
-                    <th>الكمية</th>
-                    <th>الخصم</th>
-                    <th>بداية الخصم</th>
-                    <th>نهاية الخصم</th>
-                    <th>العمليات</th>
-                </tr>
-                </thead>
-                <tbody>
-                @forelse($products as $product)
+            <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                    <thead>
                     <tr>
-                        <td><input type="checkbox" class="product-checkbox" value="{{ $product->id }}"></td>
-                        <td>{{ $loop->iteration }}.</td>
-                        <td>{{ $product->name }}</td>
-                        <td>
-                            @if($product->images->first())
-                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}" style="width: 50px; height: 50px; object-fit: cover;">
-                            @else
-                                <span>لا توجد صورة</span>
-                            @endif
-                        </td>
-                        <td>{{ $product->price }}</td>
-                        <td>{{ $product->quantity }}</td>
-                        <td>{{ $product->productDiscount? $product->productDiscount->discount . ($product->productDiscount->discount_type == 'percentage' ? '%' : ' ج') : 'لا يوجد' }}</td>
-                        <td>{{ $product->productDiscount->start_date ? $product->productDiscount->start_date->format('Y-m-d') : 'N/A' }}</td>
-                        <td>{{ $product->productDiscount->end_date ? $product->productDiscount->end_date->format('Y-m-d ') : 'N/A' }}</td>
-                        <td>
-                            <a href="{{ route('admin.products.show', $product->id) }}" class="btn btn-sm btn-warning mr-1" title="عرض التفاصيل">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-info mr-1" title="تعديل">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <button type="button" class="btn btn-sm btn-danger delete-product-btn" data-id="{{ $product->id }}" title="حذف">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
+                        <th><input type="checkbox" id="select-all"></th>
+                        <th>#</th>
+                        <th>اسم المنتج</th>
+                        <th>صورة المنتج</th>
+                        <th>سعر المنتج</th>
+                        <th>الكمية</th>
+                        <th>الخصم</th>
+                        <th>بداية الخصم</th>
+                        <th>نهاية الخصم</th>
+                        <th>العمليات</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="10">لا يوجد منتجات حاليا</td>
-                    </tr>
-                @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @forelse($products as $product)
+                        <tr>
+                            <td><input type="checkbox" class="product-checkbox" value="{{ $product->id }}"></td>
+                            <td>{{ $loop->iteration }}.</td>
+                            <td>{{ $product->name }}</td>
+                            <td>
+                                @if($product->images->first())
+                                    <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover;">
+                                @else
+                                    <span>لا توجد صورة</span>
+                                @endif
+                            </td>
+                            <td>{{ $product->price }} ج</td>
+                            <td>{{ $product->quantity }}</td>
+                            <td>{{ $product->productDiscount? $product->productDiscount->discount . ($product->productDiscount->discount_type == 'percentage' ? '%' : ' ج') : 'لا يوجد' }}</td>
+                            <td>{{ $product->productDiscount?->start_date ? $product->productDiscount->start_date->format('Y-m-d') : 'N/A' }}</td>
+                            <td>{{ $product->productDiscount?->end_date ? $product->productDiscount->end_date->format('Y-m-d') : 'N/A' }}</td>
+                            <td>
+                                <a href="{{ route('admin.products.show', $product->id) }}" class="btn btn-sm btn-warning mb-1" title="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-info mb-1" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger delete-product-btn mb-1" data-id="{{ $product->id }}" title="حذف">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10">لا يوجد منتجات حاليا</td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         <!-- /.card-body -->
         <div class="card-footer">

@@ -4,7 +4,7 @@ return [
     'free_returns_shipping' => 'إرجاع مجاني وشحن مجاني',
     'logout' => 'تسجيل خروج',
     'login' => 'تسجيل دخول',
-    'search_placeholder' => 'ابحث عن  شيء',
+    'search_placeholder' => ' ابحث عن ما تريد هنا ',
     'home' => 'الرئيسية',
     'about' => 'من نحن',
     'categories' => 'الأقسام',
