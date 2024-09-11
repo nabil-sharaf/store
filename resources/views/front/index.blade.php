@@ -216,7 +216,7 @@
                                 <li><span class="seconds">00</span><p class="seconds_text">SECONDS</p></li>
                             </ul>
                         </div>
-                        <a class="btn-theme" href="shop.html">Shop Now</a>
+                        <a class="btn-theme" href="{{route('products.all')}}">Shop Now</a>
                     </div>
                 </div>
             </div>
