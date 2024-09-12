@@ -69,8 +69,8 @@
                                 @endphp
                                 {{ $discountText }}
                             </li>
-                            <li class="list-group-item"><strong>تاريخ البدء:</strong> {{ $product->productDiscount->start_date ? $product->productDiscount->start_date->format('Y-m-d') : 'لا يوجد' }}</li>
-                            <li class="list-group-item"><strong>تاريخ الانتهاء:</strong> {{ $product->productDiscount->end_date ? $product->productDiscount->end_date->format('Y-m-d') : 'لا يوجد' }}</li>
+                            <li class="list-group-item"><strong>تاريخ البدء:</strong> {{ $product->productDiscount?->start_date ? $product->productDiscount->start_date->format('Y-m-d') : 'لا يوجد' }}</li>
+                            <li class="list-group-item"><strong>تاريخ الانتهاء:</strong> {{ $product->productDiscount?->end_date ? $product->productDiscount->end_date->format('Y-m-d') : 'لا يوجد' }}</li>
                         </ul>
                     </div>
                 </div>
