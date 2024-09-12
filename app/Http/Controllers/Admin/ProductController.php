@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -67,9 +68,16 @@ class ProductController extends Controller
             return response()->json([
                 'success' => 'تم إضافة المنتج بنجاح',
             ]);
+
+        } catch (ValidationException $e) {
+            // إرجاع الأخطاء كـ JSON
+            return response()->json([
+                'errors' => $e->validator->errors()
+            ], 422); // كود 422 يعني أخطاء في الفاليديشان
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' =>'حدث خطأ أثناء اضافة المنتج'], 500);
+            return response()->json(['error' =>'حدث خطأ أثناء اضافة المنتج تأكد من ملئ جميع الحقول والتواريخ بصورة صحيحة'], 500);
         }
     }
 

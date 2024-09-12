@@ -55,7 +55,7 @@
                     <tr>
                         <th class="text-center">المنتج</th>
                         <th class="text-center">الكمية</th>
-                        <th class="text-center">إجمالي المبيعات (بدون الخصومات على اجمالي الاوردر) </th>
+                        <th class="text-center">إجمالي المبيعات </th>
                     </tr>
                     </thead>
                     <tbody>

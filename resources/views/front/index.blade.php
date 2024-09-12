@@ -82,7 +82,10 @@
                                                                 <div class="product-action">
                                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 
-                                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
+
+                                                                    <a class="action-quick-view" href="#"
+                                                                       data-id="{{ $product->id }}"
+                                                                       onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
                                                                     <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
                                                                 </div>
                                                             </div>
@@ -216,7 +219,7 @@
                                 <li><span class="seconds">00</span><p class="seconds_text">SECONDS</p></li>
                             </ul>
                         </div>
-                        <a class="btn-theme" href="{{route('products.all')}}">Shop Now</a>
+                        <a class="btn-theme" href="{{route('products.all')}}">{{__('home.shop_now')}}</a>
                     </div>
                 </div>
             </div>

@@ -83,12 +83,15 @@
                         <div class="quick-product-action">
                             <div class="action-top">
                                 <div class="pro-qty">
-                                    <input type="text" id="quantity" title="{{ __('aside_menu.quantity') }}" value="01" />
+                                    <input type="text" id="quantity_{{$product->id}}" title="{{ __('aside_menu.quantity') }}" value="1" />
                                 </div>
-                                <button class="btn btn-theme font-weight-bold"  onclick="addToCart(event,{{$product->id}})">{{ __('aside_menu.add_to_cart') }}</button>
-                                <a class="btn-wishlist" href=""data-id="{{ $product->id }}" onclick="wishListAdd(event,this)">>{{ __('aside_menu.add_to_wishlist') }}</a>
-                            </div>
-                        </div>
+                                <button class="btn btn-theme font-weight-bold" onclick="addToCart(event, {{$product->id}}, document.getElementById('quantity_{{$product->id}}').value)">
+                                    {{ __('aside_menu.add_to_cart') }}
+                                </button>
+                                <a class="btn-wishlist" href="" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)">
+                                    {{ __('aside_menu.add_to_wishlist') }}
+                                </a>
+                            </div>                        </div>
                         <div class="widget">
                             <h3 class="title">{{__('aside_menu.categories')}}:</h3>
                             <div class="widget-tags">

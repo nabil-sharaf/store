@@ -61,7 +61,7 @@
                                                     <a href="#" onclick="removeFromWishlist(event, {{ $item->id }})">×</a>
                                                 </td>
                                                 <td class="product-thumbnail">
-                                                    <img src="{{ asset('storage').'/'. $item->product->images()->first()->path }}" alt="{{ __('wishlist.image_alt') }}" style="max-width: 75px">
+                                                    <img src="{{ asset('storage').'/'. $item->product->images()->first()?->path }}" alt="{{ __('wishlist.image_alt') }}" style="max-width: 75px">
                                                 </td>
                                                 <td class="product-name">
                                                     <h5>

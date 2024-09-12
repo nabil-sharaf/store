@@ -55,9 +55,11 @@
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <h5 class="card-title mb-0 product-number">المنتج {{ $index + 1 }}</h5>
+                                           @if($index > 0)
                                             <button type="button" class="btn btn-danger btn-sm remove-product">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                               @endif
                                         </div>
                                         <div class="form-group">
                                             <label for="product-select-{{ $index }}">اختر المنتج</label>
@@ -120,30 +122,37 @@
                                             </div>
 
                                             <!-- Product Price -->
+                                            @php
+                                              $product_price = $order->user->customer_type == 'goomla'?$orderDetail->product->goomla_price : $orderDetail->product->price;
+                                            @endphp
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="product-price-{{ $index }}">السعر</label>
                                                     <input type="text" id="product-price-{{ $index }}"
                                                            class="form-control product-price"
-                                                           value="{{ $orderDetail->price }}"
+                                                           value="{{$product_price}}"
                                                            readonly>
                                                 </div>
                                             </div>
 
                                             <!-- Product Discount -->
                                             <div class="col-md-4">
+                                                @php
+                                                    $discountValue = $orderDetail->product?->discount?->discount_type === 'percentage'
+                                                        ? number_format($orderDetail->price * ($orderDetail?->product?->discount?->discount / 100), 2)
+                                                        : ($orderDetail?->product?->discount?->discount_type === 'fixed'
+                                                            ? number_format($orderDetail->product?->discount?->discount, 2)
+                                                            : '0.00');
+                                                @endphp
+
                                                 <div class="form-group">
                                                     <label for="product-discount-{{ $index }}">الخصم</label>
                                                     <input type="text" id="product-discount-{{ $index }}"
                                                            class="form-control product-discount"
-                                                           value="{{
-                                                               $orderDetail->product?->discount?->discount_type === 'percentage'
-                                                                   ? number_format($orderDetail->price * ($orderDetail?->product?->discount?->discount / 100), 2)
-                                                                   : ($orderDetail?->product?->discount?->discount_type === 'fixed'
-                                                                       ? number_format($orderDetail->product?->discount?->discount, 2)
-                                                                       : '0.00')
-                                                           }}"                                                           readonly>
-                                                </div>                                            </div>
+
+                                                           value="{{$discountValue}}"                                                           readonly>
+                                                </div>
+                                            </div>
 
                                             <!-- Price After Discount -->
                                             <div class="col-md-4">
@@ -151,7 +160,7 @@
                                                     <label for="product-discountPrice-{{ $index }}">السعر بعد الخصم</label>
                                                     <input type="text" id="product-discountPrice-{{ $index }}"
                                                            class="form-control product-discountPrice"
-                                                           value="{{ $orderDetail->price - $orderDetail->discount_amount }}"
+                                                           value="{{ $product_price - $discountValue }}"
                                                            readonly>
                                                 </div>
                                             </div>
@@ -162,7 +171,7 @@
                                                     <label for="product-total-{{ $index }}">الإجمالي</label>
                                                     <input type="text" id="product-total-{{ $index }}"
                                                            class="form-control product-total"
-                                                           value="{{ $orderDetail->price * $orderDetail->product_quantity }}"
+                                                           value="{{ ($product_price-$discountValue) * $orderDetail->product_quantity }}"
                                                            readonly>
                                                 </div>
                                             </div>
@@ -181,7 +190,7 @@
                 <div class="form-group row">
                     <label for="totalBeforeDiscount" class="col-sm-2 control-label">إجمالي الأوردر قبل الخصم</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="totalBeforeDiscount" name="total_before_discount" value="{{ old('total_before_discount', $order->total_before_discount) }}" readonly>
+                        <input type="text" class="form-control" id="totalBeforeDiscount" name="total_before_discount" value="{{ old('total_before_discount', $order->total_price) }}" readonly>
                     </div>
                 </div>
 
@@ -189,7 +198,7 @@
                 <div class="form-group row">
                     <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة الخصم</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDiscountPercentage" value="{{ old('inputDiscountPercentage', $order->discount_percentage) }}" readonly>
+                        <input type="text" class="form-control" id="inputDiscountPercentage" value="{{ old('inputDiscountPercentage', $order->user->is_vip ? $order->user->discount . ' %' : 'لا يوجد'  ) }}" readonly>
                     </div>
                 </div>
 
@@ -197,7 +206,7 @@
                 <div class="form-group row">
                     <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة الخصم</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDiscountAmount" value="{{ old('inputDiscountAmount', $order->discount_amount) }}" readonly>
+                        <input type="text" class="form-control" id="inputDiscountAmount" value="{{ old('inputDiscountAmount', $order->discount) }}" readonly>
                     </div>
                 </div>
 
@@ -205,7 +214,7 @@
                 <div class="form-group row">
                     <label for="inputTotalOrder" class="col-sm-2 control-label">الإجمالي بعد الخصم</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputTotalOrder" name="total_price" value="{{ old('total_price', $order->total_price) }}" readonly>
+                        <input type="text" class="form-control" id="inputTotalOrder" name="total_price" value="{{ old('total_price', $order->total_after_discount) }}" readonly>
                     </div>
                 </div>
             </div>
@@ -221,7 +230,7 @@
     <script>
         $(document).ready(function () {
             var productCount = {{ $order->orderDetails->count() - 1 }};
-            var vipDiscountRate = 0; // ستقوم بتحديثه بناءً على العميل
+            var vipDiscountRate = parseFloat($(this).find(':selected').data('vip-discount')) || 0;
 
 
             $('#addProductButton').click(function () {

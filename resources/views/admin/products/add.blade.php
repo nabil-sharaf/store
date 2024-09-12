@@ -216,9 +216,26 @@
                         toastr.success(response.success);
                         resetForm();
                     },
-                    error: function(response) {
-                        console.log(response)
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            // إظهار أول خطأ فقط
+                            var errors = xhr.responseJSON.errors;
+                            var firstError = Object.values(errors)[0][0]; // أول خطأ
+                            toastr.error(firstError);
+
+                            // إظهار أول 3 أخطاء
+                            // var errors = xhr.responseJSON.errors;
+                            // var errorMessages = Object.values(errors).flat(); // تجميع جميع رسائل الأخطاء
+                            //
+                            // // عرض أول 3 أخطاء باستخدام توستر
+                            // errorMessages.slice(0, 3).forEach(function(error) {
+                            //     toastr.error(error);
+                            // });
+
+                        } else {
+                            toastr.error('حدث خطأ غير متوقع.');
                         }
+                    }
 
                 });
             });

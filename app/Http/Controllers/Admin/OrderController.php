@@ -11,6 +11,7 @@ use App\Models\Admin\ProductDiscount;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class OrderController extends Controller
 {
@@ -82,7 +83,7 @@ class OrderController extends Controller
                     $orderDetail->order_id = $order->id;
                     $orderDetail->product_id = $productData['id'];
                     $orderDetail->Product_quantity = $productData['quantity'];
-                    $orderDetail->price = $productPrice;
+                    $orderDetail->price = $priceAfterDiscount;
                     $orderDetail->save();
 
                     $totalPrice += $priceForProduct;
@@ -129,7 +130,7 @@ class OrderController extends Controller
 
             $users = User::all();
             $products = Product::all();
-            $order->load('orderDetails');
+            $order->load('orderDetails','user');
             return view('admin.orders.edit', compact('order', 'users', 'products'));
         }
         return redirect(route('admin.orders.index'));
@@ -147,6 +148,8 @@ class OrderController extends Controller
         try {
             return DB::transaction(function () use ($request, $order) {
                 // Restore previous quantities
+                $user = User::findOrFail($request->user_id);
+
                 foreach ($order->orderDetails as $orderDetail) {
                     $product = $orderDetail->product;
                     $product->quantity += $orderDetail->product_quantity;
@@ -163,21 +166,39 @@ class OrderController extends Controller
                         throw new \Exception('الكمية المطلوبة غير متوفرة للمنتج: ' . $product->name);
                     }
 
+
+                    // استرجاع خصم المنتج من قاعدة البيانات
+                    $productDiscount = $product->discount;
+
+                    $productPrice = $user->customer_type == 'goomla' ? $product->goomla_price : $product->price;
+
+                    $discountAmount = 0;
+                    if ($productDiscount) {
+                        if ($productDiscount->discount_type === 'percentage') {
+                            $discountAmount = ($productPrice * $productDiscount->discount) / 100;
+                        } elseif ($productDiscount->discount_type === 'fixed') {
+                            $discountAmount = $productDiscount->discount;
+                        }
+                    }
+
+                    $priceAfterDiscount = $productPrice - $discountAmount;
+                    $priceForProduct = $priceAfterDiscount * $productData['quantity'];
+
+
                     $orderDetail = new OrderDetail();
                     $orderDetail->order_id = $order->id;
                     $orderDetail->product_id = $productData['id'];
                     $orderDetail->Product_quantity = $productData['quantity'];
-                    $orderDetail->price = $product->price;
+                    $orderDetail->price = $priceAfterDiscount;
                     $orderDetail->save();
 
-                    $totalPrice += $productData['quantity'] * $product->price;
+                    $totalPrice += $priceForProduct;
 
                     $product->quantity -= $productData['quantity'];
                     $product->save();
                 }
 
                 // حساب الخصم
-                $user = User::findOrFail($request->user_id);
                 $discount = $this->calculateDiscount($user, $totalPrice);
                 $discountedTotal = $totalPrice - $discount;
 
@@ -189,7 +210,7 @@ class OrderController extends Controller
                 return redirect()->route('admin.orders.index')->with('success', 'تم تحديث الطلب بنجاح');
             });
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', $e->getMessage());
+            return redirect()->route('admin.orders.edit', $order->id)->with('error', $e->getMessage());
         }
     }
 
@@ -209,6 +230,17 @@ class OrderController extends Controller
         // Update the order status
         $order->status_id = $request->input('status');
         $order->save();
+
+        if ($request->input('status') == 4) {
+
+            foreach ($order->orderDetails as $orderDetail) {
+            $product = $orderDetail->product;
+            $product->quantity += $orderDetail->product_quantity;
+            $product->save();
+        }
+
+        }
+
         return response()->json(['success' => 'تم تعديل حالة الطلب بنجاح']);
     }
 

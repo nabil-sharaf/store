@@ -45,13 +45,17 @@
 
 <script>
 
-
-
-
     $(document).ready(function() {
-        // إظهار المودال والتراكب عند النقر على الرابط
+
         $('.action-quick-view').on('click', function(event) {
             event.preventDefault();
+
+            // var button = $(this);
+
+            // تحديث محتوى المودال بالبيانات الجديدة
+            // openProductModal(button);
+
+            // إظهار المودال والتراكب
             $('.product-quick-view-modal').fadeIn(200); // إظهار المودال
             $('.canvas-overlay').fadeIn(200); // إظهار التراكب
         });
@@ -62,52 +66,74 @@
             $('.canvas-overlay').fadeOut(); // إخفاء التراكب
         });
 
+
         updateCartDetails();
     });
 
     // عرض مودال تفاصيل البروداكت
-    function showProductDetails(element) {
-        var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
-        var categoriesContainer = $('.product-quick-view-modal .product-categories');
-        var sliderContainer = $('.product-images-slider');
-        var url ="{{route('product.details',':productId')}}";
-        var myUrl= url.replace(':productId',productId)
-        // استدعاء AJAX للحصول على تفاصيل المنتج
-        $.ajax({
-            url:  myUrl,// المسار للوصول إلى تفاصيل المنتج
-            method: 'GET',
-            success: function (response) {
-                $('.product-quick-view-modal .product-name').text(response.name);
-                $('.product-quick-view-modal .price').text(response.price);
-                $('.product-quick-view-modal .product-desc').text(response.description);
+        function showProductDetails(element) {
+            var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
+            var categoriesContainer = $('.product-quick-view-modal .product-categories');
+            var sliderContainer = $('.product-images-slider');
+            var url = "{{route('product.details',':productId')}} ";
+            var myUrl = url.replace(':productId', productId);
 
-                categoriesContainer.empty();
-                response.categories.forEach(function(cat){
-                    categoriesContainer.append('&nbsp;<a href="#">'+cat['name']+'</a> &nbsp;&nbsp;  ');
-                });
+            // استدعاء AJAX للحصول على تفاصيل المنتج
+            $.ajax({
+                url: myUrl, // المسار للوصول إلى تفاصيل المنتج
+                method: 'GET',
+                success: function (response) {
+                    $('.product-quick-view-modal .product-name').text(response.name);
+                    $('.product-quick-view-modal .price').text(response.price);
+                    $('.product-quick-view-modal .product-desc').text(response.description);
 
-                sliderContainer.empty();
-                if (response.images && response.images.length > 0) {
-                    const image = response.images[0]; // نأخذ الصورة الأولى فقط
-                    sliderContainer.append(`<div class="swiper-slide"><img src="{{asset('storage/')}}/${image.path}" alt="Product Image" /></div>`);
-                } else {
-                    // إذا لم تكن هناك صور، يمكنك إضافة صورة افتراضية أو رسالة
-                    sliderContainer.append(`<div class="swiper-slide"><p>No image available</p></div>`);
+                    categoriesContainer.empty();
+                    response.categories.forEach(function(cat){
+                        categoriesContainer.append('&nbsp;<a href="#">'+cat['name']+'</a> &nbsp;&nbsp;  ');
+                    });
+
+                    sliderContainer.empty();
+                    if (response.images && response.images.length > 0) {
+                        const image = response.images[0]; // نأخذ الصورة الأولى فقط
+                        sliderContainer.append(`<div class="swiper-slide"><img src="<?php echo e(asset('storage/')); ?>/${image.path}" alt="Product Image" /></div>`);
+                    } else {
+                        // إذا لم تكن هناك صور، يمكنك إضافة صورة افتراضية أو رسالة
+                        sliderContainer.append(`<div class="swiper-slide"><p>No image available</p></div>`);
+                    }
+
+                    // تحديث زر الإضافة للسلة بالمنتج المحدد
+                    $('.quick-product-action button').attr('onclick', `addToCart(event, ${productId}, document.getElementById('quantity_${productId}').value)`);
+
+                    //زر الويش ليست
+                    $('.quick-product-action  .btn-wishlist').attr('onclick',`wishListAdd(event,this,${productId})`);
+
+                    // تحديث حقل الكمية داخل المودال مع id جديد للمنتج الحالي
+                    $('.pro-qty input').attr('id', `quantity_${productId}`);
+                    $('.pro-qty input').val(1);
+
+                    $('.product-quick-view-modal').show();
+                },
+                error: function (error) {
+                    console.log('Error fetching product details:', error);
                 }
-                $('.product-quick-view-modal').show();
-            },
-            error: function (error) {
-                console.log('Error fetching product details:', error);
-            }
-        });
-    }
+            });
+        }
 
     // إضافة المنتجات للويش ليست
-    function wishListAdd(event, element) {
+    function wishListAdd(event, element,id=null) {
         event.preventDefault();
+        if(id){
+
+            var url ="{{route('wishlist.store',':productId')}}".replace(':productId',id);
+        }else{
 
         var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
         var url ="{{route('wishlist.store',':productId')}}".replace(':productId',productId);
+
+        }
+
+
+
         $.ajax({
             url: url,
             type: 'POST',
@@ -117,12 +143,15 @@
             success: function(response) {
                 if(response.message) {
                     toastr.success(response.message);
+                    console.log(productId)
+
                 }
                 if(response.err) {
                     toastr.error(response.err);
                 }
             },
             error: function(xhr) {
+                console.log(productId)
                 if (xhr.status === 401) {
                     toastr.warning('{{ __('scripts.login_required') }}');
                 } else {
@@ -144,15 +173,21 @@
     // ------------------------------ Shopping Cart--------------------------------
 
     // إضافة منتج إلى السلة
-    function addToCart(event, productId) {
+    function addToCart(event, productId,quantity=1) {
         event.preventDefault();
+
+        quantity = parseInt(quantity);
+        if (isNaN(quantity) || quantity < 1) {
+            quantity = 1;
+        }
 
         $.ajax({
             url: '{{ route("cart.add") }}',
             type: 'POST',
             data: {
                 product_id: productId,
-                _token: '{{ csrf_token() }}'
+                _token: '{{ csrf_token() }}',
+                quantity:quantity,
             },
             success: function(response) {
                 toastr.success('{{ __('scripts.cart_update_success') }}');
@@ -160,6 +195,7 @@
                 updateCartDetails();
             },
             error: function(error) {
+                console.log(error)
                 toastr.error('{{ __('scripts.cart_update_error') }}');
             }
         });

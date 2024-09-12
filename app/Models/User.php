@@ -48,7 +48,11 @@ class User extends Authenticatable
 
     public function isVip()
     {
-        return $this->is_vip && now()->between($this->vip_start_date, $this->vip_end_date);
+//        return $this->is_vip && now()->between($this->vip_start_date, $this->vip_end_date);
+        $now = now();
+        return $this->is_vip &&
+            $now->startOfDay()->greaterThanOrEqualTo($this->vip_start_date->startOfDay()) &&
+            $now->endOfDay()->lessThanOrEqualTo($this->vip_end_date->endOfDay());
     }
 
     public function getVipDiscount()

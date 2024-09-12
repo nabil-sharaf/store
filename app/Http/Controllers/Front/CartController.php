@@ -15,14 +15,36 @@ class CartController extends Controller
         $productId = $request->input('product_id');
         $product = Product::find($productId);
 
+        // استرجاع خصم المنتج من قاعدة البيانات
+        $productDiscount = $product->discount;
+        if(auth()->user()){
+
+        $productPrice = auth()->user()->customer_type == 'goomla' ? $product->goomla_price : $product->price;
+        }else{
+            $productPrice = $product->price;
+        }
+
+        $discountAmount = 0;
+        if ($productDiscount) {
+            if ($productDiscount->discount_type === 'percentage') {
+                $discountAmount = ($productPrice * $productDiscount->discount) / 100;
+            } elseif ($productDiscount->discount_type === 'fixed') {
+                $discountAmount = $productDiscount->discount;
+            }
+        }
+
+        $priceAfterDiscount = $productPrice - $discountAmount;
+
+
+
         Cart::add([
             'id' => $product->id,
             'name' => $product->name,
-            'price' => $product->price,
-            'quantity' => 1,
+            'price' => $priceAfterDiscount,
+            'quantity' => $request->quantity,
             'attributes' => [
-                        'url' => 'my-link',
-                        'image'=>$product->images->first()->path,
+                        'url' => route('product.show',$product->id),
+                        'image'=>$product?->images?->first()?->path,
                          ]
         ]);
 

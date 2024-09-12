@@ -43,7 +43,8 @@
                                     <input type="text" id="quantity" title="{{ __('aside_menu.quantity') }}" value="01" />
                                 </div>
                                 <button class="btn btn-theme font-weight-bold">{{ __('aside_menu.add_to_cart') }}</button>
-                                <a class="btn-wishlist" href="shop-wishlist.html">{{ __('aside_menu.add_to_wishlist') }}</a>
+                                <a class="btn-wishlist"
+                                   href="" onclick="wishListAdd(event,this)">{{ __('aside_menu.add_to_wishlist') }}</a>
                             </div>
                         </div>
                     </div>
