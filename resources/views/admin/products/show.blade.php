@@ -45,22 +45,22 @@
                             <!-- الحقول الجديدة -->
                             <li class="list-group-item"><strong>قيمة الخصم:</strong>
                                 @php
-                                    $discount = $product->productDiscount->discount;
+                                    $discount = $product?->productDiscount?->discount;
                                     if($discount==0){
                                         $text = 'لا يوجد ';
                                     }else{
-                                       if($product->productDiscount->discount_type=='fixed'){
+                                       if($product->productDiscount?->discount_type=='fixed'){
                                            $text=' ج ';
                                        }else{
                                            $text = ' %';
                                        }
                                     }
                                 @endphp
-                                    {{$product->productDiscount->discount ==0 ? $text :$discount . ' '.$text}}
+                                    {{$product?->productDiscount?->discount ==0 ? $text :$discount . ' '.$text}}
                             </li>
                             <li class="list-group-item"><strong>نوع الخصم:</strong>
                                 @php
-                                    $discountType = $product->productDiscount->discount_type ?? '';
+                                    $discountType = $product->productDiscount?->discount_type ?? '';
                                     $discountText = match($discountType) {
                                         'fixed' => 'ثابت',
                                         'percentage' => 'نسبة مئوية',
