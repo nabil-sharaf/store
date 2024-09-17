@@ -22,22 +22,8 @@
                 <div class="form-group row">
                     <label for="inputUser" class="col-sm-2 control-label">المستخدم</label>
                     <div class="col-sm-10">
-                        <select class="select2 form-control @error('user_id') is-invalid @enderror" id="inputUser" name="user_id" required>
-                            <option value="">اختر مستخدم</option>
-                            @foreach($users as $user)
-                                @php
-                                    $user_type = $user->customer_type == 'goomla' ? 'جملة' : 'قطاعي';
-                                    $user_vip = $user->is_vip ? ' - vip' : '';
-                                @endphp
-                                @if($user->status)
-                                    <option
-                                        data-vip-discount="{{ $user->is_vip ? $user->discount : 0 }}"
-                                        data-user-type="{{ $user->customer_type }}"
-                                        value="{{ $user->id }}" {{ old('user_id', $order->user_id) == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name . ' (' . $user_type . ' ' . $user_vip . ')' }}
-                                    </option>
-                                @endif
-                            @endforeach
+                        <select class="select2 form-control @error('user_id') is-invalid @enderror" id="inputUser" name="user_id">
+                            <option value="{{$order->user_id ?? ''}}">{{$order->user?->name ?? 'Guest'}} </option>
                         </select>
                         @error('user_id')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -123,7 +109,7 @@
 
                                             <!-- Product Price -->
                                             @php
-                                              $product_price = $order->user->customer_type == 'goomla'?$orderDetail->product->goomla_price : $orderDetail->product->price;
+                                              $product_price = $order->user?->customer_type == 'goomla'?$orderDetail->product->goomla_price : $orderDetail->product->price;
                                             @endphp
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -194,19 +180,27 @@
                     </div>
                 </div>
 
-                <!-- Discount Percentage -->
+                <!-- Discount vip Percentage -->
                 <div class="form-group row">
-                    <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة الخصم</label>
+                    <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة خصم vip</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDiscountPercentage" value="{{ old('inputDiscountPercentage', $order->user->is_vip ? $order->user->discount . ' %' : 'لا يوجد'  ) }}" readonly>
+                        <input type="text" class="form-control" id="inputDiscountPercentage" value="{{ old('inputDiscountPercentage', $order->user?->is_vip ? $order->user->discount . ' %' : 'لا يوجد'  ) }}" readonly>
                     </div>
                 </div>
 
-                <!-- Discount Amount -->
+                <!-- Discount vip Amount -->
                 <div class="form-group row">
-                    <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة الخصم</label>
+                    <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة خصم vip</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDiscountAmount" value="{{ old('inputDiscountAmount', $order->discount) }}" readonly>
+                        <input type="text" class="form-control" id="inputDiscountAmount" value="{{ old('inputDiscountAmount', $order->vip_discount )}}" readonly>
+                    </div>
+                </div>
+
+                <!-- Discount copoun Amount -->
+                <div class="form-group row">
+                    <label for="copounDiscountAmount" class="col-sm-2 control-label">قيمة خصم الكوبون</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="copounDiscountAmount"  value="{{ old('inputDiscountAmount', $order->promo_discount )}}" readonly >
                     </div>
                 </div>
 
@@ -220,7 +214,7 @@
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-info float-right">تحديث البيانات</button>
+                <button type="submit" class="btn btn-info btn-block">تحديث البيانات</button>
             </div>
         </form>
     </div>
@@ -380,43 +374,6 @@
                 });
             }
 
-            function updateDiscount() {
-                var userId = $('#inputUser').val();
-                var totalBeforeDiscount = calculateTotalBeforeDiscount();
-                var url = "{{route('admin.get-user-discount', ':id')}}".replace(':id', userId);
-
-                if (userId) {
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function (response) {
-                            var discountPercentage = response.discount;
-                            if (discountPercentage && discountPercentage > 0) {
-                                var discountAmount = (totalBeforeDiscount * discountPercentage) / 100;
-                                var totalAfterDiscount = totalBeforeDiscount - discountAmount;
-
-                                $('#inputDiscountPercentage').val(discountPercentage + ' % ');
-                                $('#inputDiscountAmount').val(discountAmount.toFixed(2));
-                                $('#inputTotalOrder').val(totalAfterDiscount.toFixed(2));
-                            } else {
-                                $('#inputDiscountPercentage').val('لا يوجد خصم');
-                                $('#inputDiscountAmount').val('0');
-                                $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error fetching discount: " + error);
-                            $('#inputDiscountPercentage').val('خطأ في جلب الخصم');
-                            $('#inputDiscountAmount').val('0');
-                            $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
-                        }
-                    });
-                } else {
-                    $('#inputDiscountPercentage').val('لا يوجد خصم');
-                    $('#inputDiscountAmount').val('0');
-                    $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
-                }
-            }
 
             function calculateTotalBeforeDiscount() {
                 var total = 0;

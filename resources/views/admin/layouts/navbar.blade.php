@@ -12,7 +12,7 @@
           <span class="badge badge-danger navbar-badge"></span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-sm-left">
-          <a href="#" class="dropdown-item">
+          <a href="{{route('admin.account.show',auth('admin')->user()?->id)}}" class="dropdown-item">
                عرض الملف الشخصي
           </a>
           <a href="#" class="dropdown-item" onclick="document.getElementById('postForm').submit(); return false;">

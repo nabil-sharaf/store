@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Admin as Adm;
 use App\Http\Controllers\Admin\ProductController;
-
+use App\Http\Middleware\Admin\CheckRole;
 Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
 
     Route::middleware(['admin'])
@@ -20,6 +20,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
 //--------------------- Products Routes -----------------------------
 
             Route::delete('/products/delete-all', [Adm\ProductController::class, 'deleteAll'])->name('products.deleteAll');
+            Route::PUT('/products/trend-all', [Adm\ProductController::class, 'trendAll'])->name('products.trendAll');
+            Route::PUT('/products/best-all', [Adm\ProductController::class, 'bestSellerAll'])->name('products.bestSellerAll');
             Route::resource('/products', Adm\ProductController::class);
             Route::delete('/products/remove-image/{id}', [ProductController::class, 'removeImage'])->name('products.remove-image');
 
@@ -29,9 +31,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
             Route::PUT('orders/{order}/updatestatus', [Adm\OrderController::class, 'updateStatus'])->name('orders.updatestatus');
             Route::get('orders/product-field', [Adm\OrderController::class, 'getProductField'])->name('orders.product-field');
             Route::resource('/orders', Adm\OrderController::class);
+            Route::post('/orders/check-coupon', [ Adm\OrderController::class, 'checkCoupon'])->name('check-promo-code');
 
 
-//----------------------------- PromoCodes Routes  ------------------------------
+        Route::middleware([CheckRole::class.":superAdmin"])->group(function () {
+
+            //----------------------------- PromoCodes Routes  ------------------------------
 
             Route::resource('/promo-codes', Adm\PromoCodeController::class);
 
@@ -57,11 +62,33 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
 
             Route::post('/customers/vip-disable/{user}', [Adm\CustomerController::class, 'vipDisable'])->name('customer.vip.disable');
 
+            Route::get('/get-user-address/{id}', [Adm\CustomerController::class, 'getUserAddress'])->name('get-customer-address');
+
+
+//----------------------------- Modrators Routes  ------------------------------
+
+            Route::get('/moderators', [Adm\ModeratorController::class, 'index'])->name('moderators.index');
+            Route::get('/moderators/create', [Adm\ModeratorController::class, 'create'])->name('moderators.create');
+            Route::get('/moderators/{moderator}', [Adm\ModeratorController::class, 'show'])->name('moderators.show');
+            Route::post('/moderators', [Adm\ModeratorController::class, 'store'])->name('moderators.store');
+            Route::get('/moderators/edit/{moderator}', [Adm\ModeratorController::class, 'edit'])->name('moderators.edit');
+            Route::put('/moderators/edit/{moderator}', [Adm\ModeratorController::class, 'update'])->name('moderators.update');
+            Route::delete('/moderators/delete/{moderator}', [Adm\ModeratorController::class, 'destroy'])->name('moderators.destroy');
+
+        });
+
+            Route::get('/account/{moderator}', [Adm\ModeratorController::class, 'myAccount'])->name('account.show');
+            Route::get('/account/edit/{moderator}', [Adm\ModeratorController::class, 'editAccount'])->name('account.edit');
+            Route::put('/account/{moderator}', [Adm\ModeratorController::class, 'updateAccount'])->name('account.update');
+
+
 //----------------------------- Settings Routes  ------------------------------
 
             Route::get('/settings', [Adm\SettingContoller::class, 'edit'])->name('settings.edit');
             Route::post('/settings', [Adm\SettingContoller::class, 'update'])->name('settings.update');
 
+            Route::get('/settings/images', [Adm\SiteImagesController::class, 'images'])->name('settings.images');
+            Route::PUT('/settings/images/update', [Adm\SiteImagesController::class, 'updateImages'])->name('settings.update-images');
 
         });
 

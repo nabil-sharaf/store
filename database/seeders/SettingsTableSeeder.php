@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin\Setting;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,8 @@ class SettingsTableSeeder extends Seeder
      */
     public function run(): void
     {
+        Setting::truncate();
+
         DB::table('settings')->insert([
             [
                 'setting_key' => 'site_name',
@@ -62,12 +65,24 @@ class SettingsTableSeeder extends Seeder
                 'description' => 'instagram'
             ],
             [
+                'setting_key' => 'goomla_min_number',
+                'setting_value' => 6,
+                'setting_type' => 'integer',
+                'description' => 'أقل عدد قطع في الأوردر لعميل الجملة'
+            ],
+            [
+                'setting_key' => 'goomla_min_prices',
+                'setting_value' => 3000,
+                'setting_type' => 'integer',
+                'description' => 'اقل سعر للاوردر لعميل الجملة'
+            ],
+
+            [
                 'setting_key' => 'Maintenance_mode',
                 'setting_value' => 0,
                 'setting_type' => 'integer',
                 'description' => 'وضع الصيانة'
             ],
-
         ]);
     }
 }

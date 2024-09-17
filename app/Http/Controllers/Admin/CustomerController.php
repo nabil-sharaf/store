@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CustomerRequest;
+use App\Models\Admin\UserAddress;
 use Illuminate\Http\Request;
 use App\Models\User;
 class CustomerController extends Controller
 {
+
+
     public function index()
     {
         $users = User::paginate(10);
@@ -113,5 +116,19 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function getUserAddress($id)
+    {
+        // جلب العنوان للمستخدم بناءً على الـ id
+        $address = UserAddress::where('user_id', $id)->first();
+
+        if ($address) {
+            return response()->json([
+                'success' => true,
+                'address' => $address
+            ]);
+        } else {
+            return response()->json(['success' => false], 404);
+        }
+    }
 }
 

@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Admin\Category;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Nette\Schema\ValidationException;
 use function redirect;
 use function view;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class CategoryController extends Controller
+class CategoryController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public static function middleware(): array
+    {
+        return [
+
+            new Middleware('checkRole:superAdmin', only: ['destroy']),
+        ];
+    }
     public function index()
     {
         $categories = Category::paginate(10);

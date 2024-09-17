@@ -20,8 +20,8 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview {{ Request::is('admin/customers*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('admin/dashboard*') ? 'active' : '' }}">
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/settings*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p class='font-weight-bold'>
                 لوحة التحكم
@@ -30,33 +30,47 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('admin.settings.edit')}}" class="nav-link {{ Request::is('admin/settings*') ? 'active' : '' }}">
+                <a href="{{route('admin.settings.edit')}}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>اعدادات الموقع</p>
                 </a>
               </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview {{ Request::is('admin/customers*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('admin/customers*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p class='font-weight-bold'>
-                العملاء
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('admin.customers.index')}}" class="nav-link {{ Request::is('admin/customers/index*') ? 'active' : '' }}">
+                <li class="nav-item">
+                <a href="{{route('admin.settings.images')}}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings/images') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>العملاء</p>
+                  <p>صور الموقع</p>
                 </a>
               </li>
             </ul>
           </li>
+            @if(auth('admin')->user()->hasAnyRole(['superAdmin']))
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/customers*') || Request::is(app()->getLocale() .'/admin/moderators*')? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p class='font-weight-bold'>
+                الأعضاء
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                    <a href="{{route('admin.moderators.index')}}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/moderators*') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>المشرفين</p>
+                    </a>
+                </li>
+              <li class="nav-item">
+                <a href="{{route('admin.customers.index')}}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/customers*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>العملاء</p>
+                </a>
+              </li>
 
-          <li class="nav-item has-treeview {{ Request::is('admin/categories*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('admin/categories*') ? 'active' : '' }}">
+            </ul>
+          </li>
+            @endif
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/categories*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p class='font-weight-bold'>
                 الأقسام
@@ -65,13 +79,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('admin.categories.index') }}" class="nav-link {{ Request::is('admin/categories') ? 'active' : '' }}">
+                <a href="{{ route('admin.categories.index') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/categories') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>كل الأقسام</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('admin.categories.create') }}" class="nav-link {{ Request::is('admin/categories/create') ? 'active' : '' }}">
+                <a href="{{ route('admin.categories.create') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/categories/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>إضافة قسم</p>
                 </a>
@@ -79,8 +93,8 @@
             </ul>
           </li>
 
-          <li class="nav-item has-treeview {{ Request::is('admin/products*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('admin/products*') ? 'active' : '' }}">
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/products*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p class='font-weight-bold'>
                 المنتجات
@@ -89,21 +103,21 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('admin.products.index') }}" class="nav-link {{ Request::is('admin/products') ? 'active' : '' }}">
+                <a href="{{ route('admin.products.index') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/products') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>كل المنتجات</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('admin.products.create') }}" class="nav-link {{ Request::is('admin/products/create') ? 'active' : '' }}">
+                <a href="{{ route('admin.products.create') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/products/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>إضافة منتج</p>
                 </a>
               </li>
             </ul>
           </li>
-          <li class="nav-item has-treeview {{ Request::is('admin/orders*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('admin/orders*') ? 'active' : '' }}">
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/orders*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p class='font-weight-bold'>
                 الأوردرات
@@ -112,13 +126,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
+                <a href="{{ route('admin.orders.index') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/orders') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>كل الأوردرات</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('admin.orders.create') }}" class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
+                <a href="{{ route('admin.orders.create') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/orders/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>إضافة أوردر</p>
                 </a>
@@ -126,8 +140,9 @@
             </ul>
           </li>
 
-          <li class="nav-item has-treeview {{ Request::is('admin/promo-codes*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('admin/promo-codes*') ? 'active' : '' }}">
+            @if(auth('admin')->user()->hasAnyRole(['superAdmin']))
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/promo-codes*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p class='font-weight-bold'>
                 البرومو كودز
@@ -136,21 +151,21 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('admin.promo-codes.index') }}" class="nav-link {{ Request::is('admin/promo-codes') ? 'active' : '' }}">
+                <a href="{{ route('admin.promo-codes.index') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/promo-codes') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>كل البرومو</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('admin.promo-codes.create') }}" class="nav-link {{ Request::is('admin/promo-codes/create') ? 'active' : '' }}">
+                <a href="{{ route('admin.promo-codes.create') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/promo-codes/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>إضافة برومو كود</p>
                 </a>
               </li>
             </ul>
           </li>
-          <li class="nav-item has-treeview {{ Request::is('admin/reports*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('admin/reports*') ? 'active' : '' }}">
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/reports*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p class='font-weight-bold'>
                التقارير
@@ -159,14 +174,14 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('admin.reports.index') }}" class="nav-link {{ Request::is('admin/reports') ? 'active' : '' }}">
+                <a href="{{ route('admin.reports.index') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/reports') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>تقارير المبيعات</p>
                 </a>
               </li>
             </ul>
           </li>
-
+            @endif
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

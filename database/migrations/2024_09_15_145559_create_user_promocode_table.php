@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('guest_addresses', function (Blueprint $table) {
+        Schema::create('user_promocode', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
-            $table->string('phone');
-            $table->string('address');
-            $table->string('city');
-            $table->string('state');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // المستخدم الذي استخدم الكوبون
+            $table->foreignId('promo_code_id')->constrained()->onDelete('cascade'); // الكوبون الذي تم استخدامه
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('guest_addresses');
+        Schema::dropIfExists('user_promocode');
     }
 };

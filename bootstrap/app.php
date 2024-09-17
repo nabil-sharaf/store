@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
            'admin' => \App\Http\Middleware\Admin\AdminMiddleware::class,
            'guest.admin' => \App\Http\Middleware\Admin\RedirectIfAdminAuthenticated::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+           'checkRole'=>\App\Http\Middleware\Admin\CheckRole::class,
        ]);
         $middleware->web(LaravelLocalizationRoutes::class);
         $middleware->web(LaravelLocalizationRedirectFilter::class);

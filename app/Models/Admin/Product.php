@@ -1,20 +1,24 @@
 <?php
 
 namespace App\Models\Admin;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
     use HasFactory;
-        protected $fillable = [
+
+    protected $fillable = [
         'name',
         'description',
         'quantity',
-         'price',
-         'goomla_price',
-          'is_trend',
+        'price',
+        'goomla_price',
+        'is_trend',
+        'is_best_seller',
     ];
+
     public function categories()
     {
         return $this->belongsToMany(Category::class);
@@ -25,7 +29,8 @@ class Product extends Model
         return $this->hasMany(Image::class);
     }
 
-    public function orderDetails(){
+    public function orderDetails()
+    {
         return $this->hasMany(OrderDetail::class);
     }
 

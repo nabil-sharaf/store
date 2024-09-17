@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             StatusesTableSeeder::class,
             CategoriesTableSeeder::class,
             SettingsTableSeeder::class,
+            RolesAndPermissionsSeeder::class,
          //   ProductsTableSeeder::class,
            // OrdersTableSeeder::class,
          //   OrderDetailsTableSeeder::class,

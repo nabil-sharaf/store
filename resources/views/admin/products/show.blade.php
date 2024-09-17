@@ -49,7 +49,7 @@
                                     if($discount==0){
                                         $text = 'لا يوجد ';
                                     }else{
-                                       if($product->productDiscount?->discount_type=='fixed'){
+                                       if($product->discount?->discount_type=='fixed'){
                                            $text=' ج ';
                                        }else{
                                            $text = ' %';
@@ -60,7 +60,7 @@
                             </li>
                             <li class="list-group-item"><strong>نوع الخصم:</strong>
                                 @php
-                                    $discountType = $product->productDiscount?->discount_type ?? '';
+                                    $discountType = $product->discount?->discount_type ?? '';
                                     $discountText = match($discountType) {
                                         'fixed' => 'ثابت',
                                         'percentage' => 'نسبة مئوية',
@@ -69,8 +69,8 @@
                                 @endphp
                                 {{ $discountText }}
                             </li>
-                            <li class="list-group-item"><strong>تاريخ البدء:</strong> {{ $product->productDiscount?->start_date ? $product->productDiscount->start_date->format('Y-m-d') : 'لا يوجد' }}</li>
-                            <li class="list-group-item"><strong>تاريخ الانتهاء:</strong> {{ $product->productDiscount?->end_date ? $product->productDiscount->end_date->format('Y-m-d') : 'لا يوجد' }}</li>
+                            <li class="list-group-item"><strong>تاريخ البدء:</strong> {{ $product->discount?->start_date ? $product->discount->start_date->format('Y-m-d') : 'لا يوجد' }}</li>
+                            <li class="list-group-item"><strong>تاريخ الانتهاء:</strong> {{ $product->discount?->end_date ? $product->discount->end_date->format('Y-m-d') : 'لا يوجد' }}</li>
                         </ul>
                     </div>
                 </div>

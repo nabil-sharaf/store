@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\PromoCode;
-use App\Models\Admin\Order;
 
 
 class PromoCodeController extends Controller
 {
+
     public function index()
     {
         $promoCodes = PromoCode::paginate(10);
@@ -103,6 +103,7 @@ class PromoCodeController extends Controller
             'discount' => $discount,
         ]);
     }
+
     public function destroy(PromoCode $promoCode) {
         $promoCode->delete();
 

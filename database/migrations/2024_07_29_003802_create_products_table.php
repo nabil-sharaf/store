@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->string('quantity');
             $table->tinyInteger('is_trend')->nullable();
+            $table->tinyInteger('is_best_seller')->nullable();
             $table->decimal('price', 8, 2);
             $table->decimal('goomla_price', 8, 2);
             $table->timestamps();

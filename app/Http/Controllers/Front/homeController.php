@@ -18,7 +18,7 @@ class homeController extends Controller
         $newProducts = Product::orderBy('created_at', 'desc')->take(4)->get();
 
         // جلب المنتجات الأكثر مبيعاً بترتيب الكمية المباعة تنازلياً
-        $bestProducts = Product::withCount('orderDetails')->orderBy('order_details_count', 'desc')->take(4)->get();
+        $bestProducts = Product::where('is_best_seller',1)->orderBy('id', 'desc')->take(4)->get();
 
         return view('front.index', compact('categories','products','bestProducts','newProducts'));
     }

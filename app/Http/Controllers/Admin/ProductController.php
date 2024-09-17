@@ -9,14 +9,23 @@ use App\Models\Admin\Image;
 use App\Models\Admin\Category;
 use App\Models\Admin\ProductDiscount;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class ProductController extends Controller
+class ProductController extends Controller implements HasMiddleware
 {
 
+    public static function middleware(): array
+    {
+        return [
+
+            new Middleware('checkRole:superAdmin', only: ['destroy','deleteAll']),
+        ];
+    }
     public function index()
     {
         $products = Product::with('categories', 'discount')->paginate(10);
@@ -219,5 +228,47 @@ class ProductController extends Controller
 
         return response()->json(['success' => 'تم حذف العناصر المختارة بنجاح']);
     }
+    public function trendAll(Request $request)
+    {
+        $ids = $request->ids;
+        $products = Product::whereIn('id', $ids)->get();
+        foreach ($products as $product) {
+
+
+       $product->update([
+           'is_trend'=>true,
+       ]);
+
+        }
+
+        return response()->json(['success' => 'تم جعل المنتجات المختارة ترند بنجاح']);
+    }
+    public function bestSellerAll(Request $request)
+    {
+        $ids = $request->ids;
+        $products = Product::whereIn('id', $ids)->get();
+        $allUpdated = true; // متغير للتحقق من نجاح التحديث لجميع المنتجات
+
+        foreach ($products as $product) {
+
+            $updated = $product->update([
+                'is_best_seller' => true,
+            ]);
+
+
+            if (!$updated) {
+                $allUpdated = false; // إذا فشل التحديث لأي منتج
+                break; // إيقاف الحلقة إذا كان هناك فشل
+            }
+        }
+
+        if ($allUpdated) {
+            return response()->json(['success' => 'تم جعل المنتجات المحددة كالأفضل']);
+        } else {
+            return response()->json(['error' => 'حدث خطأ أثناء تحديث بعض المنتجات'], 500);
+        }
+    }
+
+
 }
 

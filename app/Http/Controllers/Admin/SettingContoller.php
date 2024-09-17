@@ -23,4 +23,7 @@ class SettingContoller extends Controller
 
         return redirect()->back()->with('success', 'Settings updated successfully');
     }
+
+
+
 }

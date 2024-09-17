@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('guest_address_id')->nullable();
             $table->unsignedBigInteger('user_address_id')->nullable();
+            $table->unsignedBigInteger('promocode_id')->nullable();
             $table->unsignedBigInteger('status_id')->default(1);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
@@ -25,7 +26,8 @@ return new class extends Migration
             $table->foreign('status_id')->references('id')->on('statuses');
 
             $table->decimal('total_price', 8, 2);
-            $table->decimal('discount', 8, 2);
+            $table->decimal('vip_discount', 8, 2)->default(0);
+            $table->decimal('promo_discount', 8, 2)->default(0);
             $table->decimal('total_after_discount', 8, 2);
             $table->timestamps();
         });

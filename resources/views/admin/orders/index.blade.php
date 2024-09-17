@@ -14,13 +14,13 @@
 
     <!-- /.card -->
     <div class="card">
-        <div class="card-header">
-            <a href="{{ route('admin.orders.create') }}" class="btn btn-primary float-left mr-2">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+            <a href="{{ route('admin.orders.create') }}" class="btn btn-primary mr-2 mb-2">
                 <i class="fas fa-plus mr-1"></i> إضافة طلب جديد
             </a>
-            <form id="statusFilterForm" method="GET" class="form-inline float-right ">
-                <label for="statusFilter" style="margin-left: 15px;">بحث بحالة الأوردر</label>
-                <select name="status" id="statusFilter" class="select2 form-control p-5 ">
+            <form id="statusFilterForm" method="GET" class="form-inline mb-2">
+                <label for="statusFilter" class="mr-2">بحث بحالة الأوردر</label>
+                <select name="status" id="statusFilter" class="select2 form-control">
                     <option value="">اختيار الكل</option>
                     <option value="1">جاري المعالجة</option>
                     <option value="2">جاري الشحن</option>
@@ -29,68 +29,70 @@
                 </select>
             </form>
         </div>
+
         <!-- /.card-header -->
         <div class="card-body">
-            <table class="table table-bordered text-center" id="ordersTable">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th data-sort="user">اسم المستخدم <i class="fas fa-sort"></i></th>
-                    <th data-sort="created_at">تاريخ الاوردر <i class="fas fa-sort"></i></th>
-                    <th>قيمة الخصم</th>
-                    <th data-sort="total_price">الإجمالي بعد الخصم <i class="fas fa-sort"></i></th>
-                    <th>الحالة</th>
-                    <th>العمليات</th>
-                </tr>
-                </thead>
-                <tbody id="ordersTableBody">
-                @foreach($orders as $order)
+            <div class="table-responsive">
+                <table class="table table-bordered text-center" id="ordersTable">
+                    <thead>
                     <tr>
-                        <td>{{ $loop->iteration }}.</td>
-                        <td>{{ $order->user->name }}</td>
-                        <td>{{ $order->created_at->format('Y-m-d') }}</td>
-                        <td>{{ $order->discount!=0 ?$order->discount." جنيه": 'لايوجد ' }} </td>
-                        <td>{{ $order->total_after_discount }} جنيه</td>
-                        <td>
-                            @if($order->status->id != 3 && $order->status->id != 4)
-                                <form class="status-form" id="form{{$order->id}}" data-order-id="{{ $order->id }}">
-                                    @csrf
-                                    @method('PUT')
-
-                                    <select name="status" class="form-control order-status" data-order-id="{{ $order->id }}">
-                                        @if($order->status->id!=2)
-                                            <option id='status-1' value="1" {{ $order->status->id == 1 ? 'selected' : '' }}>قيد المعالجة</option>
-                                        @endif
-                                        <option value="2" {{ $order->status->id == 2 ? 'selected' : '' }}>جاري الشحن</option>
-                                        <option value="3" {{ $order->status->id == 3 ? 'selected' : '' }}>تم التسليم</option>
-                                        <option value="4" {{ $order->status->id == 4 ? 'selected' : '' }}>ملغي</option>
-                                    </select>
-                                </form>
-
-                            @elseif($order->status->id==3)
-                                <span class="btn-sm btn-success">{{ $order->status->name }}</span>
-                            @elseif($order->status->id==4)
-                                <span class="btn-sm btn-danger">{{ $order->status->name }}</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-warning mr-1" title="عرض التفاصيل">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            @if($order->status->id == 1)
-                                <a  href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-sm btn-info mr-1 edit-st{{$order->id}}" title="تعديل">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            @else
-                                <a href="#" class="btn btn-sm btn-secondary mr-1 disabled edit-st{{$order->id}}" title="غير متاح">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            @endif
-                        </td>
+                        <th>#</th>
+                        <th data-sort="user">اسم المستخدم <i class="fas fa-sort"></i></th>
+                        <th data-sort="created_at">تاريخ الاوردر <i class="fas fa-sort"></i></th>
+                        <th>قيمة الخصم</th>
+                        <th data-sort="total_price">الإجمالي بعد الخصم <i class="fas fa-sort"></i></th>
+                        <th>الحالة</th>
+                        <th>العمليات</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                    @foreach($orders as $order)
+                        <tr>
+                            <td>{{ $loop->iteration }}.</td>
+                            <td>{{ $order->user?->name ?? ' Guest زائر' }}</td>
+                            <td>{{ $order->created_at->format('Y-m-d') }}</td>
+                            <td>{{ $order->total_price - $order->total_after_discount ==0 ? "لا يوجد "  :  ($order->total_price - $order->total_after_discount)." جنيه "}} </td>
+                            <td>{{ $order->total_after_discount }} جنيه</td>
+                            <td>
+                                @if($order->status->id != 3 && $order->status->id != 4)
+                                    <form class="status-form" id="form{{$order->id}}" data-order-id="{{ $order->id }}">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <select name="status" class="form-control order-status" data-order-id="{{ $order->id }}">
+                                            @if($order->status->id!=2)
+                                                <option id='status-1' value="1" {{ $order->status->id == 1 ? 'selected' : '' }}>قيد المعالجة</option>
+                                            @endif
+                                            <option value="2" {{ $order->status->id == 2 ? 'selected' : '' }}>جاري الشحن</option>
+                                            <option value="3" {{ $order->status->id == 3 ? 'selected' : '' }}>تم التسليم</option>
+                                            <option value="4" {{ $order->status->id == 4 ? 'selected' : '' }}>ملغي</option>
+                                        </select>
+                                    </form>
+                                @elseif($order->status->id==3)
+                                    <span class="btn-sm btn-success">{{ $order->status->name }}</span>
+                                @elseif($order->status->id==4)
+                                    <span class="btn-sm btn-danger">{{ $order->status->name }}</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-warning mr-1" title="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if($order->status->id == 1)
+                                    <a  href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-sm btn-info mr-1 edit-st{{$order->id}}" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                @else
+                                    <a href="#" class="btn btn-sm btn-secondary mr-1 disabled edit-st{{$order->id}}" title="غير متاح">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
@@ -99,6 +101,26 @@
     </div>
 @endsection
 
+@push('styles')
+    <style>
+        @media (max-width: 768px) {
+            .card-header {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-body {
+                padding: 5px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+        }
+
+    </style>
+@endpush
 @push('scripts')
     <script>
         $(document).ready(function() {

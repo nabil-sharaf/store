@@ -45,6 +45,7 @@
     <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-sm btn-info mr-1" title="تعديل">
         <i class="fas fa-edit"></i>
     </a>
+    @if(auth('admin')->user()->hasAnyRole(['superAdmin']))
     <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display:inline-block;">
         @csrf
         @method('DELETE')
@@ -52,6 +53,7 @@
             <i class="fas fa-trash-alt"></i>
         </button>
     </form>
+    @endif
 </td>
                     </tr>
                     @empty

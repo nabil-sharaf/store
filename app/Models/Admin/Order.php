@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable= ['user_id','status_id','total_price'];
+
+    protected $guarded = [];
 
     public function orderDetails(){
         return $this->hasMany(OrderDetail::class);
@@ -19,6 +20,19 @@ class Order extends Model
 
     public function status(){
         return $this->belongsTo(Status::class);
+    }
+    public function promocode()
+    {
+        return $this->belongsTo(PromoCode::class);
+    }
+
+    public function userAddress()
+    {
+        return $this->belongsTo(UserAddress::class);
+    }
+    public function guestAddress()
+    {
+        return $this->belongsTo(GuestAddress::class);
     }
 
 }

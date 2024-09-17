@@ -14,170 +14,176 @@
     @endif
     <div class="card card-info">
         <div class="card-header">
-            <h3 class="card-title float-left">إضافة طلب جديد</h3>
+            <h3 class="card-title " style="float:none">إضافة طلب جديد</h3>
         </div>
-        <form class="form-horizontal" action="{{ route('admin.orders.store') }}" method="POST"
-              enctype="multipart/form-data" dir="rtl">
+        <form id="orderForm" novalidate  enctype="multipart/form-data" dir="rtl">
             @csrf
             <div class="card-body">
-                <div class="form-group row">
-                    <label for="inputUser" class="col-sm-2 control-label">المستخدم</label>
-                    <div class="col-sm-10">
-                        <select class=" select2 form-control @error('user_id') is-invalid @enderror" id="inputUser"
-                                name="user_id" required>
-                            <option value="">اختر مستخدم</option>
+
+                <div id="initialFormSection">
+                    <div class="form-group">
+                        <label for="inputUser">اختر العميل</label>
+                        <select class="form-control select2 @error('user_id') is-invalid @enderror" id="inputUser"
+                                name="user_id">
+                            <option value="">  Guest- زائر </option>
                             @foreach($users as $user)
                                 @php
-                                    $user_type = $user->customer_type == 'goomla'?'جملة':'قطاعي';
-                                    $user_vip = $user->is_vip ?' - vip':'';
+                                    $user_type = $user->customer_type == 'goomla' ? 'جملة' : 'قطاعي';
+                                    $user_vip = $user->is_vip ? ' - vip' : '';
                                 @endphp
                                 @if($user->status)
                                     <option
                                         data-vip-discount="{{ $user->is_vip ? $user->discount : 0 }}"
-                                        data-user-type="{{$user->customer_type}}"
-                                            value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name .' ('. $user_type .' '. $user_vip . ' )'}}
+                                        data-user-type="{{ $user->customer_type }}"
+                                        value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name . ' (' . $user_type . $user_vip . ')' }}
                                     </option>
                                 @endif
                             @endforeach
                         </select>
                         @error('user_id')
-                        <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputProduct" class="col-sm-2 control-label">المنتجات</label>
-                    <div class="col-sm-10">
+
+                    <div class="form-group">
+                        <label for="inputProduct">المنتجات</label>
                         <div id="product-fields">
                             <div class="product-field card mb-3">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h5 class="card-title mb-0 product-number">المنتج 1</h5>
-                                    </div>
+                                    <h5 class="card-title mb-3 product-number">المنتج 1</h5>
                                     <div class="form-group">
                                         <label for="product-select-0">اختر المنتج</label>
-                                        <select id="product-select-0" class="select2 form-control product-select"
+                                        <select id="product-select-0" class="form-control select2 product-select"
                                                 name="products[0][id]" required>
                                             <option value="">اختر منتج</option>
                                             @foreach($products as $product)
-                                                @php
-                                                    $retailPrice = $product->price; // السعر القطاعي
-                                                    $wholesalePrice = $product->goomla_price; // السعر الجملة
-                                                    $discountType = $product->discount->discount_type ?? null; // نوع الخصم (percentage أو fixed)
-                                                    $discountValue = $product->discount->discount ?? 0; // قيمة الخصم
-
-                                                    // حساب الخصم على السعر القطاعي
-                                                    if ($discountType === 'percentage') {
-                                                        $retailDiscountAmount = ($retailPrice * $discountValue) / 100;
-                                                    } elseif ($discountType === 'fixed') {
-                                                        $retailDiscountAmount = $discountValue;
-                                                    } else {
-                                                        $retailDiscountAmount = 0;
-                                                    }
-                                                    $retailFinalPrice = $retailPrice - $retailDiscountAmount; // السعر النهائي بعد الخصم
-
-                                                    // حساب الخصم على سعر الجملة
-                                                    if ($discountType === 'percentage') {
-                                                        $wholesaleDiscountAmount = ($wholesalePrice * $discountValue) / 100;
-                                                    } elseif ($discountType === 'fixed') {
-                                                        $wholesaleDiscountAmount = $discountValue;
-                                                    } else {
-                                                        $wholesaleDiscountAmount = 0;
-                                                    }
-                                                    $wholesaleFinalPrice = $wholesalePrice - $wholesaleDiscountAmount; // السعر النهائي بعد الخصم
-                                                @endphp
                                                 <option value="{{ $product->id }}"
                                                         data-price-retail="{{ $product->price }}"
                                                         data-price-wholesale="{{ $product->goomla_price }}"
                                                         data-quantity="{{ $product->quantity }}"
-                                                        data-discount-type="{{ $discountType }}"
-                                                        data-discount-value="{{ $discountValue }}">
-                                                                            {{ $product->name }}</option>
+                                                        data-discount-type="{{ $product->discount->discount_type ?? null }}"
+                                                        data-discount-value="{{ $product->discount->discount ?? 0 }}">
+                                                    {{ $product->name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="product-quantity-0">الكمية المطلوبة</label>
-                                                <input type="number" id="product-quantity-0"
-                                                       name="products[0][quantity]"
-                                                       class="form-control product-quantity" required min="1">
-                                            </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <label for="product-quantity-0">الكمية المطلوبة</label>
+                                            <input type="number" id="product-quantity-0" name="products[0][quantity]"
+                                                   class="form-control product-quantity" required min="1" value="1">
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="product-current-quantity-0">الكمية المتاحة للمنتج</label>
-                                                <input type="text" id="product-current-quantity-0"
-                                                       class="form-control product-current-quantity" readonly>
-                                            </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <label for="product-current-quantity-0">الكمية المتاحة للمنتج</label>
+                                            <input type="text" id="product-current-quantity-0"
+                                                   class="form-control product-current-quantity" readonly>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="product-price-0">السعر </label>
-                                                <input type="text" id="product-price-0"
-                                                       class="form-control product-price" readonly>
-                                            </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <label for="product-price-0">السعر</label>
+                                            <input type="text" id="product-price-0" class="form-control product-price"
+                                                   readonly>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="product-discount-0">الخصم </label>
-                                                <input type="text" id="product-discount-0"
-                                                       class="form-control product-discount" readonly>
-                                            </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <label for="product-discount-0">الخصم</label>
+                                            <input type="text" id="product-discount-0"
+                                                   class="form-control product-discount" readonly>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="product-discountPrice-0">السعر بعد الخصم </label>
-                                                <input type="text" id="product-discountPrice-0"
-                                                       class="form-control product-discountPrice" readonly>
-                                            </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <label for="product-discountPrice-0">السعر بعد الخصم</label>
+                                            <input type="text" id="product-discountPrice-0"
+                                                   class="form-control product-discountPrice" readonly>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="product-total-0">الإجمالي</label>
-                                                <input type="text" id="product-total-0"
-                                                       class="form-control product-total" readonly>
-                                            </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <label for="product-total-0">الإجمالي</label>
+                                            <input type="text" id="product-total-0" class="form-control product-total"
+                                                   readonly>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="text-left">
-                            <button type="button" class="btn btn-secondary mt-2" id="addProductButton">إضافة منتج آخر
-                            </button>
+                        <button type="button" class="btn btn-secondary mt-2" id="addProductButton">إضافة منتج آخر
+                        </button>
+                    </div>
+
+                    <div class="form-group" id = "coupon-group-id" style="display: none" >
+                        <label for="promo_code">كوبون الخصم</label>
+                        <div class="input-group coupon-input-group">
+                            <input type="text" id="promo_code" name="promo_code" class="form-control"
+                                   placeholder="أدخل كود الخصم إذا وجد" readonly>
+                            <div class="input-group-append">
+                                <button type="button" id="applyCouponButton" class="btn btn-primary ms-2" disabled>تطبيق
+                                    الكوبون
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label for="totalBeforeDiscount" class="col-sm-2 control-label">إجمالي الأوردر</label>
-                    <div class="col-sm-10">
+                    <div class="form-group">
+                        <label for="totalBeforeDiscount">إجمالي الأوردر</label>
                         <input type="text" class="form-control" id="totalBeforeDiscount" readonly>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة الخصم</label>
-                    <div class="col-sm-10">
+                    <div class="form-group">
+                        <label for="inputDiscountPercentage">نسبة خصم VIP</label>
                         <input type="text" class="form-control" id="inputDiscountPercentage" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDiscountAmount">قيمة خصم VIP</label>
+                        <input type="text" class="form-control" id="inputDiscountAmount" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="copounDiscountAmount">قيمة خصم الكوبون</label>
+                        <input type="text" class="form-control" id="copounDiscountAmount" readonly>
+                    </div>
+                </div>
+                <div id="addressSection" style="display: none;">
+                    <div class="form-group">
+                        <label for="full_name">الاسم بالكامل</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name"
+                               {{ old('full_name', $user->address?->full_name )}} required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPhone">رقم التليفون</label>
+                        <input type="tel" class="form-control" id="inputPhone" name="phone"
+                               {{ old('phone', $user->address?->phone )}} required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputAddress">العنوان</label>
+                        <input type="text" class="form-control" id="inputAddress" name="address"
+                               {{ old('address', $user->address?->address )}} required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputCity">المدينة</label>
+                        <input type="text" class="form-control" id="inputCity" name="city"
+                               {{ old('city', $user->address?->city )}} required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">المحافظة</label>
+                        <input type="text" class="form-control" id="state" name="state"
+                               {{ old('state', $user->address?->state )}} required>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة الخصم</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDiscountAmount" readonly>
-                    </div>
+                <div class="form-group">
+                    <label for="inputTotalOrder">إجمالي الأورد بعد الخصم</label>
+                    <input type="text" class="form-control" id="inputTotalOrder" readonly>
                 </div>
-                <div class="form-group row">
-                    <label for="inputTotalOrder" class="col-sm-2 control-label">الإجمالي بعد الخصم</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputTotalOrder" readonly>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-info float-right">حفظ البيانات</button>
-                </div>
+
+            </div>
+            <div class="card-footer">
+                <button type="button" id="showAddressButton" class="btn btn-info btn-block">أكمل الطلب</button>
+                <button type="button" id="goBackButton" class="btn btn-secondary btn-block" style="display: none;">
+                    رجوع
+                </button>
+                <button type="submit" id="submitOrderButton" class="btn btn-success btn-block" style="display: none;">
+                    تأكيد الطلب
+                </button>
+
+            </div>
         </form>
     </div>
 @endsection
@@ -336,43 +342,6 @@
                 });
             }
 
-            function updateDiscount() {
-                var userId = $('#inputUser').val();
-                var totalBeforeDiscount = calculateTotalBeforeDiscount();
-                var url = "{{route('admin.get-user-discount', ':id')}}".replace(':id', userId);
-
-                if (userId) {
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function (response) {
-                            var discountPercentage = response.discount;
-                            if (discountPercentage && discountPercentage > 0) {
-                                var discountAmount = (totalBeforeDiscount * discountPercentage) / 100;
-                                var totalAfterDiscount = totalBeforeDiscount - discountAmount;
-
-                                $('#inputDiscountPercentage').val(discountPercentage + ' % ');
-                                $('#inputDiscountAmount').val(discountAmount.toFixed(2));
-                                $('#inputTotalOrder').val(totalAfterDiscount.toFixed(2));
-                            } else {
-                                $('#inputDiscountPercentage').val('لا يوجد خصم');
-                                $('#inputDiscountAmount').val('0');
-                                $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error fetching discount: " + error);
-                            $('#inputDiscountPercentage').val('خطأ في جلب الخصم');
-                            $('#inputDiscountAmount').val('0');
-                            $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
-                        }
-                    });
-                } else {
-                    $('#inputDiscountPercentage').val('لا يوجد خصم');
-                    $('#inputDiscountAmount').val('0');
-                    $('#inputTotalOrder').val(totalBeforeDiscount.toFixed(2));
-                }
-            }
 
             function calculateTotalBeforeDiscount() {
                 var total = 0;
@@ -388,11 +357,68 @@
                 // الحصول على نسبة الخصم من الـ data attribute
                 vipDiscountRate = parseFloat($(this).find(':selected').data('vip-discount')) || 0;
                 $('#inputDiscountPercentage').val(vipDiscountRate.toFixed(2) + '%');
+                $('#copounDiscountAmount').val('0');
+
 
                 updateUserTypeAndPrices();
                 // updateDiscount();
                 updateTotalOrder(); // إعادة حساب إجمالي الطلب بعد التحديث
 
+                // الحصول على الـ user_id المختار
+                const userId = $(this).val();
+                // أظهار كود كوبون الخصم للاعضاء فقط
+                if(userId){
+                    $('#coupon-group-id').show();
+                    $('#promo_code').removeAttr('readonly');
+                    $('#applyCouponButton').removeAttr('disabled');
+                }else{
+                    $('#coupon-group-id').hide();
+                 }
+
+                // إرسال طلب AJAX لجلب العناوين الخاصة بالمستخدم
+                if (userId) {
+                    $.ajax({
+                        url: "{{route('admin.get-customer-address',':userId')}}".replace(':userId',userId), // رابط الـ API لجلب العناوين
+                        method: 'GET',
+                        success: function (response) {
+                            // تأكد من أن الاستجابة تحتوي على بيانات العنوان
+                            if (response.success) {
+                                const address = response.address;
+
+                                // تعبئة الحقول الخاصة بالعناوين
+                                $('#inputAddress').val(address.address);
+                                $('#inputPhone').val(address.phone);
+                                $('#inputCity').val(address.city);
+                                $('#state').val(address.state);
+                                $('#full_name').val(address.full_name);
+                            }
+                            else {
+                                // في حالة عدم وجود عنوان، افراغ الحقول
+                                $('#inputAddress').val('');
+                                $('#inputPhone').val('');
+                                $('#inputCity').val('');
+                                $('#state').val('');
+                                $('#full_name').val('');
+                             }
+                        },
+                        error: function () {
+                            alert('حدث خطأ أثناء جلب العنوان');
+                            // تفريغ الحقول عند حدوث خطأ
+                            $('#inputAddress').val('');
+                            $('#inputPhone').val('');
+                            $('#inputCity').val('');
+                            $('#state').val('');
+                            $('#full_name').val('');
+                        }
+                    });
+                } else {
+                    // تفريغ الحقول إذا لم يتم اختيار مستخدم
+                    $('#inputAddress').val('');
+                    $('#inputPhone').val('');
+                    $('#inputCity').val('');
+                    $('#state').val('');
+                    $('#full_name').val('');
+                }
             });
 
             function updateUserTypeAndPrices() {
@@ -436,13 +462,181 @@
                 $('.product-total').each(function () {
                     totalOrder += parseFloat($(this).val()) || 0;
                 });
+                var copounDisount = $('#copounDiscountAmount').val();
                 var discountAmount = (totalOrder * vipDiscountRate) / 100;
                 $('#totalBeforeDiscount').val(totalOrder.toFixed(2));
                 $('#inputDiscountPercentage').val(vipDiscountRate.toFixed(2) + '%');
                 $('#inputDiscountAmount').val(discountAmount.toFixed(2));
-                $('#inputTotalOrder').val((totalOrder - discountAmount).toFixed(2));
+                $('#inputTotalOrder').val((totalOrder - discountAmount - copounDisount).toFixed(2));
                 //updateDiscount();  // نضيف هذا السطر لتحديث الخصم بعد تحديث الإجمالي
             }
+
+            $('#orderForm').on('submit', function (e) {
+                e.preventDefault();
+
+                let hasError = false;
+                let errorMessage = '';
+
+                // التحقق من أن هناك منتج واحد على الأقل مضاف
+                let productSelected = false;
+                $('.product-select').each(function () {
+                    if ($(this).val() !== '') {
+                        productSelected = true;
+                    }
+                });
+
+                if (!productSelected) {
+                    hasError = true;
+                    errorMessage += 'يجب إضافة منتج واحد على الأقل.\n';
+                }
+
+                // التحقق من الكمية لكل منتج
+                $('.product-select').each(function (index) {
+                    const quantity = $(`#product-quantity-${index}`).val();
+                    const selectedProduct = $(this).val();
+
+                    // إذا تم اختيار المنتج، تأكد من أن الكمية صحيحة
+                    if (selectedProduct && (!quantity || quantity <= 0)) {
+                        hasError = true;
+                        errorMessage += `الرجاء إدخال كمية صحيحة للمنتج رقم ${index + 1}.\n`;
+                    }
+                });
+
+                if (hasError) {
+                    // إظهار رسالة الخطأ
+                    toastr.error(errorMessage);
+                } else {
+
+                let formData = new FormData(this);  // جمع البيانات من الفورم
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('admin.orders.store') }}',  // نفس المسار القديم لتخزين البيانات
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        // عرض حالة التحميل (يمكن استخدام أي عنصر لتحميل الرسوم)
+                        $('#submitButton').attr('disabled', true);  // تعطيل الزر أثناء الإرسال
+                    },
+                    success: function (response) {
+                        // إذا تم الحفظ بنجاح
+                        if (response.success) {
+                            toastr.success(response.message);  // عرض رسالة النجاح
+
+                            // إعادة توجيه المستخدم إلى صفحة الـ index بعد نجاح الحفظ
+                            window.location.href = '{{ route('admin.orders.index') }}';
+                        }
+                    },
+                    error: function (xhr) {
+                        // إذا حدث خطأ في التحقق
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+
+                            // حذف جميع رسائل الأخطاء السابقة
+                            $('.invalid-feedback').remove();
+                            $('.is-invalid').removeClass('is-invalid');
+
+                            // عرض الأخطاء الجديدة
+                            $.each(errors, function (key, value) {
+                                let inputElement = $('[name="' + key + '"]');
+                                inputElement.addClass('is-invalid');
+
+                                // إذا لم يكن هناك عنصر لعرض رسالة الخطأ، نضيفه بعد عنصر الإدخال
+                                if (!inputElement.next('.invalid-feedback').length) {
+                                    inputElement.after('<div class="invalid-feedback">' + value[0] + '</div>');
+                                }
+                            });
+
+
+                            // عرض رسالة الخطأ العامة المستلمة من الـ Controller
+                            toastr.error(xhr.responseJSON.message || 'هناك بعض الأخطاء في البيانات.');
+                        } else {
+                            toastr.error('حدث خطأ غير متوقع.');  // عرض رسالة الخطأ غير المتوقعة
+                        }
+                    },
+                    complete: function () {
+                        // إزالة حالة التحميل بعد انتهاء الطلب (سواء نجاح أو فشل)
+                        $('#submitButton').attr('disabled', false);
+                    }
+                });
+                }
+
+            });
+
+            $('#applyCouponButton').click(function () {
+                var couponCode = $('#promo_code').val(); // الكود المُدخل للكوبون
+                var totalOrder = $('#totalBeforeDiscount').val(); // إجمالي الطلب
+                var userId = $('#inputUser').val();
+                $.ajax({
+                    url: "{{ route('admin.check-promo-code') }}",
+                    method: 'POST',
+                    data: {
+                        promo_code: couponCode,
+                        total_order: totalOrder,
+                        user_id: userId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        // تحقق من وجود خصم في الرد
+                        if (response.discount !== undefined) {
+                            $('#copounDiscountAmount').val(response.discount);
+                            $('#promo_code').attr('readonly', true);
+                            $('#applyCouponButton').attr('disabled', 'disabled');
+                            updateTotalOrder();
+                            toastr.success(response.success);
+                        } else {
+                            toastr.error('حدث خطأ غير متوقع. حاول مرة أخرى.');
+                        }
+                    },
+                    error: function (xhr) {
+                        let error = JSON.parse(xhr.responseText);
+                        if (error.error) {
+                            toastr.error(error.error);
+                        } else {
+                            toastr.error('حدث خطأ غير متوقع. حاول مرة أخرى.');
+                        }
+                        $('#promo_code').val('');
+                    }
+                });
+            });
+
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const initialFormSection = document.getElementById('initialFormSection');
+            const addressSection = document.getElementById('addressSection');
+            const showAddressButton = document.getElementById('showAddressButton');
+            const submitOrderButton = document.getElementById('submitOrderButton');
+            const goBackButton = document.getElementById('goBackButton');
+
+            // الانتقال لأعلى الصفحة
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // تمرير سلس إلى أعلى الصفحة
+                });
+            }
+
+            showAddressButton.addEventListener('click', function () {
+                initialFormSection.style.display = 'none';
+                addressSection.style.display = 'block';
+                showAddressButton.style.display = 'none';
+                submitOrderButton.style.display = 'block';
+                goBackButton.style.display = 'block'; // عرض زر الرجوع
+
+                scrollToTop(); // الانتقال لأعلى الصفحة عند الضغط على "أكمل الطلب"
+            });
+
+            goBackButton.addEventListener('click', function () {
+                initialFormSection.style.display = 'block';
+                addressSection.style.display = 'none';
+                showAddressButton.style.display = 'block';
+                submitOrderButton.style.display = 'none';
+                goBackButton.style.display = 'none'; // إخفاء زر الرجوع عند الرجوع
+
+                scrollToTop(); // الانتقال لأعلى الصفحة عند الضغط على "رجوع"
+            });
         });
     </script>
 @endpush
@@ -450,6 +644,40 @@
     <style>
         label {
             font-size: 13px;
+        }
+
+        .coupon-input-group {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .coupon-input-group .input-group-append {
+            margin-right: 0.5rem;
+        }
+
+        .coupon-input-group .form-control,
+        .coupon-input-group .input-group-append .btn {
+            border-radius: 0.25rem;
+        }
+
+        @media (max-width: 575.98px) {
+            .coupon-input-group {
+                flex-direction: column;
+            }
+
+            .coupon-input-group > .form-control {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .coupon-input-group .input-group-append {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .coupon-input-group .input-group-append .btn {
+                width: 100%;
+            }
         }
     </style>
 @endpush
