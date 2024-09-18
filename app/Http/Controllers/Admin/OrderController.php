@@ -233,10 +233,11 @@ class OrderController extends Controller
     {
         if ($order->status->id == 1) { // تعديل الطلب في حالة اذا لم  يتم شحنه
 
-            $users = User::all();
+
             $products = Product::all();
-            $order->load('orderDetails','user');
-            return view('admin.orders.edit', compact('order', 'users', 'products'));
+            $order->load('orderDetails','user','promocode');
+            $user  = $order->user;
+            return view('admin.orders.edit', compact('order', 'products','user'));
         }
         return redirect(route('admin.orders.index'));
     }
@@ -252,19 +253,51 @@ class OrderController extends Controller
     {
         try {
             return DB::transaction(function () use ($request, $order) {
+
+                $user = null;
+                $isGuest = false;
+
+                if ($request->user_id) {
+                    $user = User::findOrFail($request->user_id);
+                } else {
+                    $isGuest = true;
+                }
+
                 // Restore previous quantities
-              if($request->user_id){
-
-                $user = User::findOrFail($request->user_id);
-              }
-
                 foreach ($order->orderDetails as $orderDetail) {
                     $product = $orderDetail->product;
                     $product->quantity += $orderDetail->product_quantity;
                     $product->save();
                 }
 
-                $order->user_id = $request->user_id;
+                if ($isGuest) {
+                    // حفظ معلومات الزائر في الطلب
+                    $guest = new GuestAddress();
+                    $guest->full_name =  $request->full_name;
+                    $guest->phone     =  $request->phone;
+                    $guest->address =  $request->address;
+                    $guest->city    =  $request->city;
+                    $guest->state    =  $request->state;
+                    $guest->save();
+                    $order->guest_address_id = $guest->id;
+                } else {
+                    $order->user_id = $user->id;
+                    // انشاء  أو تحديث عنوان المستخدم
+                    UserAddress::updateOrCreate(
+
+                        ['user_id' => $user->id],
+                        [
+                            'full_name' => $request->full_name,
+                            'phone'     => $request->phone,
+                            'address'   => $request->address,
+                            'city'      => $request->city,
+                            'state'     => $request->state,
+                        ]
+                    );
+
+
+                }
+
                 $order->orderDetails()->delete();
                 $totalPrice = 0;
                 $all_order_quantity=0;
@@ -320,7 +353,32 @@ class OrderController extends Controller
                     $all_order_quantity += $productData['quantity'];
                 }
 
-                // حساب الخصم
+                // التحقق من كود الخصم
+                if ($request->filled('promo_code')) {
+                    $promoCode = PromoCode::where('code', $order->promocode->code)
+                        ->where('active', 1)
+                        ->where('start_date', '<=', now())
+                        ->where('end_date', '>=', now())
+                        ->first();
+
+                    if (!$promoCode) {
+                        throw new \Exception('كود الخصم غير صالح أو منتهي الصلاحية.');
+                    }
+
+
+
+                    if ($totalPrice < $promoCode->min_amount) {
+                        throw new \Exception('يجب أن يكون إجمالي الطلب أكبر من ' . $promoCode->min_amount . ' لاستخدام هذا الكوبون.');
+                    }
+
+                    $promoDiscount = $promoCode->discount_type === 'percentage'
+                        ? ($totalPrice * $promoCode->discount) / 100
+                        : $promoCode->discount;
+                } else {
+                    $promoDiscount = 0;
+                }
+
+                // حساب خصم ال vip
                 if($request->user_id){
                     $vip_discount = $this->calculateDiscount($user, $totalPrice);
                 }else{
@@ -343,13 +401,20 @@ class OrderController extends Controller
 
                 $order->total_price = $totalPrice;
                 $order->vip_discount = $vip_discount;
-                $order->total_after_discount = $totalPrice - $vip_discount - $order->promo_discount;
+                $order->promo_discount = $promoDiscount;
+                $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
                 $order->save();
 
-                return redirect()->route('admin.orders.index')->with('success', 'تم تحديث الطلب بنجاح');
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم تحديث الطلب بنجاح'
+                ]);
             });
         } catch (\Exception $e) {
-            return redirect()->route('admin.orders.edit', $order->id)->with('error', $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
         }
     }
 
@@ -425,7 +490,7 @@ class OrderController extends Controller
             ->exists();
 
         if ($couponUsed) {
-            return response()->json(['valid' => false, 'message' => 'لقد قمت باستخدام هذا الكوبون من قبل'], 400);
+            return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون من قبل'], 400);
         }
 
         // التحقق من الحد الأدنى لقيمة الطلب
@@ -447,6 +512,46 @@ class OrderController extends Controller
             'discount' => $discount,
         ]);
     }
+    public function updateCopoun(Request $request)
+    {
+
+        $couponCode = $request->input('promo_code');
+        $orderTotal = $request->input('total_order'); // إجمالي الطلب
+
+        // ابحث عن الكوبون بناءً على الكود المدخل
+        $coupon = PromoCode::where('code', $couponCode)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+
+
+        // التحقق من وجود الكوبون
+        if (!$coupon) {
+            return response()->json(['error' => 'كود الخصم غير صحيح او غير صالح'], 400);
+        }
+
+        // التحقق من الحد الأدنى لقيمة الطلب
+        if ($orderTotal < $coupon->min_amount) {
+            return response()->json(['error' => 'إجمالي الطلب أقل من الحد الأدنى لتطبيق الكوبون'], 400);
+        }
+
+        // حساب الخصم بناءً على نوع الكوبون
+        $discount = 0;
+        if ($coupon->discount_type == 'percentage') {
+            $discount = ($coupon->discount / 100) * $orderTotal;
+        } elseif ($coupon->discount_type == 'fixed') {
+            $discount = $coupon->discount;
+        }
+
+        // نرجع إجمالي الطلب بعد الخصم
+        return response()->json([
+            'success' => 'تم تعديل قيمة خصم الكوبون ',
+            'discount' => $discount,
+        ]);
+    }
+
+
 
 }
 

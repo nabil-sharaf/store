@@ -14,193 +14,273 @@
         <div class="card-header">
             <h3 class="card-title float-left">تعديل الطلب</h3>
         </div>
-        <form class="form-horizontal" action="{{ route('admin.orders.update', $order->id) }}" method="POST" enctype="multipart/form-data" dir="rtl">
+        <form class="form-horizontal" id="orderForm" novalidate dir="rtl">
             @csrf
-            @method('PUT')
             <div class="card-body">
-                <!-- User selection -->
-                <div class="form-group row">
-                    <label for="inputUser" class="col-sm-2 control-label">المستخدم</label>
-                    <div class="col-sm-10">
-                        <select class="select2 form-control @error('user_id') is-invalid @enderror" id="inputUser" name="user_id">
-                            <option value="{{$order->user_id ?? ''}}">{{$order->user?->name ?? 'Guest'}} </option>
-                        </select>
-                        @error('user_id')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+
+                <div id="initialFormSection">
+                    <!-- User selection -->
+                    <div class="form-group row">
+
+                        <label for="inputUser" class="col-sm-2 control-label">المستخدم</label>
+                        <div class="col-sm-10">
+                            <select class="select2 form-control @error('user_id') is-invalid @enderror" id="inputUser"
+                                    name="user_id">
+                                @php
+                                    $user = $order->user;
+                                    $promocode = $order->promocode;
+                                        $user_type = $user?->customer_type == 'goomla' ? 'جملة' : 'قطاعي';
+                                        $user_vip = $user?->is_vip ? ' - vip' : '';
+                                @endphp
+                                @if($user?->status)
+                                    <option
+                                        data-vip-discount="{{ $user->is_vip ? $user->discount : 0 }}"
+                                        data-user-type="{{ $user->customer_type }}"
+                                        value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name . ' (' . $user_type . $user_vip . ')' }}
+                                    </option>
+                                @else
+                                    <option value="">Guest</option>
+                                @endif
+                            </select>
+                            @error('user_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
 
-                <!-- Products -->
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label">المنتجات</label>
-                    <div class="col-sm-10">
-                        <div id="product-fields">
-                            @foreach($order->orderDetails as $index => $orderDetail)
-                                <div class="product-field card mb-3">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h5 class="card-title mb-0 product-number">المنتج {{ $index + 1 }}</h5>
-                                           @if($index > 0)
-                                            <button type="button" class="btn btn-danger btn-sm remove-product">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                               @endif
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="product-select-{{ $index }}">اختر المنتج</label>
-                                            <select id="product-select-{{ $index }}" class="select2 form-control product-select"
-                                                    name="products[{{ $index }}][id]" required>
-                                                <option value="">اختر منتج</option>
-                                                @foreach($products as $product)
-                                                    @php
-                                                        $retailPrice = $product->price;
-                                                        $wholesalePrice = $product->goomla_price;
-                                                        $discountType = $product->discount->discount_type ?? null;
-                                                        $discountValue = $product->discount->discount ?? 0;
-
-                                                        if ($discountType === 'percentage') {
-                                                            $retailDiscountAmount = ($retailPrice * $discountValue) / 100;
-                                                            $wholesaleDiscountAmount = ($wholesalePrice * $discountValue) / 100;
-                                                        } elseif ($discountType === 'fixed') {
-                                                            $retailDiscountAmount = $discountValue;
-                                                            $wholesaleDiscountAmount = $discountValue;
-                                                        } else {
-                                                            $retailDiscountAmount = 0;
-                                                            $wholesaleDiscountAmount = 0;
-                                                        }
-                                                        $retailFinalPrice = $retailPrice - $retailDiscountAmount;
-                                                        $wholesaleFinalPrice = $wholesalePrice - $wholesaleDiscountAmount;
-                                                    @endphp
-                                                    <option value="{{ $product->id }}"
-                                                            data-price-retail="{{ $product->price }}"
-                                                            data-price-wholesale="{{ $product->goomla_price }}"
-                                                            data-quantity="{{ $product->quantity }}"
-                                                            data-discount-type="{{ $discountType }}"
-                                                            data-discount-value="{{ $discountValue }}"
-                                                        {{ $orderDetail->product_id == $product->id ? 'selected' : '' }}>
-                                                        {{ $product->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="row">
-                                            <!-- Product Quantity -->
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="product-quantity-{{ $index }}">الكمية المطلوبة</label>
-                                                    <input type="number" id="product-quantity-{{ $index }}"
-                                                           name="products[{{ $index }}][quantity]"
-                                                           class="form-control product-quantity"
-                                                           value="{{ $orderDetail->product_quantity }}"
-                                                           required min="1">
-                                                </div>
+                    <!-- Products -->
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">المنتجات</label>
+                        <div class="col-sm-10">
+                            <div id="product-fields">
+                                @foreach($order->orderDetails as $index => $orderDetail)
+                                    <div class="product-field card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h5 class="card-title mb-0 product-number">المنتج {{ $index + 1 }}</h5>
+                                                @if($index > 0)
+                                                    <button type="button" class="btn btn-danger btn-sm remove-product">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
                                             </div>
+                                            <div class="form-group">
+                                                <label for="product-select-{{ $index }}">اختر المنتج</label>
+                                                <select id="product-select-{{ $index }}"
+                                                        class="select2 form-control product-select"
+                                                        name="products[{{ $index }}][id]" required>
+                                                    <option value="">اختر منتج</option>
+                                                    @foreach($products as $product)
 
-                                            <!-- Current Quantity Available -->
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="product-current-quantity-{{ $index }}">الكمية المتاحة للمنتج</label>
-                                                    <input type="text" id="product-current-quantity-{{ $index }}"
-                                                           class="form-control product-current-quantity"
-                                                           value="{{ $products->find($orderDetail->product_id)->quantity }}" readonly>
-                                                </div>
+                                                        <option value="{{ $product->id }}"
+                                                                data-price-retail="{{ $product->price }}"
+                                                                data-price-wholesale="{{ $product->goomla_price }}"
+                                                                data-quantity="{{ $product->quantity }}"
+                                                                data-discount-type="{{ $product->discount->discount_type ?? null }}"
+                                                                data-discount-value="{{ $product->discount->discount ?? 0 }}"
+                                                            {{ $orderDetail->product_id == $product->id ? 'selected' : '' }}>
+                                                            {{ $product->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-
-                                            <!-- Product Price -->
-                                            @php
-                                              $product_price = $order->user?->customer_type == 'goomla'?$orderDetail->product->goomla_price : $orderDetail->product->price;
-                                            @endphp
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="product-price-{{ $index }}">السعر</label>
-                                                    <input type="text" id="product-price-{{ $index }}"
-                                                           class="form-control product-price"
-                                                           value="{{$product_price}}"
-                                                           readonly>
+                                            <div class="row">
+                                                <!-- Product Quantity -->
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="product-quantity-{{ $index }}">الكمية
+                                                            المطلوبة</label>
+                                                        <input type="number" id="product-quantity-{{ $index }}"
+                                                               name="products[{{ $index }}][quantity]"
+                                                               class="form-control product-quantity"
+                                                               value="{{ $orderDetail->product_quantity }}"
+                                                               required min="1">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <!-- Product Discount -->
-                                            <div class="col-md-4">
+                                                <!-- Current Quantity Available -->
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="product-current-quantity-{{ $index }}">الكمية
+                                                            المتاحة للمنتج</label>
+                                                        <input type="text" id="product-current-quantity-{{ $index }}"
+                                                               class="form-control product-current-quantity"
+                                                               value="{{ $products->find($orderDetail->product_id)->quantity }}"
+                                                               readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Product Price -->
                                                 @php
-                                                    $discountValue = $orderDetail->product?->discount?->discount_type === 'percentage'
-                                                        ? number_format($orderDetail->price * ($orderDetail?->product?->discount?->discount / 100), 2)
-                                                        : ($orderDetail?->product?->discount?->discount_type === 'fixed'
-                                                            ? number_format($orderDetail->product?->discount?->discount, 2)
-                                                            : '0.00');
+                                                    $product_price = $order->user?->customer_type == 'goomla'?$orderDetail->product->goomla_price : $orderDetail->product->price;
                                                 @endphp
-
-                                                <div class="form-group">
-                                                    <label for="product-discount-{{ $index }}">الخصم</label>
-                                                    <input type="text" id="product-discount-{{ $index }}"
-                                                           class="form-control product-discount"
-
-                                                           value="{{$discountValue}}"                                                           readonly>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="product-price-{{ $index }}">السعر</label>
+                                                        <input type="text" id="product-price-{{ $index }}"
+                                                               class="form-control product-price"
+                                                               value="{{$product_price}}"
+                                                               readonly>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <!-- Price After Discount -->
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="product-discountPrice-{{ $index }}">السعر بعد الخصم</label>
-                                                    <input type="text" id="product-discountPrice-{{ $index }}"
-                                                           class="form-control product-discountPrice"
-                                                           value="{{ $product_price - $discountValue }}"
-                                                           readonly>
+                                                <!-- Product Discount -->
+                                                <div class="col-md-4">
+                                                    @php
+                                                        $discountValue = 0;
+                                                        $product = $orderDetail->product;
+                                                        $discount = $product->discount ?? null;
+
+                                                        // استخدام السعر الأصلي للمنتج بدلاً من سعر تفاصيل الطلب
+                                                        $originalPrice = $product->price;
+
+                                                        if ($discount) {
+                                                            if ($discount->discount_type === 'percentage') {
+                                                                $discountValue = $originalPrice * ($discount->discount / 100);
+                                                            } elseif ($discount->discount_type === 'fixed') {
+                                                                $discountValue = $discount->discount;
+                                                            }
+                                                        }
+
+                                                        // تقريب قيمة الخصم إلى رقمين عشريين
+                                                        $discountValue = round($discountValue, 2);
+                                                    @endphp
+
+                                                    <div class="form-group">
+                                                        <label for="product-discount-{{ $index }}">الخصم</label>
+                                                        <input type="text" id="product-discount-{{ $index }}"
+                                                               class="form-control product-discount"
+                                                               value="{{ $discountValue }}" readonly>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <!-- Total -->
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="product-total-{{ $index }}">الإجمالي</label>
-                                                    <input type="text" id="product-total-{{ $index }}"
-                                                           class="form-control product-total"
-                                                           value="{{ ($product_price-$discountValue) * $orderDetail->product_quantity }}"
-                                                           readonly>
+                                                <!-- Price After Discount -->
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="product-discountPrice-{{ $index }}">السعر بعد
+                                                            الخصم</label>
+                                                        <input type="text" id="product-discountPrice-{{ $index }}"
+                                                               class="form-control product-discountPrice"
+                                                               value="{{ $product_price - $discountValue }}"
+                                                               readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Total -->
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="product-total-{{ $index }}">الإجمالي</label>
+                                                        <input type="text" id="product-total-{{ $index }}"
+                                                               class="form-control product-total"
+                                                               value="{{ ($product_price-$discountValue) * $orderDetail->product_quantity }}"
+                                                               readonly>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                @endforeach
+                            </div>
+                            <div class="text-left">
+                                <button type="button" class="btn btn-secondary mt-2" id="addProductButton">إضافة منتج
+                                    آخر
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" id="coupon-group-id"
+                         style="display: {{$promocode?->code ? '' : 'none'}}">
+                        <label for="promo_code" class="col-sm-2 col-form-label">كوبون الخصم</label>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-12 mb-2">
+                                    <input class="form-control" type="text" id="promo_code" name="promo_code"
+                                           placeholder="أدخل كود الخصم إذا وجد" value="{{$promocode?->code}}" readonly>
                                 </div>
-                            @endforeach
+                                <div class="col-lg-4 col-md-4 col-sm-12 d-sm-block d-lg-inline-block">
+                                    <button type="button" id="applyCouponButton"
+                                            class="btn btn-primary w-100 mt-sm-2 mt-lg-0" disabled>
+                                        تطبيق الكوبون بعد التعديلات
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-left">
-                            <button type="button" class="btn btn-secondary mt-2" id="addProductButton">إضافة منتج آخر</button>
+                    </div>
+
+
+                    <!-- Total Before Discount -->
+                    <div class="form-group row">
+                        <label for="totalBeforeDiscount" class="col-sm-2 control-label">إجمالي الأوردر قبل الخصم</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="totalBeforeDiscount"
+                                   name="total_before_discount"
+                                   value="{{ old('total_before_discount', $order->total_price) }}" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Discount vip Percentage -->
+                    <div class="form-group row">
+                        <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة خصم vip</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputDiscountPercentage"
+                                   value="{{ old('inputDiscountPercentage', $order->user?->is_vip ? $order->user->discount . ' %' : 'لا يوجد'  ) }}"
+                                   readonly>
+                        </div>
+                    </div>
+
+                    <!-- Discount vip Amount -->
+                    <div class="form-group row">
+                        <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة خصم vip</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputDiscountAmount"
+                                   value="{{ old('inputDiscountAmount', $order->vip_discount )}}" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Discount copoun Amount -->
+                    <div class="form-group row">
+                        <label for="copounDiscountAmount" class="col-sm-2 control-label">قيمة خصم الكوبون</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="copounDiscountAmount"
+                                   value="{{ old('inputDiscountAmount', $order->promo_discount )}}"
+                                   data-copoun-code="{{$promocode?->code}}"
+                                   readonly>
                         </div>
                     </div>
                 </div>
 
-                <!-- Total Before Discount -->
-                <div class="form-group row">
-                    <label for="totalBeforeDiscount" class="col-sm-2 control-label">إجمالي الأوردر قبل الخصم</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="totalBeforeDiscount" name="total_before_discount" value="{{ old('total_before_discount', $order->total_price) }}" readonly>
-                    </div>
-                </div>
 
-                <!-- Discount vip Percentage -->
-                <div class="form-group row">
-                    <label for="inputDiscountPercentage" class="col-sm-2 control-label">نسبة خصم vip</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDiscountPercentage" value="{{ old('inputDiscountPercentage', $order->user?->is_vip ? $order->user->discount . ' %' : 'لا يوجد'  ) }}" readonly>
+                <div id="addressSection" style="display: none">
+                    <div class="form-group">
+                        <label for="full_name">الاسم بالكامل</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name"
+                               value="{{ old('full_name', $user->address?->full_name )}}" required>
                     </div>
-                </div>
 
-                <!-- Discount vip Amount -->
-                <div class="form-group row">
-                    <label for="inputDiscountAmount" class="col-sm-2 control-label">قيمة خصم vip</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDiscountAmount" value="{{ old('inputDiscountAmount', $order->vip_discount )}}" readonly>
+                    <div class="form-group">
+                        <label for="inputPhone">رقم التليفون</label>
+                        <input type="tel" class="form-control" id="inputPhone" name="phone"
+                               value="{{ old('phone', $user->address?->phone )}}" required>
                     </div>
-                </div>
 
-                <!-- Discount copoun Amount -->
-                <div class="form-group row">
-                    <label for="copounDiscountAmount" class="col-sm-2 control-label">قيمة خصم الكوبون</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="copounDiscountAmount"  value="{{ old('inputDiscountAmount', $order->promo_discount )}}" readonly >
+                    <div class="form-group">
+                        <label for="inputAddress">العنوان</label>
+                        <input type="text" class="form-control" id="inputAddress" name="address"
+                               value="{{ old('address', $user->address?->address )}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputCity">المدينة</label>
+                        <input type="text" class="form-control" id="inputCity" name="city"
+                               value="{{ old('city', $user->address?->city )}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">المحافظة</label>
+                        <input type="text" class="form-control" id="state" name="state"
+                               value="{{ old('state', $user->address?->state )}}" required>
                     </div>
                 </div>
 
@@ -208,13 +288,23 @@
                 <div class="form-group row">
                     <label for="inputTotalOrder" class="col-sm-2 control-label">الإجمالي بعد الخصم</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputTotalOrder" name="total_price" value="{{ old('total_price', $order->total_after_discount) }}" readonly>
+                        <input type="text" class="form-control" id="inputTotalOrder" name="total_price"
+                               value="{{ old('total_price', $order->total_after_discount) }}" readonly
+                               data-order-id="{{$order->id}}">
+
                     </div>
                 </div>
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-info btn-block">تحديث البيانات</button>
+                <button type="button" id="showAddressButton" class="btn btn-info btn-block">أكمل الطلب</button>
+                <button type="button" id="goBackButton" class="btn btn-secondary btn-block" style="display: none;">
+                    رجوع
+                </button>
+                <button type="submit" id="submitOrderButton" class="btn btn-success btn-block" style="display: none;">
+                    تأكيد الطلب
+                </button>
+
             </div>
         </form>
     </div>
@@ -223,8 +313,15 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
+            // هذا الكود يضيف الـ CSRF token لجميع الطلبات AJAX
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             var productCount = {{ $order->orderDetails->count() - 1 }};
-            var vipDiscountRate = parseFloat($(this).find(':selected').data('vip-discount')) || 0;
+            var vipDiscountRate = parseFloat($('#inputUser').find(':selected').data('vip-discount')) || 0;
 
 
             $('#addProductButton').click(function () {
@@ -314,6 +411,8 @@
             $('#product-fields').on('click', '.remove-product', function () {
                 $(this).closest('.product-field').remove();
                 updateProductNumbers();
+                $('#copounDiscountAmount').val('0 '); // تحديث الخصم الجديد
+                $('#applyCouponButton').removeAttr('disabled');
                 updateTotalOrder();
             });
 
@@ -347,11 +446,16 @@
                 productBody.find('.product-discountPrice').val(finalPrice);
 
                 updateTotal(productBody);
+                $('#copounDiscountAmount').val('0 '); // تحديث الخصم الجديد
+                $('#applyCouponButton').removeAttr('disabled');
+
                 initializeSelect2();
             });
 
             $('#product-fields').on('input', '.product-quantity', function () {
+
                 updateTotal($(this).closest('.card-body'));
+
             });
 
             function updateTotal(productBody) {
@@ -359,8 +463,187 @@
                 var quantity = parseInt(productBody.find('.product-quantity').val()) || 0;
                 var total = price * quantity;
                 productBody.find('.product-total').val(total.toFixed(2));
+
+                $('#copounDiscountAmount').val('0 '); // تحديث الخصم الجديد
+                $('#applyCouponButton').removeAttr('disabled');
+
                 updateTotalOrder();
             }
+
+
+            // تعديل دالة updateTotalOrder
+            function updateTotalOrder() {
+                var totalOrder = 0;
+                $('.product-total').each(function () {
+                    totalOrder += parseFloat($(this).val()) || 0;
+                });
+                var discountAmount = (totalOrder * vipDiscountRate) / 100;
+                var copounAmount = $('#copounDiscountAmount').val();
+
+                $('#totalBeforeDiscount').val(totalOrder.toFixed(2));
+                $('#inputDiscountPercentage').val(vipDiscountRate.toFixed(2) + '%');
+                $('#inputDiscountAmount').val(discountAmount.toFixed(2));
+                $('#inputTotalOrder').val((totalOrder - discountAmount - copounAmount).toFixed(2));
+            }
+
+            // هذا الكود يتم تنفيذه بعد تعديل الطلب، سواء بحذف منتج أو تغيير الكميات
+            $('#applyCouponButton').click(function () {
+                var couponCode = $('#copounDiscountAmount').data('copoun-code');
+                var totalOrder = $('#totalBeforeDiscount').val(); // إجمالي الطلب الجديد
+                var userId = $('#inputUser').val();
+                if (userId) {
+                    $.ajax({
+                        url: "{{ route('admin.update-promo-code') }}",
+                        method: 'POST',
+                        data: {
+                            promo_code: couponCode,
+                            total_order: totalOrder,
+                            user_id: userId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (response) {
+                            if (response.discount !== undefined) {
+                                $('#copounDiscountAmount').val((response.discount).toFixed(2)); // تحديث الخصم الجديد
+                                toastr.success(response.success);
+                                $('#applyCouponButton').attr('disabled', 'disabled');
+                                updateTotalOrder(); // تحديث إجمالي الطلب بعد الخصم
+                            } else {
+                                toastr.error('حدث خطأ غير متوقع. حاول مرة أخرى.');
+                            }
+
+                        },
+                        error: function (xhr) {
+                            let error = JSON.parse(xhr.responseText);
+                            if (error.error) {
+                                toastr.error(error.error);
+                                console.log(couponCode)
+                            } else {
+                                toastr.error('حدث خطأ غير متوقع. حاول مرة أخرى.');
+                            }
+                        }
+                    });
+                } else {
+                    $('#copounDiscountAmount').val('0 '); // تحديث الخصم الجديد
+
+                }
+
+            });
+
+            $('#orderForm').on('submit', function (e) {
+                e.preventDefault();
+
+                let orderId = $('#inputTotalOrder').data('order-id');
+
+
+                let hasError = false;
+                let errorMessage = '';
+
+                // التحقق من أن هناك منتج واحد على الأقل مضاف
+                let productSelected = false;
+
+                $('.product-select').each(function () {
+                    if ($(this).val() !== '') {
+                        productSelected = true;
+                    }
+                });
+
+                if (!productSelected) {
+                    hasError = true;
+                    errorMessage += 'يجب إضافة منتج واحد على الأقل.\n';
+                }
+
+                // التحقق من الكمية لكل منتج
+                $('.product-select').each(function (index) {
+                    const quantity = $(`#product-quantity-${index}`).val();
+                    const selectedProduct = $(this).val();
+
+                    // إذا تم اختيار المنتج، تأكد من أن الكمية صحيحة
+                    if (selectedProduct && (!quantity || quantity <= 0)) {
+                        hasError = true;
+                        errorMessage += `الرجاء إدخال كمية صحيحة للمنتج رقم ${index + 1}.\n`;
+                    }
+                });
+
+                if (hasError) {
+                    // إظهار رسالة الخطأ
+                    toastr.error(errorMessage);
+                } else {
+
+                    let form = this;
+
+                    // استخدام FormData لجمع بيانات النموذج
+                    let formData = new FormData(form);
+
+                    // إضافة token CSRF إلى formData
+                    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+                    formData.append('_token', csrfToken);
+
+                    // إضافة _method للتعامل مع PUT request
+                    formData.append('_method', 'PUT');
+
+                    // التأكد من أن formData يحتوي على البيانات الصحيحة
+                    // for (var pair of formData.entries()) {
+                    //     console.log(pair[0] + ': ' + pair[1]);
+                    // }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('admin.orders.update',':orderId') }}".replace(':orderId', orderId),  // نفس المسار القديم لتخزين البيانات
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        beforeSend: function () {
+                            // عرض حالة التحميل (يمكن استخدام أي عنصر لتحميل الرسوم)
+                            $('#submitButton').attr('disabled', true);  // تعطيل الزر أثناء الإرسال
+                        },
+                        success: function (response) {
+                            // إذا تم الحفظ بنجاح
+                            if (response.success) {
+                                toastr.success(response.message);  // عرض رسالة النجاح
+
+                                // إعادة توجيه المستخدم إلى صفحة الـ index بعد نجاح الحفظ
+                                window.location.href = '{{ route('admin.orders.index') }}';
+                            }
+                        },
+                        error: function (xhr) {
+                            // إذا حدث خطأ في التحقق
+                            if (xhr.status === 422) {
+                                let errors = xhr.responseJSON.errors;
+
+                                // حذف جميع رسائل الأخطاء السابقة
+                                $('.invalid-feedback').remove();
+                                $('.is-invalid').removeClass('is-invalid');
+
+                                // عرض الأخطاء الجديدة
+                                $.each(errors, function (key, value) {
+                                    let inputElement = $('[name="' + key + '"]');
+                                    inputElement.addClass('is-invalid');
+
+                                    // إذا لم يكن هناك عنصر لعرض رسالة الخطأ، نضيفه بعد عنصر الإدخال
+                                    if (!inputElement.next('.invalid-feedback').length) {
+                                        inputElement.after('<div class="invalid-feedback">' + value[0] + '</div>');
+                                    }
+                                });
+
+
+                                // عرض رسالة الخطأ العامة المستلمة من الـ Controller
+                                toastr.error(xhr.responseJSON.message || 'هناك بعض الأخطاء في البيانات.');
+                            } else {
+                                toastr.error('حدث خطأ غير متوقع.');  // عرض رسالة الخطأ غير المتوقعة
+                            }
+                        },
+                        complete: function () {
+                            // إزالة حالة التحميل بعد انتهاء الطلب (سواء نجاح أو فشل)
+                            $('#submitButton').attr('disabled', false);
+                        }
+                    });
+                }
+
+            });
+
 
             function initializeSelect2() {
                 $('.select2').select2({
@@ -374,77 +657,43 @@
                 });
             }
 
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const initialFormSection = document.getElementById('initialFormSection');
+            const addressSection = document.getElementById('addressSection');
+            const showAddressButton = document.getElementById('showAddressButton');
+            const submitOrderButton = document.getElementById('submitOrderButton');
+            const goBackButton = document.getElementById('goBackButton');
 
-            function calculateTotalBeforeDiscount() {
-                var total = 0;
-                $('.product-total').each(function () {
-                    total += parseFloat($(this).val()) || 0;
+            // الانتقال لأعلى الصفحة
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // تمرير سلس إلى أعلى الصفحة
                 });
-                return total;
             }
 
-            // تحديث الخصم عند تغيير المستخدم
-            $('#inputUser').change(function () {
+            showAddressButton.addEventListener('click', function () {
+                initialFormSection.style.display = 'none';
+                addressSection.style.display = 'block';
+                showAddressButton.style.display = 'none';
+                submitOrderButton.style.display = 'block';
+                goBackButton.style.display = 'block'; // عرض زر الرجوع
 
-                // الحصول على نسبة الخصم من الـ data attribute
-                vipDiscountRate = parseFloat($(this).find(':selected').data('vip-discount')) || 0;
-                $('#inputDiscountPercentage').val(vipDiscountRate.toFixed(2) + '%');
-
-                updateUserTypeAndPrices();
-                // updateDiscount();
-                updateTotalOrder(); // إعادة حساب إجمالي الطلب بعد التحديث
-
+                scrollToTop(); // الانتقال لأعلى الصفحة عند الضغط على "أكمل الطلب"
             });
 
-            function updateUserTypeAndPrices() {
-                var userType = $('#inputUser').find(':selected').data('user-type'); // جلب نوع العميل
-                $('.product-select').each(function () {
-                    var selectedProduct = $(this).find(':selected');
-                    var priceRetail = selectedProduct.data('price-retail');
-                    var priceWholesale = selectedProduct.data('price-wholesale');
-                    var discountType = selectedProduct.data('discount-type');  // نوع الخصم
-                    var discountValue = selectedProduct.data('discount-value');  // قيمة الخصم
+            goBackButton.addEventListener('click', function () {
+                initialFormSection.style.display = 'block';
+                addressSection.style.display = 'none';
+                showAddressButton.style.display = 'block';
+                submitOrderButton.style.display = 'none';
+                goBackButton.style.display = 'none'; // إخفاء زر الرجوع عند الرجوع
 
-                    var productBody = $(this).closest('.card-body');
-
-                    // تحديد السعر بناءً على نوع المستخدم
-                    var price = userType === 'goomla' ? priceWholesale : priceRetail;
-
-                    // حساب الخصم
-                    var discountAmount = 0;
-                    if (discountType === 'percentage') {
-                        discountAmount = (price * discountValue) / 100;
-                    } else if (discountType === 'fixed') {
-                        discountAmount = discountValue;
-                    }
-
-                    // حساب السعر النهائي بعد الخصم
-                    var finalPrice = price - discountAmount;
-
-                    // تحديث الحقول الخاصة بالسعر والخصم
-                    productBody.find('.product-price').val(price);  // السعر الأصلي
-                    productBody.find('.product-discountPrice').val(finalPrice);  // السعر النهائي بعد الخصم
-
-                    // تحديث إجمالي السعر
-                    updateTotal(productBody);
-                });
-            }
-
-
-            // تعديل دالة updateTotalOrder
-            function updateTotalOrder() {
-                var totalOrder = 0;
-                $('.product-total').each(function () {
-                    totalOrder += parseFloat($(this).val()) || 0;
-                });
-                var discountAmount = (totalOrder * vipDiscountRate) / 100;
-                $('#totalBeforeDiscount').val(totalOrder.toFixed(2));
-                $('#inputDiscountPercentage').val(vipDiscountRate.toFixed(2) + '%');
-                $('#inputDiscountAmount').val(discountAmount.toFixed(2));
-                $('#inputTotalOrder').val((totalOrder - discountAmount).toFixed(2));
-                //updateDiscount();  // نضيف هذا السطر لتحديث الخصم بعد تحديث الإجمالي
-            }
+                scrollToTop(); // الانتقال لأعلى الصفحة عند الضغط على "رجوع"
+            });
         });
+
     </script>
 @endpush
 

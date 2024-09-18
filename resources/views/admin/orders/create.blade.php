@@ -281,6 +281,12 @@
 
             $('#product-fields').on('click', '.remove-product', function () {
                 $(this).closest('.product-field').remove();
+
+                updateTotal($(this).closest('.card-body'));
+                $('#promo_code').removeAttr('readonly');
+                $('#applyCouponButton').removeAttr('disabled');
+                $('#copounDiscountAmount').val('0');
+
                 updateProductNumbers();
                 updateTotalOrder();
             });
@@ -314,12 +320,21 @@
                 productBody.find('.product-discount').val(discountAmount);
                 productBody.find('.product-discountPrice').val(finalPrice);
 
+                $('#promo_code').removeAttr('readonly');
+                $('#applyCouponButton').removeAttr('disabled');
+                $('#copounDiscountAmount').val('0');
+
                 updateTotal(productBody);
                 initializeSelect2();
             });
 
             $('#product-fields').on('input', '.product-quantity', function () {
+                $('#promo_code').removeAttr('readonly');
+                $('#applyCouponButton').removeAttr('disabled');
+                $('#copounDiscountAmount').val('0');
                 updateTotal($(this).closest('.card-body'));
+
+
             });
 
             function updateTotal(productBody) {
@@ -343,13 +358,6 @@
             }
 
 
-            function calculateTotalBeforeDiscount() {
-                var total = 0;
-                $('.product-total').each(function () {
-                    total += parseFloat($(this).val()) || 0;
-                });
-                return total;
-            }
 
             // تحديث الخصم عند تغيير المستخدم
             $('#inputUser').change(function () {

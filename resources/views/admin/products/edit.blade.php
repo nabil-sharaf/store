@@ -87,9 +87,9 @@
                     <div class="col-sm-10">
                         <select class="select2 form-control @error('discount_type') is-invalid @enderror"
                                 id="inputDiscountType" name="discount_type">
-                            <option value="" {{ old('discount_type', $product?->productDiscount?->discount_type) == '' ? 'selected' : '' }}>بدون خصم</option>
-                            <option value="fixed" {{ old('discount_type', $product?->productDiscount?->discount_type) == 'fixed' ? 'selected' : '' }}>ثابت</option>
-                            <option value="percentage" {{ old('discount_type', $product?->productDiscount?->discount_type) == 'percentage' ? 'selected' : '' }}>نسبة مئوية</option>
+                            <option value="" {{ old('discount_type', $product->discount?->discount_type) == '' ? 'selected' : '' }}>بدون خصم</option>
+                            <option value="fixed" {{ old('discount_type', $product->discount?->discount_type) == 'fixed' ? 'selected' : '' }}>ثابت</option>
+                            <option value="percentage" {{ old('discount_type', $product->discount?->discount_type) == 'percentage' ? 'selected' : '' }}>نسبة مئوية</option>
                         </select>
                         @error('discount_type')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -101,7 +101,7 @@
                     <div class="col-sm-10">
                         <input type="number" step="0.01" class="form-control @error('discount') is-invalid @enderror"
                                id="inputDiscount" placeholder="أدخل قيمة الخصم" name='discount'
-                               value="{{ old('discount', $product?->productDiscount?->discount) }}" min="0">
+                               value="{{ old('discount', $product?->discount?->discount) }}" min="0">
                         @error('discount')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
@@ -112,7 +112,7 @@
                     <div class="col-sm-10">
                         <input type="date" class="form-control @error('start_date') is-invalid @enderror"
                                id="inputStartDate" name='start_date'
-                               value="{{ old('start_date', $product?->productDiscount?->start_date?->format('Y-m-d')) }}">
+                               value="{{ old('start_date', $product?->discount?->start_date?->format('Y-m-d')) }}">
                         @error('start_date')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
@@ -123,7 +123,7 @@
                     <div class="col-sm-10">
                         <input type="date" class="form-control @error('end_date') is-invalid @enderror"
                                id="inputEndDate" name='end_date'
-                               value="{{ old('end_date', $product?->productDiscount?->end_date?->format('Y-m-d')) }}">
+                               value="{{ old('end_date', $product?->discount?->end_date?->format('Y-m-d')) }}">
                         @error('end_date')
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>

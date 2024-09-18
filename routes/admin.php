@@ -32,6 +32,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
             Route::get('orders/product-field', [Adm\OrderController::class, 'getProductField'])->name('orders.product-field');
             Route::resource('/orders', Adm\OrderController::class);
             Route::post('/orders/check-coupon', [ Adm\OrderController::class, 'checkCoupon'])->name('check-promo-code');
+            Route::post('/orders/update-coupon', [ Adm\OrderController::class, 'updateCopoun'])->name('update-promo-code');
 
 
         Route::middleware([CheckRole::class.":superAdmin"])->group(function () {
