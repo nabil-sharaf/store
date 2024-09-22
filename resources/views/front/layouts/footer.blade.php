@@ -10,7 +10,7 @@ $siteImages = \App\Models\Admin\SiteImage::first() ?? null;
                     <div class="widget-item item-style3">
                         <div class="about-widget">
                             <a class="footer-logo" href="">
-                                <img style="width:100px; max-height:50px" src="{{asset('storage').'/'.$siteImages->footer_image ?? ''}}" alt="{{ __('footer.logo_alt') }}">
+                                <img style="width:100px; max-height:50px" src="{{asset('storage').'/'.$siteImages?->footer_image ?? ''}}" alt="{{ __('footer.logo_alt') }}">
                             </a>
                             <p>{{ __('footer.description') }}</p>
                             <div class="widget-social-icons">
@@ -75,7 +75,7 @@ $siteImages = \App\Models\Admin\SiteImage::first() ?? null;
                             </ul>
                             <div class="widget-payment-info">
                                 <div class="thumb">
-                                    <a href=""><img src="{{asset('storage').'/'.$siteImages->payment_image ?? ''}}" alt="{{ __('footer.payment_image_alt') }}"></a>
+                                    <a href=""><img src="{{asset('storage').'/'.$siteImages?->payment_image ?? ''}}" alt="{{ __('footer.payment_image_alt') }}"></a>
                                 </div>
                             </div>
                         </div>

@@ -24,8 +24,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <img class="thumb-two" src="{{asset('storage').'/'.$siteImages->slider_image ?? ''}}" alt="Image">
-                                <img class="thumb-four" src="{{asset('storage').'/'.$siteImages->car_icon ?? ''}}" alt="Image">
+                                <img class="thumb-two" src="{{asset('storage').'/'.$siteImages?->slider_image ?? ''}}" alt="Image">
+                                <img class="thumb-four" src="{{asset('storage').'/'.$siteImages?->car_icon ?? ''}}" alt="Image">
                             </div>
                             <div class="shape-top bg-img" data-bg-img="{{asset('front/assets/img/photos/1.png')}}"></div>
                             <div class="shape-bottom bg-img" data-bg-img="{{asset('front/assets/img/photos/2.png')}}"></div>
@@ -85,10 +85,10 @@
             </div>
             <div class="shape-group divider-image">
                 <div class="shape-style3 ">
-                    <img src="{{asset('storage').'/'.$siteImages->offer_two ?? ''}}" alt="Image">
+                    <img src="{{asset('storage').'/'.$siteImages?->offer_two ?? ''}}" alt="Image">
                 </div>
                 <div class="shape-style4">
-                    <img src="{{asset('storage').'/'.$siteImages->offer_one ?? ''}}" alt="Image">
+                    <img src="{{asset('storage').'/'.$siteImages?->offer_one ?? ''}}" alt="Image">
                 </div>
             </div>
         </div>

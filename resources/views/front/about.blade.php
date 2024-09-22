@@ -57,8 +57,8 @@
                 <div class="col-lg-12">
                     <div class="swiper-container brand-logo-slider-container">
                         <div class="swiper-wrapper brand-logo-slider">
-                                @if($siteImages->sponsor_images && count($siteImages->sponsor_images)>0)
-                                    @foreach($siteImages->sponsor_images as $image)
+                                @if($siteImages?->sponsor_images && count($siteImages?->sponsor_images)>0)
+                                    @foreach($siteImages?->sponsor_images as $image)
                             <div class="swiper-slide brand-logo-item">
                                          <a href="#"><img src="{{ asset('storage/'.$image) }}" alt="Brand-Logo"></a>
                              </div>
