@@ -214,6 +214,24 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 
 
+@media only screen and (max-width: 479.98px) {
+
+    .product-area.product-style1-area {
+        padding: 0 0 13px;
+    }
+    .product-area.product-style1-area .product-tab-content ul.nav-tabs{
+        margin-bottom:10px;
+    }
+    .product-area.product-style2-area {
+        margin-top: 15px;
+    }
+    .trending-products-section .section-title {
+        margin-bottom: 19px;
+    }
+
+}
+
+
     .header-middle .header-align{
         @media only screen and (max-width: 479.98px) {
         display: unset !important;
@@ -286,11 +304,35 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     object-fit: cover; /* للتأكد من أن الصور تُعرض بشكل صحيح دون تمدد */
     width: 100%;
 }
+.category-item .content {
+    position: absolute;
+    bottom: -9px;
+    top:unset !important;
+    left: 0;
+    right: 0;
+    text-align: center;
+    width: 100%; /* يجعل الخلفية تغطي عرض الصورة بالكامل */
+    padding: 10px 0; /* تقليل المسافات */
+    background-color: rgba(0, 0, 0, 0.25); /* الخلفية الشفافة */
+    transform: unset !important;
+}
+@media (min-width: 768px) {
+
+    .category-area.product-category2-area .category-items2 .category-item .thumb .content .contact-info .title {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+
+    .category-area.product-category2-area .category-items2 .category-item .thumb .content .contact-info .price {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+}
 
 @media (max-width: 768px) {
     .category-item .content {
         position: absolute;
-        top: 66% !important;
+        top: 71% !important;
         inset-inline-end: 10px !important;
     }
 
@@ -303,6 +345,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
     .category-area.product-category2-area{
         padding-top:55px;
+        padding-bottom: 5px;
     }
     .category-items2 .col-md-6 {
         margin-bottom: 0 !important;
@@ -315,19 +358,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     .category-item .thumb {
         position: relative;
         height: 100%; /* تأكد من أن الصورة تأخذ الارتفاع الكامل */
-    }
-
-    .category-item .content {
-        position: absolute;
-        bottom: -9px;
-        top:unset !important;
-        left: 0;
-        right: 0;
-        text-align: center;
-        width: 100%; /* يجعل الخلفية تغطي عرض الصورة بالكامل */
-        padding: 10px 0; /* تقليل المسافات */
-        background-color: rgba(0, 0, 0, 0.25); /* الخلفية الشفافة */
-        transform: unset !important;
     }
 
     .category-item .contact-info h3,

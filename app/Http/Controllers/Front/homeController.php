@@ -16,13 +16,16 @@ class homeController extends Controller
         $categories = Category::with('products')->get();
         $products = Product::with('images')->get();
         // جلب المنتجات المضافة حديثاً بترتيب تاريخ الإضافة تنازلياً
-        $newProducts = Product::orderBy('created_at', 'desc')->take(4)->get();
+        $newProducts = Product::orderBy('created_at', 'desc')->take(8)->get();
 
-        // جلب المنتجات الأكثر مبيعاً بترتيب الكمية المباعة تنازلياً
-        $bestProducts = Product::where('is_best_seller',1)->orderBy('id', 'desc')->take(4)->get();
+        // جلب المنتجات المحددة كأكثر مبيعا ً
+        $bestProducts = Product::where('is_best_seller',1)->orderBy('updated_at', 'desc')->take(8)->get();
+
+     // جلب المنتجات المحددة كترند   ً
+        $trendingProducts = Product::where('is_trend',1)->orderBy('updated_at', 'desc')->take(8)->get();
 
         $siteImages = SiteImage::first();
-        return view('front.index', compact('categories','products','bestProducts','newProducts','siteImages'));
+        return view('front.index', compact('categories','products','bestProducts','newProducts','siteImages','trendingProducts'));
     }
 
     public function productDetails($id)
