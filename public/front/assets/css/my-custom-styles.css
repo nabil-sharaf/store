@@ -472,7 +472,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     }
 /*--------------------- Logo Main---------------------*/
     .header-logo-area img.logo-main{
-        max-width: 116%;
+        max-width: 128%;
+        height: 47px;
     }
 }
 
