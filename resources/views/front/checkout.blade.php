@@ -51,64 +51,56 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="billing-info mb-20">
-                                    <label>{{ __('checkout.first_name') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <input type="text">
+                                    <label>{{ __('checkout.full_name') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
+                                    <input type="text" placeholder="{{__('checkout.full_name_placeholder')}}">
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="billing-info mb-20">
-                                    <label>{{ __('checkout.last_name') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="billing-info mb-20">
-                                    <label>{{ __('checkout.company_name') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="billing-select mb-20">
-                                    <label>{{ __('checkout.country') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <div class="select-style">
-                                        <select class="select-active">
-                                            <option>{{ __('checkout.bangladesh') }}</option>
-                                            <option>{{ __('checkout.bahrain') }}</option>
-                                            <option>{{ __('checkout.azerbaijan') }}</option>
-                                            <option>{{ __('checkout.barbados') }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="billing-info mb-20">
-                                    <label>{{ __('checkout.street_address') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <input class="billing-address" placeholder="{{ __('checkout.street_address') }}" type="text">
-                                    <input placeholder="{{ __('checkout.apartment') }}" type="text">
+                                    <label>{{ __('checkout.address') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
+                                    <input class="billing-address" placeholder="{{ __('checkout.address-placeholder') }}" type="text">
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="billing-info mb-20">
                                     <label>{{ __('checkout.city') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <input type="text">
+                                    <input type="text" placeholder="{{ __('checkout.city_placeholder') }}">
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="billing-select mb-20">
                                     <label>{{ __('checkout.state') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <div class="select-style">
-                                        <select class="select-active">
-                                            <option>{{ __('checkout.choose_option') }}</option>
-                                            <option>{{ __('checkout.barguna') }}</option>
-                                            <option>{{ __('checkout.bandarban') }}</option>
-                                        </select>
+                                    <div class="select-style ">
+                                        <select class=" select-active">
+                                            <option value="" disabled selected>اختر اسم محافظتك</option>
+                                            <option value="القاهرة">القاهرة</option>
+                                            <option value="الجيزة">الجيزة</option>
+                                            <option value="الإسكندرية">الإسكندرية</option>
+                                            <option value="الدقهلية">الدقهلية</option>
+                                            <option value="البحر الأحمر">البحر الأحمر</option>
+                                            <option value="البحيرة">البحيرة</option>
+                                            <option value="الفيوم">الفيوم</option>
+                                            <option value="الغربية">الغربية</option>
+                                            <option value="الإسماعيلية">الإسماعيلية</option>
+                                            <option value="المنوفية">المنوفية</option>
+                                            <option value="المنيا">المنيا</option>
+                                            <option value="القليوبية">القليوبية</option>
+                                            <option value="الوادي الجديد">الوادي الجديد</option>
+                                            <option value="السويس">السويس</option>
+                                            <option value="اسوان">اسوان</option>
+                                            <option value="اسيوط">اسيوط</option>
+                                            <option value="بني سويف">بني سويف</option>
+                                            <option value="بورسعيد">بورسعيد</option>
+                                            <option value="دمياط">دمياط</option>
+                                            <option value="الشرقية">الشرقية</option>
+                                            <option value="جنوب سيناء">جنوب سيناء</option>
+                                            <option value="كفر الشيخ">كفر الشيخ</option>
+                                            <option value="مطروح">مطروح</option>
+                                            <option value="الأقصر">الأقصر</option>
+                                            <option value="قنا">قنا</option>
+                                            <option value="شمال سيناء">شمال سيناء</option>
+                                            <option value="سوهاج">سوهاج</option>                                        </select>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="billing-info mb-20">
-                                    <label>{{ __('checkout.postcode') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
-                                    <input type="text">
                                 </div>
                             </div>
                             <div class="col-12">
@@ -119,14 +111,10 @@
                             </div>
                             <div class="col-12">
                                 <div class="billing-info mb-20">
-                                    <label>{{ __('checkout.email') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
+                                    <label>{{ __('checkout.email') }} </label>
                                     <input type="text">
                                 </div>
                             </div>
-                        </div>
-                        <div class="checkout-account">
-                            <input class="checkout-toggle" type="checkbox">
-                            <span>{{ __('checkout.ship_to_different') }}</span>
                         </div>
                     </div>
                 </div>
@@ -140,12 +128,13 @@
                                 </div>
                                 <div class="your-order-product">
                                     <ul>
-                                        <li>هودي براذر باللون الرمادي × 4 <span>140.00 {{ __('checkout.currency') }}</span></li>
-                                        <li>تيشيرت انجو ذا ريست × 1 <span>39.59 {{ __('checkout.currency') }}</span></li>
+                                        @foreach($items as $item)
+                                        <li>{{ $item->quantity }} × {{ $item->name }} <span>{{ $item->price * $item->quantity }} {{ __('checkout.currency') }}</span></li>
+                                        @endforeach
                                     </ul>
                                 </div>
                                 <div class="your-order-subtotal">
-                                    <h3>{{ __('checkout.subtotal') }} <span>617.59 {{ __('checkout.currency') }}</span></h3>
+                                    <h3>{{ __('checkout.products_price') }} <span>{{$totalPrice}} {{ __('checkout.currency') }}</span></h3>
                                 </div>
                                 <div class="your-order-shipping">
                                     <span>{{ __('checkout.shipping') }}</span>
@@ -156,38 +145,11 @@
                                     </ul>
                                 </div>
                                 <div class="your-order-total">
-                                    <h3>{{ __('checkout.total') }} <span>617.59 {{ __('checkout.currency') }}</span></h3>
+                                    <h3>{{ __('checkout.total') }} <span>{{$totalPrice}} {{ __('checkout.currency') }}</span></h3>
                                 </div>
                             </div>
                             <div class="payment-method">
-                                <div class="pay-top sin-payment">
-                                    <input id="payment_method_1" class="input-radio" type="radio" value="cheque" checked="checked" name="payment_method">
-                                    <label for="payment_method_1">{{ __('checkout.bank_transfer') }}</label>
-                                    <div class="payment-box payment_method_bacs">
-                                        <p>{{ __('checkout.bank_transfer_desc') }}</p>
-                                    </div>
-                                </div>
-                                <div class="pay-top sin-payment">
-                                    <input id="payment-method-2" class="input-radio" type="radio" value="cheque" name="payment_method">
-                                    <label for="payment-method-2">{{ __('checkout.cheque_payment') }}</label>
-                                    <div class="payment-box payment_method_bacs">
-                                        <p>{{ __('checkout.cheque_payment_desc') }}</p>
-                                    </div>
-                                </div>
-                                <div class="pay-top sin-payment">
-                                    <input id="payment-method-3" class="input-radio" type="radio" value="cheque" name="payment_method">
-                                    <label for="payment-method-3">{{ __('checkout.cod') }}</label>
-                                    <div class="payment-box payment_method_bacs">
-                                        <p>{{ __('checkout.cod_desc') }}</p>
-                                    </div>
-                                </div>
-                                <div class="pay-top sin-payment">
-                                    <input id="payment-method-4" class="input-radio" type="radio" value="cheque" name="payment_method">
-                                    <label for="payment-method-4">{{ __('checkout.paypal') }}</label>
-                                    <div class="payment-box payment_method_bacs">
-                                        <p>{{ __('checkout.paypal_desc') }}</p>
-                                    </div>
-                                </div>
+
                                 <div class="pay-top sin-payment">
                                     <input id="payment-method-5" class="input-radio" type="radio" value="cheque" name="payment_method">
                                     <label for="payment-method-5">{{ __('checkout.cash_on_delivery') }}</label>
@@ -198,7 +160,7 @@
                             </div>
                         </div>
                         <div class="Place-order">
-                            <a class="place-order-btn" href="#">{{ __('checkout.place_order') }}</a>
+                            <a class="place-order-btn btn btn-block btn-lg" href="route">{{ __('checkout.place_order') }}</a>
                         </div>
                     </div>
                 </div>
@@ -208,3 +170,19 @@
     <!--== End Checkout Area Wrapper ==-->
 
 @endsection
+@push('styles')
+    <style>
+            .select-style .select-active {
+                padding-inline-start: 36px;
+                line-height: 38px;
+            }
+
+            .place-order-btn{
+                background-color: #f379a7;
+                color: #fff;
+                margin-top: 15px;
+                text-align: center;
+                width: 100%
+            }
+    </style>
+@endpush

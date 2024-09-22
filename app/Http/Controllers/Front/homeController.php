@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Category;
 use App\Models\Admin\Product;
 use App\Models\Admin\Setting;
+use App\Models\Admin\SiteImage;
 use Illuminate\Http\Request;
 
 class homeController extends Controller
@@ -20,7 +21,8 @@ class homeController extends Controller
         // جلب المنتجات الأكثر مبيعاً بترتيب الكمية المباعة تنازلياً
         $bestProducts = Product::where('is_best_seller',1)->orderBy('id', 'desc')->take(4)->get();
 
-        return view('front.index', compact('categories','products','bestProducts','newProducts'));
+        $siteImages = SiteImage::first();
+        return view('front.index', compact('categories','products','bestProducts','newProducts','siteImages'));
     }
 
     public function productDetails($id)
@@ -48,7 +50,8 @@ class homeController extends Controller
 
     public function aboutUs()
     {
-        return view('front.about');
+        $siteImages = SiteImage::first();
+        return view('front.about',compact('siteImages'));
     }
 
 }

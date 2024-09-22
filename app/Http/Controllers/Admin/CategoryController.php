@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Admin\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Nette\Schema\ValidationException;
 use function redirect;
 use function view;
@@ -40,19 +41,37 @@ class CategoryController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
-public function store(CategoryRequest $request)
-{
-    try {
-        Category::create($request->validated());
-        return redirect()->route('admin.categories.index')
-            ->with('success', 'تم إنشاء الكاتيجوري بنجاح');
+    public function store(CategoryRequest $request)
+    {
+        try {
 
-    } catch (Exception $e) {
-        return redirect()->back()
-            ->withErrors($e->errors())
-            ->withInput();
+                // الحصول على امتداد الصورة
+                $extension = $request->file('image')->getClientOriginalExtension();
+
+                // إنشاء اسم جديد للصورة مع ضمان أن يكون فريدًا
+                $imageName = time() . '_' . uniqid() . '.' . $extension;
+
+                // رفع الصورة مع الاسم الجديد إلى مجلد categories
+                $imagePath = $request->file('image')->storeAs('categories', $imageName, 'public');
+
+
+            // إنشاء الكاتيجوري مع الصورة
+            Category::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'parent_id' => $request->parent_id,
+                'image' => $imagePath, // تخزين مسار الصورة
+            ]);
+
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'تم إنشاء الكاتيجوري بنجاح');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        }
     }
-}
     /**
      * Display the specified resource.
      */
@@ -86,7 +105,36 @@ private function getBreadcrumbs(Category $category)
     public function update(CategoryRequest $request, Category $category)
     {
         try {
-            $category->update($request->validated());
+            // التحقق مما إذا كانت هناك صورة جديدة
+            if ($request->hasFile('image')) {
+                // حذف الصورة القديمة إذا كانت موجودة
+                if ($category->image && Storage::disk('public')->exists($category->image)) {
+                    Storage::disk('public')->delete($category->image);
+                }
+
+                // رفع الصورة الجديدة
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $imageName = time() . '_' . uniqid() . '.' . $extension;
+                $imagePath = $request->file('image')->storeAs('categories', $imageName, 'public');
+
+                // تحديث باقي البيانات
+                $category->update([
+                    'name'=>$request->name,
+                    'description'=>$request->description,
+                    'parent_id'=>$request->parent_id,
+                    'image'=>$imagePath,
+                ]);
+            }else{
+                // تحديث باقي البيانات
+                $category->update([
+                    'name'=>$request->name,
+                    'description'=>$request->description,
+                    'parent_id'=>$request->parent_id,
+                ]);
+            }
+
+
+
             return redirect()->route('admin.categories.index')
                 ->with('success', 'تم تحديث الكاتيجوري بنجاح');
 
@@ -102,7 +150,15 @@ private function getBreadcrumbs(Category $category)
     public function destroy(Category $category)
     {
         try {
+            // التحقق مما إذا كانت الصورة موجودة
+            if ($category->image && Storage::disk('public')->exists($category->image)) {
+                // حذف الصورة من السيرفر
+                Storage::disk('public')->delete($category->image);
+            }
+
+            // حذف القسم
             $category->delete();
+
             return redirect()->route('admin.categories.index')
                 ->with('success', 'تم حذف الكاتيجوري بنجاح');
         } catch (Exception $e) {

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'free_returns_shipping' => 'إرجاع مجاني وشحن مجاني',
+    'free_returns_shipping' =>  \App\Models\Admin\Setting::getValue('shipping_title')??'',
     'logout' => 'تسجيل خروج',
     'login' => 'تسجيل دخول',
     'search_placeholder' => ' ابحث عن ما تريد هنا ',

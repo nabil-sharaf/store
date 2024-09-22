@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-5 col-md-4 col-lg-6">
                         <div class="header-info-left d-flex align-items-center justify-content-center justify-content-sm-start">
-                            <p class="mb-0 mr-3">{{ __('main_header.free_returns_shipping') }}</p>
+                            <p class="mb-0 mr-3">{!! __('main_header.free_returns_shipping')  !!} </p>
 
                             <!-- Dropdown for language selection -->
                             <div class="dropdown lang-dropdown-link">
@@ -33,18 +33,18 @@
                     </div>
                     <div class="col-xs-12 col-sm-7 col-md-8 col-lg-6 sm-pl-0 xs-pl-15 header-top-right">
                         <div class="header-info">
-                            <a href="#"><i class="fa fa-phone"></i> {{\App\Models\Admin\Setting::getValue('phone')}}</a>
-                            <a href="{{route('home.contact')}}"> <i class="fa fa-envelope"></i>{{\App\Models\Admin\Setting::getValue('email')}}</a>
+                            <a href="#"><i class="fa fa-phone"></i> {!!  \App\Models\Admin\Setting::getValue('phone')!!}</a>
+                            <a href="{{route('home.contact')}}"> <i class="fa fa-envelope"></i>{!!  \App\Models\Admin\Setting::getValue('email') !!}</a>
 
                             @if(auth()->check())
                                 <!-- Dropdown for account information -->
                                 <a href="#" class="dropdown-toggle account-link" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-user"></i> {{ __('main_header.account') }}
+                                    <i class="fa fa-user"></i> {!!   __('main_header.account')!!}
                                 </a>
                                 <!-- Dropdown items -->
                                 <ul class="dropdown-menu text-center" aria-labelledby="accountDropdown">
                                     <li>
-                                        <a class="dropdown-item my-header-dropdown-item" href="{{route('profile.index')}}">{{ __('main_header.account_settings') }}</a>
+                                        <a class="dropdown-item my-header-dropdown-item" href="{{route('profile.index')}}">{!!  __('main_header.account_settings') !!}</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item my-header-dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -110,7 +110,7 @@
                                     </div>
                                     <div class="header-action-cart">
                                         <button class="btn-cart cart-icon">
-                                            <i class="pe-7s-shopbag"></i>
+                                            <i class="pe-7s-cart"></i>
                                         </button>
                                     </div>
                                     <button class="btn-menu d-md-none">
@@ -152,8 +152,8 @@
                         <div class="header-navigation-area d-none d-md-block">
                             <ul class="main-menu nav position-relative">
                                 <li><a class="ml--2" href="{{route('home.index')}}">{{ __('main_header.home') }}</a></li>
-                                <li><a href="{{route('home.about')}}">{{ __('main_header.about') }}</a></li>
-                                <li class="has-submenu"><a href="">{{ __('main_header.categories') }}</a>
+                                <li><a href="{{route('home.about')}}">{!! __('main_header.about') !!}  </a></li>
+                                <li class="has-submenu"><a href="">{!! __('main_header.categories') !!}  </a>
                                     <ul class="submenu-nav">
                                         <?php $categories = \App\Models\Admin\Category::all();?>
                                         @foreach($categories as $cat)
@@ -161,7 +161,7 @@
                                         @endforeach
                                     </ul>
                                 </li>
-                                <li><a href="{{route('home.contact')}}">{{ __('main_header.contact') }}</a></li>
+                                <li><a href="{{route('home.contact')}}">{!!  __('main_header.contact')!!}  </a></li>
                             </ul>
                         </div>
                     </div>
@@ -200,7 +200,7 @@
                             <div class="header-action-cart">
                                 <button class="btn-cart cart-icon">
 {{--                                    <span class="cart-count">01</span>--}}
-                                    <i class="pe-7s-shopbag"></i>
+                                    <i class="pe-7s-cart"></i>
                                 </button>
                             </div>
                             <button class="btn-menu d-md-none">

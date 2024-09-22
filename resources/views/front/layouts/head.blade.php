@@ -81,6 +81,7 @@
     @endif
 
     <link href="{{asset('front/assets')}}/css/my-custom-styles.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('styles')

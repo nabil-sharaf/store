@@ -1,3 +1,6 @@
+@php
+$siteImages = \App\Models\Admin\SiteImage::first() ?? null;
+ @endphp
 <!--== Start Footer Area Wrapper ==-->
 <footer class="footer-area default-style">
     <div class="footer-main">
@@ -6,14 +9,14 @@
                 <div class="col-md-5 col-lg-3">
                     <div class="widget-item item-style3">
                         <div class="about-widget">
-                            <a class="footer-logo" href="index.html">
-                                <img style="width:100px; max-height:50px" src="{{asset('front/assets')}}/img/logo.png" alt="{{ __('footer.logo_alt') }}">
+                            <a class="footer-logo" href="">
+                                <img style="width:100px; max-height:50px" src="{{asset('storage').'/'.$siteImages->footer_image ?? ''}}" alt="{{ __('footer.logo_alt') }}">
                             </a>
                             <p>{{ __('footer.description') }}</p>
                             <div class="widget-social-icons">
-                                <a href="{{\App\Models\Admin\Setting::getValue('twitter')}}" target="_blank"><i class="ion-social-twitter"></i></a>
                                 <a href="{{\App\Models\Admin\Setting::getValue('facebook')}}" target="_blank"><i class="ion-social-facebook"></i></a>
                                 <a href="{{\App\Models\Admin\Setting::getValue('insta')}}" target="_blank"><i class="ion-social-instagram-outline"></i></a>
+                                <a href="{{\App\Models\Admin\Setting::getValue('whats-app')}}" target="_blank"><i class="ion-social-whatsapp-outline"></i></a>
                             </div>
                         </div>
                     </div>
@@ -72,7 +75,7 @@
                             </ul>
                             <div class="widget-payment-info">
                                 <div class="thumb">
-                                    <a href=""><img src="{{asset('front/assets')}}/img/photos/payment1.png" alt="{{ __('footer.payment_image_alt') }}"></a>
+                                    <a href=""><img src="{{asset('storage').'/'.$siteImages->payment_image ?? ''}}" alt="{{ __('footer.payment_image_alt') }}"></a>
                                 </div>
                             </div>
                         </div>

@@ -26,37 +26,23 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-lg-6" data-aos="fade-right" data-aos-duration="1000">
-                    <div class="thumb">
-                        <img src="{{ asset('front/assets/img/divider/mama.png') }}" alt="Image">
-                        <div class="shape-group">
-                            <div class="shape-style1">
-                                <img src="{{ asset('front/assets/img/divider/shape3.png') }}" alt="Image">
-                            </div>
-                        </div>
+                    <div class="thumb about_us_photo">
+                        <img src="{{ asset('storage/'.$siteImages?->about_us_image) }}" alt="Image">
+{{--                        <div class="shape-group">--}}
+{{--                            <div class="shape-style1">--}}
+{{--                                <img src="{{ asset('storage/'.$siteImages?->car_icon) }}" alt="Image">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
                     <div class="divider-content">
-                        <h4 class="subtitle">{{ __('about.hello_there') }}</h4>
-                        <h2 class="title">{{ __('about.subject') }}</h2>
-
-                 @php
-                       if (!function_exists('formatTextToHtml')) {
-                        function formatTextToHtml($text)
-                        {
-                            // تحويل السطور الجديدة إلى فقرات
-                            $paragraphs = explode("\n", $text);
-                            $html = '';
-                            foreach ($paragraphs as $paragraph) {
-                                $html .= '<p>' . e($paragraph) . '</p>';
-                            }
-                            return $html;
-                        }
-                    }
-                @endphp
-
-                        <p>{!! nl2br(e(__('about.description'))) !!}</p>
-                        <a class="btn-theme" href="{{ route('home.contact') }}"><strong>{{ __('contact_us.title') }}</strong></a>
+                        <div>
+                    {!! __('about.description') !!}
+                        </div>
+                        <div class="text-center mt-18">
+                        <a class="btn-theme text-center" href="{{ route('home.contact') }}"><strong>{{ __('contact_us.title') }}</strong></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -71,24 +57,15 @@
                 <div class="col-lg-12">
                     <div class="swiper-container brand-logo-slider-container">
                         <div class="swiper-wrapper brand-logo-slider">
+                                @if($siteImages->sponsor_images && count($siteImages->sponsor_images)>0)
+                                    @foreach($siteImages->sponsor_images as $image)
                             <div class="swiper-slide brand-logo-item">
-                                <a href="#"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
-                            </div>
-                            <div class="swiper-slide brand-logo-item">
-                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
-                            </div>
-                            <div class="swiper-slide brand-logo-item">
-                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
-                            </div>
-                            <div class="swiper-slide brand-logo-item">
-                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
-                            </div>
-                            <div class="swiper-slide brand-logo-item">
-                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
-                            </div>
-                            <div class="swiper-slide brand-logo-item">
-                                <a href="#/"><img src="{{asset('front/assets')}}/img/logo.png" alt="Brand-Logo"></a>
-                            </div>
+                                         <a href="#"><img src="{{ asset('storage/'.$image) }}" alt="Brand-Logo"></a>
+                             </div>
+                                    @endforeach
+
+                                @endif
+
                         </div>
                     </div>
                 </div>
@@ -103,3 +80,16 @@
 
 
 @endsection
+@push('styles')
+<style>
+    .about_us_photo{
+        margin-top:-60px;
+        margin-bottom: 25px!important;
+    }
+
+   .divider-area ,.divider-style3-area{
+       padding-bottom: 38px!important;
+   }
+
+</style>
+@endpush

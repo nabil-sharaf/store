@@ -236,10 +236,14 @@
         align-items: center;
         display: flex;
         justify-content: space-between;
-        @media #{$md-device} {
-          justify-content: flex-end;
-        }
-      }
+        //@media #{$md-device} {
+        //  justify-content: flex-end;
+        //}
+
+          @media only screen and (max-width: 575px) {
+              display: block;
+          }
+          }
       .header-logo-area {
         img {
           width: 100%;

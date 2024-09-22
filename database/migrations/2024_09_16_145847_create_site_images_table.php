@@ -19,6 +19,15 @@ return new class extends Migration
             $table->string('offer_one')->nullable(); // مسار الصورة العروض 1
             $table->string('offer_two')->nullable(); // مسار الصورة العروض 2
             $table->string('payment_image')->nullable(); // مسار صورة وسائل الدفع
+            $table->string('about_us_image')->nullable(); // مسار صورة من نحن
+            $table->string('car_icon')->nullable();  // مسار صورة العربة الصغيرة
+            $table->json('sponsor_images')->nullable();  // Add this column for multiple
+
+
+
+
+
+
             $table->timestamps();
         });
     }

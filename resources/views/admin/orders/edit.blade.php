@@ -257,30 +257,30 @@
                     <div class="form-group">
                         <label for="full_name">الاسم بالكامل</label>
                         <input type="text" class="form-control" id="full_name" name="full_name"
-                               value="{{ old('full_name', $user->address?->full_name )}}" required>
+                               value="{{ old('full_name', $address->full_name ?? null)}}" required>
                     </div>
 
                     <div class="form-group">
                         <label for="inputPhone">رقم التليفون</label>
                         <input type="tel" class="form-control" id="inputPhone" name="phone"
-                               value="{{ old('phone', $user->address?->phone )}}" required>
+                               value="{{ old('phone', $address->phone ?? null)}}" required>
                     </div>
 
                     <div class="form-group">
                         <label for="inputAddress">العنوان</label>
                         <input type="text" class="form-control" id="inputAddress" name="address"
-                               value="{{ old('address', $user->address?->address )}}" required>
+                               value="{{ old('address', $address->address ?? null)}}" required>
                     </div>
 
                     <div class="form-group">
                         <label for="inputCity">المدينة</label>
                         <input type="text" class="form-control" id="inputCity" name="city"
-                               value="{{ old('city', $user->address?->city )}}" required>
+                               value="{{ old('city', $address->city ?? null)}}" required>
                     </div>
                     <div class="form-group">
                         <label for="state">المحافظة</label>
                         <input type="text" class="form-control" id="state" name="state"
-                               value="{{ old('state', $user->address?->state )}}" required>
+                               value="{{ old('state', $address->state ?? null)}}" required>
                     </div>
                 </div>
 

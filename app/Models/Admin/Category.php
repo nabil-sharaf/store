@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
-    
 
-    protected $fillable = ['name','description','parent_id'];
+
+    protected $fillable = ['name','description','parent_id','image'];
 
     public function children()
     {
@@ -27,7 +27,7 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class);
     }
-    
+
     public function allProducts() {
         return $this->products()->with('category.allProducts');
     }

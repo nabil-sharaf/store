@@ -36,7 +36,11 @@
 <script src="{{asset('front/assets')}}/js/jquery-zoom.min.js"></script>
 
 <!--=== Custom Js ===-->
-<script src="{{asset('front/assets')}}/js/custom.js"></script>
+@if (LaravelLocalization::getCurrentLocale() == 'ar')
+    <script src="{{asset('front/assets')}}/js/custom_ar.js"></script>
+@else
+    <script src="{{asset('front/assets')}}/js/custom.js"></script>
+@endif
 
 {{--toastr--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

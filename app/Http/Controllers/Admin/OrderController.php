@@ -76,7 +76,7 @@ class OrderController extends Controller
                 } else {
                     $order->user_id = $user->id;
                     // انشاء  أو تحديث عنوان المستخدم
-                    UserAddress::updateOrCreate(
+                   $userAddress =  UserAddress::updateOrCreate(
 
                         ['user_id' => $user->id],
                         [
@@ -87,6 +87,8 @@ class OrderController extends Controller
                             'state'     => $request->state,
                         ]
                     );
+                    $order->user_address_id = $userAddress->id;
+
 
 
                 }
@@ -235,9 +237,11 @@ class OrderController extends Controller
 
 
             $products = Product::all();
-            $order->load('orderDetails','user','promocode');
+            $order->load('orderDetails','user','promocode','userAddress','guestAddress');
             $user  = $order->user;
-            return view('admin.orders.edit', compact('order', 'products','user'));
+            $address = $order->userAddress ?? $order->guestAddress;
+
+            return view('admin.orders.edit', compact('order', 'products','user','address'));
         }
         return redirect(route('admin.orders.index'));
     }
@@ -283,7 +287,7 @@ class OrderController extends Controller
                 } else {
                     $order->user_id = $user->id;
                     // انشاء  أو تحديث عنوان المستخدم
-                    UserAddress::updateOrCreate(
+                   $userAddress = UserAddress::updateOrCreate(
 
                         ['user_id' => $user->id],
                         [
@@ -294,6 +298,8 @@ class OrderController extends Controller
                             'state'     => $request->state,
                         ]
                     );
+                    $order->user_address_id = $userAddress->id;
+
 
 
                 }
@@ -420,8 +426,9 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load('orderDetails', 'user');
-        return view('admin.orders.show', compact('order'));
+        $order->load('orderDetails', 'user','userAddress','guestAddress');
+        $address = $order->userAddress ?? $order->guestAddress;
+        return view('admin.orders.show', compact('order','address'));
     }
 
 
@@ -467,7 +474,7 @@ class OrderController extends Controller
         $user_id = $request->input('user_id');
 
         if(!$user_id){
-            return response()->json(['error' => 'كوبونات الخصم للأعضاء فقط'], 400);
+            return response()->json(['error' => 'كوبونات الخصم للأعضاء المسجلين فقط'], 400);
         }
 
         // ابحث عن الكوبون بناءً على الكود المدخل

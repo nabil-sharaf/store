@@ -18,12 +18,13 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <p class="customerName"><strong>المستخدم:</strong> {{ $order?->user?->name }}</p>
-                    <p><strong>اسم العميل:</strong> {{ $order?->user?->address?->full_name }}</p>
-                    <p><strong>العنوان:</strong> {{ $order?->user?->address?->address }}</p>
-                    <p><strong>رقم التليفون:</strong> {{ $order?->user?->address?->phone }}</p>
-                    <p><strong> الاجمالي بعد الخصم:</strong> {{ $order->total_after_discount }} جنيه</p>
-                    <p class="status-now"><strong>الحالة الحالية:</strong> {{ ucfirst($order->status->name) }}</p>
+                    <p class="customerName"><strong>المستخدم:</strong> {{ $order?->user?->name ?? 'Guest' }}</p>
+                    <p><strong>اسم العميل:</strong> {{ $address->full_name ?? null}}</p>
+                    <p><strong>رقم التليفون:</strong> {{ $address->phone ?? null }}</p>
+                    <p><strong>العنوان:</strong> {{ $address->address ?? null }}</p>
+                    <p><strong>المدينة :</strong> {{ $address->city ?? null }} &nbsp;-<strong> &nbsp;المحافظة :</strong> {{ $address->state ?? null }} </p>
+                    <p><strong> إجمالي الطلب :</strong> {{ $order->total_after_discount }} جنيه</p>
+                    <p class="status-now"><strong>حالة الطلب :</strong> {{ ucfirst($order->status->name) }}</p>
                 </div>
                 <div class="col-md-6 status-now">
                     @if($order->status->id != 3 && $order->status->id != 4)
@@ -49,6 +50,7 @@
                             الطلب ملغي ❌
                         </div>
                     @endif
+
                 </div>
             </div>
             <hr>

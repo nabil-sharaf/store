@@ -63,7 +63,7 @@
                                         <td>
                                             <div class="product-details-quality">
                                                 <input type="number" class="input-text qty text quantity-input"
-                                                       data-price="{{ $item->price }}" data-id="{{ $item->id }}"
+                                                       data-price="{{ $item->quantity }}" data-id="{{ $item->id }}"
                                                        step="1" min="1" max="100" name="quantity"
                                                        value="{{ $item->quantity }}" title="{{ __('shop-cart.qty_title') }}" placeholder="">
                                             </div>

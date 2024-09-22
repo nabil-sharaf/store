@@ -31,7 +31,7 @@
                                     <!-- Start Product Item -->
                                     <div class="product-item">
                                         <div class="product-thumb">
-                                            <img src="{{asset('storage/'.$product->images->first()->path)}}" alt="Image">
+                                            <img src="{{asset('storage/'.$product->images?->first()?->path)}}" alt="Image">
                                             <div class="product-action">
                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 
@@ -69,7 +69,7 @@
                                         <!-- Start Product Item -->
                                         <div class="product-item">
                                             <div class="product-thumb">
-                                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
 
                                                 <div class="product-action">
                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
@@ -106,7 +106,7 @@
                                     <!-- Start Product Item -->
                                     <div class="product-item">
                                         <div class="product-thumb">
-                                            <img src="{{asset('storage/'.$product->images->first()->path)}}" alt="Image">
+                                            <img src="{{asset('storage/'.$product->images?->first()?->path)}}" alt="Image">
                                             <div class="product-action">
                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 

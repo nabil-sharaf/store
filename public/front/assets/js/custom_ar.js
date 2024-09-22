@@ -242,6 +242,7 @@
     });
 
     $('.product-tab1-slider').slick({
+        rtl:true,
         dots: false,
         speed: 300,
         slidesToShow: 4,
@@ -261,14 +262,18 @@
                 breakpoint: 768,
                 settings: {
                     slidesToShow: 2,
-                    slidesToScroll: 2
+                    slidesToScroll: 2,
+                    arrows: true,
+
                 }
             },
             {
                 breakpoint: 520,
                 settings: {
                     slidesToShow: 2,
-                    slidesToScroll: 2
+                    slidesToScroll: 2,
+                    arrows: true,
+
                 }
             }
         ]

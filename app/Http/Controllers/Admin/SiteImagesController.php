@@ -17,99 +17,78 @@ class SiteImagesController extends Controller
 
     public function updateImages(Request $request)
     {
-        $siteImages = SiteImage::first();
-        if (!$siteImages) {
-            $siteImages = new SiteImage();
-        }
+        $siteImages = SiteImage::first() ?? new SiteImage();
 
         // Validation
         $request->validate([
             'logo' => 'nullable|image|max:2048',
             'slider_image' => 'nullable|image|max:2048',
+            'car_icon'=>'nullable|image|max:2048',
             'offer_one' => 'nullable|image|max:2048',
             'offer_two' => 'nullable|image|max:2048',
             'footer_image' => 'nullable|image|max:2048',
+            'about_us_image' => 'nullable|image|max:2048',
+            'payment_image' => 'nullable|image|max:2048',
+            'sponsor_images.*' => 'nullable|image|max:2048',
         ]);
+
+        $images = [
+            'logo' => 'logo',
+            'slider_image' => 'slider',
+            'car_icon'=>'car',
+            'offer_one' => 'offer_one',
+            'offer_two' => 'offer_two',
+            'footer_image' => 'footer',
+            'about_us_image' => 'about',
+            'payment_image' => 'payment',
+
+        ];
 
         $updated = false;
 
-        // Handle Logo
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $logoName = 'logo_' . time() . '.' . $logo->getClientOriginalExtension();
-            $logoPath = $logo->storeAs('site', $logoName, 'public');
+        foreach ($images as $inputName => $prefix) {
+            if ($request->hasFile($inputName)) {
+                $file = $request->file($inputName);
+                $imageName = $prefix . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $imagePath = $file->storeAs('site', $imageName, 'public');
 
-            if ($logoPath) {
-                if ($siteImages?->logo && Storage::disk('public')->exists($siteImages->logo)) {
-                    Storage::disk('public')->delete($siteImages->logo);
+                if ($imagePath) {
+                    if ($siteImages?->$inputName && Storage::disk('public')->exists($siteImages->$inputName)) {
+                        Storage::disk('public')->delete($siteImages->$inputName);
+                    }
+                    $siteImages->$inputName = $imagePath;
+                    $updated = true;
                 }
-                $siteImages->logo = $logoPath;
-                $updated = true;
             }
         }
 
-        // Handle Slider Image
-        if ($request->hasFile('slider_image')) {
-            $sliderImage = $request->file('slider_image');
-            $sliderImageName = 'slider_' . time() . '.' . $sliderImage->getClientOriginalExtension();
-            $sliderImagePath = $sliderImage->storeAs('site', $sliderImageName, 'public');
+        // Handle sponsor images as array
+        if ($request->hasFile('sponsor_images')) {
+            $oldImages = $siteImages->sponsor_images ?? [];
+            $sponsorImages = $request->file('sponsor_images');
+            $imagePaths = [];
 
-            if ($sliderImagePath) {
-                if ($siteImages?->slider_image && Storage::disk('public')->exists($siteImages->slider_image)) {
-                    Storage::disk('public')->delete($siteImages->slider_image);
-                }
-                $siteImages->slider_image = $sliderImagePath;
-                $updated = true;
+            foreach ($sponsorImages as $image) {
+                $imageName = 'sponsor_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('site', $imageName, 'public');
+                $imagePaths[] = $imagePath;
             }
-        }
 
-        // Handle Offer One
-        if ($request->hasFile('offer_one')) {
-            $offerOneImage = $request->file('offer_one');
-            $offerOneImageName = 'offer_one_' . time() . '.' . $offerOneImage->getClientOriginalExtension();
-            $offerOneImagePath = $offerOneImage->storeAs('site', $offerOneImageName, 'public');
+            if (count($imagePaths) > 0) {
+                $siteImages->sponsor_images = $imagePaths;
 
-            if ($offerOneImagePath) {
-                if ($siteImages?->offer_one && Storage::disk('public')->exists($siteImages->offer_one)) {
-                    Storage::disk('public')->delete($siteImages->offer_one);
+                foreach ($oldImages as $oldImage) {
+                    if (Storage::disk('public')->exists($oldImage)) {
+                        Storage::disk('public')->delete($oldImage);
+                    }
                 }
-                $siteImages->offer_one = $offerOneImagePath;
                 $updated = true;
-            }
-        }
-
-        // Handle Offer Two
-        if ($request->hasFile('offer_two')) {
-            $offerTwoImage = $request->file('offer_two');
-            $offerTwoImageName = 'offer_two_' . time() . '.' . $offerTwoImage->getClientOriginalExtension();
-            $offerTwoImagePath = $offerTwoImage->storeAs('site', $offerTwoImageName, 'public');
-
-            if ($offerTwoImagePath) {
-                if ($siteImages?->offer_two && Storage::disk('public')->exists($siteImages->offer_two)) {
-                    Storage::disk('public')->delete($siteImages->offer_two);
-                }
-                $siteImages->offer_two = $offerTwoImagePath;
-                $updated = true;
-            }
-        }
-
-        // Handle Footer Image
-        if ($request->hasFile('footer_image')) {
-            $footerImage = $request->file('footer_image');
-            $footerImageName = 'footer_' . time() . '.' . $footerImage->getClientOriginalExtension();
-            $footerImagePath = $footerImage->storeAs('site', $footerImageName, 'public');
-
-            if ($footerImagePath) {
-                if ($siteImages?->footer_image && Storage::disk('public')->exists($siteImages->footer_image)) {
-                    Storage::disk('public')->delete($siteImages->footer_image);
-                }
-                $siteImages->footer_image = $footerImagePath;
-                $updated = true;
+            } else {
+                return redirect()->back()->with('error', 'فشل رفع الصور الجديدة');
             }
         }
 
         if ($updated) {
-            // Save the updated paths
             $siteImages->save();
             return redirect()->back()->with('success', 'تم تحديث الصور بنجاح');
         } else {
@@ -117,3 +96,5 @@ class SiteImagesController extends Controller
         }
     }
 }
+
+
