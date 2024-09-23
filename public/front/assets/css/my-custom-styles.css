@@ -383,6 +383,25 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 }
 
+@media (min-width: 992px) {
+    .category-items2 .col-md-6 {
+        margin-bottom: 30px; /* تعديل المسافة بين الصفوف */
+    }
+
+    section.product-category2-area{
+        margin-top: -40px;
+    }
+}
+@media (max-width: 991px) {
+    .category-items2 .col-md-6 {
+        margin-bottom: 16px; /* تعديل المسافة بين الصفوف */
+    }
+
+    section.product-category2-area{
+        margin-top: -50px;
+    }
+}
+
 /*----------------------------End Home Categories----------------------*/
 
 
@@ -472,7 +491,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     }
 /*--------------------- Logo Main---------------------*/
     .header-logo-area img.logo-main{
-        max-width: 128%;
+        max-width: 122%;
         height: 47px;
     }
 }

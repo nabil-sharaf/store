@@ -16,5 +16,7 @@ return[
     'Trending_products_subject'=>'Trending Products ',
     'Trending_products_desc'=>'' ,
     'shipping_title'=>'Fast shipping and great service',
+    'categories' => 'Categories'
+
 
 ];

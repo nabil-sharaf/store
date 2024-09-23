@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    public function index(){
+
+        $categories = Category::with('products')->get();
+
+        return view('front.categories',compact('categories'));
+
+    }
     public function categoryProducts(Category $category){
 
         $products = $category->products()->get();
@@ -15,4 +22,5 @@ class CategoryController extends Controller
         return view ('front.category-products',compact('products','title'));
 
     }
+
 }

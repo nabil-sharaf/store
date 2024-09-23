@@ -54,8 +54,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });
 
-//    ------------------------------------ Products Routes ------------------------
+//    ------------------------------------ Category & Products Routes ------------------------
 
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/{category}', [CategoryController::class, 'categoryProducts'])->name('category.show');
     Route::get('/products', [ProductController::class, 'index'])->name('products.all');
     Route::get('/products/{product}', [ProductController::class, 'showProduct'])->name('product.show');

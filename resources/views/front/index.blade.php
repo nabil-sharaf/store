@@ -18,7 +18,7 @@
                                                 <div class="inner-content text-center" style="direction: rtl">
                                                     <h2>{!! __('home.hero_title') !!}  </h2>
                                                     <p>{!!  __('home.hero_description') !!} </p>
-                                                    <a href="{{route('products.all')}}" class="btn-theme"><strong>{{ __('home.shop_now') }}</strong></a>
+                                                    <a href="{{route('categories.index')}}" class="btn-theme"><strong>{{ __('home.shop_now') }}</strong></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -98,8 +98,6 @@
         </div>
     </section>
     <!--== End DEal of day Area Wrapper ==-->
-
-
 
     <!--== Start Products Area ==-->
     <section class="product-area product-style1-area">
@@ -248,8 +246,6 @@
     </section>
     <!--== End  Products ==-->
 
-
-
     <!--== Start Trending Products Area ==-->
     <section class="product-area product-style2-area trending-products-section">
         <div class="container">
@@ -314,24 +310,7 @@
         /*max-height: 650px;*/
 
     }
-    @media (min-width: 992px) {
-        .category-items2 .col-md-6 {
-            margin-bottom: 30px; /* تعديل المسافة بين الصفوف */
-        }
 
-        section.product-category2-area{
-            margin-top: -40px;
-        }
-    }
-    @media (max-width: 991px) {
-        .category-items2 .col-md-6 {
-            margin-bottom: 16px; /* تعديل المسافة بين الصفوف */
-        }
-
-        section.product-category2-area{
-            margin-top: -50px;
-        }
-    }
 
 
     .custom-title {
