@@ -17,6 +17,8 @@ class Product extends Model
         'goomla_price',
         'is_trend',
         'is_best_seller',
+        'offer_quantity',
+        'free_quantity',
     ];
 
     public function categories()
@@ -45,18 +47,29 @@ class Product extends Model
     }
 
 
-    public function getPriceAfterDiscountAttribute()
+    public function getDiscountedPriceAttribute()
     {
-        $price = $this->price;
+        $userType = auth()->user()?->customer_type;
+
+        $price = $userType =='goomla' ? $this->goomla_price : $this->price;
         $discount = $this->discount;
 
         if ($discount) {
             if ($discount->discount_type === 'percentage') {
-                return $price - ($price * ($discount->discount / 100));
-            } else {
+                return max($price - ($price * ($discount->discount / 100)) ,0) ;
+            }
+            elseif($discount->discount_type === 'fixed') {
                 return max($price - $discount->discount, 0);
             }
         }
+
+        return $price;
+    }
+
+    public function getProductPriceAttribute()
+    {
+        $userType = auth()->user()?->customer_type;
+        $price = $userType =='goomla' ? $this->goomla_price : $this->price;
 
         return $price;
     }

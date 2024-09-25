@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\OrderRequest;
+use App\Http\Requests\CheckoutRequest;
 use App\Models\Admin\GuestAddress;
 use App\Models\Admin\Order;
 use App\Models\Admin\OrderDetail;
@@ -14,6 +15,7 @@ use App\Models\Admin\UserAddress;
 use App\Models\User;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
@@ -23,11 +25,17 @@ class CheckoutController extends Controller
         $items = Cart::getContent();
         $totalQuantity = Cart::getTotalQuantity();
         $totalPrice = Cart::getTotal();
-
-
-        return view('front.checkout' ,compact(['items','totalPrice','totalQuantity']));
+        if(Auth::user() && Auth::user()->isVip()){
+            $discount_percentage = (Auth::user()->discount)/100;
+            $vipDiscount =  number_format(($totalPrice * $discount_percentage),2);
+        }else{
+            $vipDiscount = 0;
     }
-    public function store(OrderRequest $request)
+
+
+        return view('front.checkout' ,compact(['items','totalPrice','totalQuantity','vipDiscount']));
+    }
+    public function store(CheckoutRequest $request)
     {
         try {
             return DB::transaction(function () use ($request) {
@@ -89,6 +97,7 @@ class CheckoutController extends Controller
                     $product = Product::find($item['id']);
                     if ($product->quantity < $item['quantity']) {
                         throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
+
                     }
 
                     if ($item['quantity'] < 1) {
@@ -96,19 +105,8 @@ class CheckoutController extends Controller
                     }
 
                     $all_order_quantity += $item['quantity'];
-                    $productDiscount = $product->discount;
-                    $productPrice = $user && $user->customer_type == 'goomla' ? $product->goomla_price : $product->price;
 
-                    $discountAmount = 0;
-                    if ($productDiscount) {
-                        if ($productDiscount->discount_type === 'percentage') {
-                            $discountAmount = ($productPrice * $productDiscount->discount) / 100;
-                        } elseif ($productDiscount->discount_type === 'fixed') {
-                            $discountAmount = $productDiscount->discount;
-                        }
-                    }
-
-                    $priceAfterDiscount = $productPrice - $discountAmount;
+                    $priceAfterDiscount = $product->discounted_price;
                     $priceForProduct = $priceAfterDiscount * $item['quantity'];
 
                     $orderDetail = new OrderDetail();
@@ -168,6 +166,11 @@ class CheckoutController extends Controller
                     }
                 }
 
+                if(($totalPrice - $vip_discount - $promoDiscount) < 1){
+                    throw new \Exception("تأكد من اجمالي الاوردر قبل عمل اتمام الطلب");
+
+                }
+
                 $order->total_price = $totalPrice;
                 $order->vip_discount = $vip_discount;
                 $order->promo_discount = $promoDiscount;
@@ -184,9 +187,11 @@ class CheckoutController extends Controller
                     $order->update(['promocode_id' => $promoCode->id]);
                 }
 
+                Cart::clear();
+                session()->flash('success', 'تم انشاء طلبك بنجاح');
                 return response()->json([
                     'success' => true,
-                    'message' => 'تم إنشاء الطلب بنجاح'
+                    'route'  => route('home.index'),
                 ]);
             });
         } catch (\Exception $e) {
@@ -220,7 +225,7 @@ class CheckoutController extends Controller
             $user_id = $request->input('user_id');
 
             if(!$user_id){
-                return response()->json(['error' => 'كوبونات الخصم للأعضاء المسجلين فقط'], 400);
+                return response()->json(['error' => 'كوبونات الخصم للأعضاء المسجلين فقط']);
             }
 
             // ابحث عن الكوبون بناءً على الكود المدخل
@@ -233,7 +238,7 @@ class CheckoutController extends Controller
 
             // التحقق من وجود الكوبون
             if (!$coupon) {
-                return response()->json(['error' => 'كود الخصم غير صحيح أو غير صالح'], 400);
+                return response()->json(['error' => 'كود الخصم غير صحيح أو غير صالح']);
             }
 
             // تحقق إذا كان المستخدم قد استخدم الكوبون من قبل
@@ -243,12 +248,12 @@ class CheckoutController extends Controller
                 ->exists();
 
             if ($couponUsed) {
-                return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون من قبل'], 400);
+                return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون من قبل']);
             }
 
             // التحقق من الحد الأدنى لقيمة الطلب
             if ($orderTotal < $coupon->min_amount) {
-                return response()->json(['error' => 'إجمالي الطلب أقل من الحد الأدنى لتطبيق الكوبون'], 400);
+                return response()->json(['error' => 'إجمالي الطلب أقل من الحد الأدنى لتطبيق الكوبون']);
             }
 
             // حساب الخصم بناءً على نوع الكوبون

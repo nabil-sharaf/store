@@ -15,7 +15,7 @@ return [
     'shopping_cart' => 'عربة التسوق',
     'total' => 'الإجمالي',
     'view_cart' => 'عرض السلة',
-    'checkout' => 'الدفع',
+    'checkout' => 'اتمام الطلب',
     'free_shipping' => 'شحن مجاني',
     'support_247' => 'دعم 24/7',
     'money_return' => 'إرجاع المال',

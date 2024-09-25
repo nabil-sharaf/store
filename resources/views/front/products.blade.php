@@ -49,7 +49,7 @@
                                             </div>
                                             <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
                                             <div class="prices">
-                                                <span class="price">{{$product->price.' '.__('home.currency')}}</span>
+                                                <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
                                             </div>
                                         </div>
                                     </div>
@@ -88,7 +88,7 @@
                                             </div>
                                             <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
                                             <div class="prices">
-                                                <span class="price">{{$product->price}} {{__('home.currency')}}</span>
+                                                <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
                                             </div>
                                         </div>
                                     </div>
@@ -124,7 +124,7 @@
                                             </div>
                                             <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
                                             <div class="prices">
-                                                <span class="price">{{$product->price.' '.__('home.currency')}}</span>
+                                                <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
                                             </div>
                                         </div>
                                     </div>                                    <!-- End Product Item -->

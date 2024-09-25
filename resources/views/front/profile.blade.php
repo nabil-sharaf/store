@@ -128,9 +128,37 @@
                                                 </div>
                                                 <div class="single-input-item">
                                                     <label for="state" class="required">{{ __('profile.state') }}</label>
-                                                    <input type="text" id="state" name="state"
-                                                           value="{{ old('state', $address?->state) }}"
-                                                           placeholder="{{ __('profile.state_placeholder') }}" />
+                                                    <div class="select-style ">
+                                                        <select class=" select-active" name="state">
+                                                            <option value="" disabled selected>اختر اسم محافظتك</option>
+                                                            <option value="القاهرة"{{ $address?->state == 'القاهرة' ? 'selected' : '' }}>القاهرة</option>
+                                                            <option value="الجيزة"{{ $address?->state == 'الجيزة' ? 'selected' : '' }}>الجيزة</option>
+                                                            <option value="الإسكندرية"{{ $address?->state == 'الإسكندرية' ? 'selected' : '' }}>الإسكندرية</option>
+                                                            <option value="الدقهلية"{{ $address?->state == 'الدقهلية' ? 'selected' : '' }}>الدقهلية</option>
+                                                            <option value="البحر الأحمر"{{ $address?->state == 'البحر الأحمر' ? 'selected' : '' }}>البحر الأحمر</option>
+                                                            <option value="البحيرة"{{ $address?->state == 'البحيرة' ? 'selected' : '' }}>البحيرة</option>
+                                                            <option value="الفيوم"{{ $address?->state == 'الفيوم' ? 'selected' : '' }}>الفيوم</option>
+                                                            <option value="الغربية"{{ $address?->state == 'الغربية' ? 'selected' : '' }}>الغربية</option>
+                                                            <option value="الإسماعيلية"{{ $address?->state == 'الإسماعيلية' ? 'selected' : '' }}>الإسماعيلية</option>
+                                                            <option value="المنوفية"{{ $address?->state == 'المنوفية' ? 'selected' : '' }}>المنوفية</option>
+                                                            <option value="المنيا"{{ $address?->state == 'المنيا' ? 'selected' : '' }}>المنيا</option>
+                                                            <option value="القليوبية"{{ $address?->state == 'القليوبية' ? 'selected' : '' }}>القليوبية</option>
+                                                            <option value="الوادي الجديد"{{ $address?->state == 'الوادي الجديد' ? 'selected' : '' }}>الوادي الجديد</option>
+                                                            <option value="الشرقية"{{ $address?->state == 'الشرقية' ? 'selected' : '' }}>الشرقية</option>
+                                                            <option value="سوهاج"{{ $address?->state == 'سوهاج' ? 'selected' : '' }}>سوهاج</option>
+                                                            <option value="أسوان"{{ $address?->state == 'أسوان' ? 'selected' : '' }}>أسوان</option>
+                                                            <option value="أسيوط"{{ $address?->state == 'أسيوط' ? 'selected' : '' }}>أسيوط</option>
+                                                            <option value="بني سويف"{{ $address?->state == 'بني سويف' ? 'selected' : '' }}>بني سويف</option>
+                                                            <option value="بورسعيد"{{ $address?->state == 'بورسعيد' ? 'selected' : '' }}>بورسعيد</option>
+                                                            <option value="دمياط"{{ $address?->state == 'دمياط' ? 'selected' : '' }}>دمياط</option>
+                                                            <option value="السويس"{{ $address?->state == 'السويس' ? 'selected' : '' }}>السويس</option>
+                                                            <option value="الأقصر"{{ $address?->state == 'الأقصر' ? 'selected' : '' }}>الأقصر</option>
+                                                            <option value="قنا"{{ $address?->state == 'قنا' ? 'selected' : '' }}>قنا</option>
+                                                            <option value="مطروح"{{ $address?->state == 'مطروح' ? 'selected' : '' }}>مطروح</option>
+                                                            <option value="شمال سيناء"{{ $address?->state == 'شمال سيناء' ? 'selected' : '' }}>شمال سيناء</option>
+                                                            <option value="جنوب سيناء"{{ $address?->state == 'جنوب سيناء' ? 'selected' : '' }}>جنوب سيناء</option>
+                                                        </select>
+                                                    </div>
                                                     @error('state','addressErrors')
                                                     <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -233,3 +261,12 @@
 <!--== End My Account Wrapper ==-->
 
 @endsection
+@push('styles')
+    <style>
+        .select-style .select-active {
+            padding-inline-start: 36px;
+            line-height: 38px;
+        }
+
+    </style>
+@endpush

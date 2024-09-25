@@ -12,7 +12,7 @@ return [
     'full_name' => 'الاسم بالكامل',
     'full_name_placeholder' => 'ادخل اسمك بالكامل هنا',
     'address' => 'تفاصيل عنوان الشحن',
-    'address-placeholder' => 'أدخل عنوان الشحن هنا',
+    'address_placeholder' => 'أدخل عنوان الشحن هنا',
     'city' => 'المدينة',
     'city_placeholder' => 'ادخل اسم مدينتك هنا ',
     'state' => 'المحافظة',

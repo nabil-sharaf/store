@@ -15,7 +15,7 @@
                     <div class="single-product-info">
                         <h4 class="title product-name">{{ __('aside_menu.product_title') }}</h4>
                         <div class="prices">
-                            <span class="price">$120.59</span>  <span>{{ __('aside_menu.currency_symbol') }}</span>
+
                         </div>
                         <div class="product-rating">
                             <div class="rating">

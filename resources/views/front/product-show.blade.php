@@ -57,7 +57,7 @@
                     <div class="single-product-info">
                         <h4 class="title"> {{$product->name}}</h4>
                         <div class="prices">
-                            <span class="price">{{$product->price . __('home.currency')}}</span>
+                            <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
                         </div>
                         <div class="product-rating">
                             <div class="rating">
@@ -273,4 +273,12 @@
     });
 
 </script>
+@endpush
+@push('styles')
+    <style>
+
+    .single-product-info .prices span{
+        font-size: 20px !important;
+    }
+    </style>
 @endpush

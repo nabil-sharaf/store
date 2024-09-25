@@ -34,6 +34,6 @@ return [
     'local_pickup' => 'استلام محلي: <span>$120.00</span>',
     'shipping_country' => 'الشحن إلى بنغلاديش',
     'total' => 'الإجمالي',
-    'proceed_checkout' => 'التوجه لصفحة الدفع ',
+    'proceed_checkout' => 'اتمام الطلب ',
     'egypt' =>'مصر',
 ];

@@ -487,6 +487,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     }
     .product-item .product-info {
         min-height: 106px;
+        max-height: 106px;
         padding-block: 6px 15px;
     }
 /*--------------------- Logo Main---------------------*/
@@ -496,4 +497,26 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     }
 }
 
+
+/* اتجاه الكتابة في البحث عند الفوكاس */
+#search:focus {
+    direction: rtl !important;
+    text-align: center !important;
+}
+
+@media only screen and (max-width: 479.98px) {
+
+    /*product price font size*/
+    .product-item .product-info .title{
+        font-size:14px !important;
+        line-height: 1.2;
+        margin-bottom: -2px;
+
+    }
+
+    .product-item .product-info .prices .price{
+        font-size:15px !important;
+    }
+
+}
 

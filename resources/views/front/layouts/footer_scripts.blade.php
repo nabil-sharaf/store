@@ -87,8 +87,30 @@
                 url: myUrl, // المسار للوصول إلى تفاصيل المنتج
                 method: 'GET',
                 success: function (response) {
+
                     $('.product-quick-view-modal .product-name').text(response.name);
-                    $('.product-quick-view-modal .price').text(response.price);
+
+                    let productPrice = response.price;
+                    let discountedPrice = response.discounted_price;
+                    if(productPrice === discountedPrice){
+                        $('.product-quick-view-modal .prices')
+                            .html(`
+                                <span class="price" style="color: #e74c3c;">
+                                ${discountedPrice} {{ __('home.currency') }}
+                                </span>
+                           `);
+                    }else{
+                        $('.product-quick-view-modal .prices')
+                            .html(`
+                                 <span class="price-old" style="text-decoration: line-through; color: #999; font-size:18px; ">
+                                ${productPrice} {{ __('home.currency') }}
+                                 </span>
+                                 <span class="price" style="color: #e74c3c;">
+                                ${discountedPrice} {{ __('home.currency') }}
+                                </span>
+                            `);
+                    }
+                    // إدخال القيم في الـ HTML
                     $('.product-quick-view-modal .product-desc').text(response.description);
 
                     categoriesContainer.empty();
@@ -305,7 +327,6 @@
     toastr.error("{{ Session::get('error') }}");
 
     @endif
-
 
 </script>
 @stack('scripts')

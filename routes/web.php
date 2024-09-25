@@ -29,11 +29,15 @@ Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('ca
 Route::get('/cart/details', [CartController::class, 'getCartDetails'])->name('cart.details');
 
 Route::get('/cart/shop-cart',[CartController::class,'shoppingCartDetails'])->name('home.shop-cart');
+
 //---------------------------------------------------------------------------------
+
 
 //-----------------------------------checkout Routes-----------------------------------------
 
 Route::get('/shop/checkout',[CheckoutController::class,'index'])->name('checkout.index');
+Route::post('/shop/checkout',[CheckoutController::class,'store'])->name('checkout.store');
+Route::post('/checkout/coupon',[CheckoutController::class,'checkCoupon'])->name('checkout.promo');
 
 //-------------------------------------------------------------------------------------------
 
@@ -61,7 +65,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.all');
     Route::get('/products/{product}', [ProductController::class, 'showProduct'])->name('product.show');
     Route::get('/search', [ProductController::class, 'search'])->name('product.search');
-
 
 
 

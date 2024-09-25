@@ -63,7 +63,7 @@
                                         <td>
                                             <div class="product-details-quality">
                                                 <input type="number" class="input-text qty text quantity-input"
-                                                       data-price="{{ $item->quantity }}" data-id="{{ $item->id }}"
+                                                       data-price="{{ $item->price }}" data-id="{{ $item->id }}"
                                                        step="1" min="1" max="100" name="quantity"
                                                        value="{{ $item->quantity }}" title="{{ __('shop-cart.qty_title') }}" placeholder="">
                                             </div>
@@ -92,7 +92,13 @@
                         </div>
                         @endif
                     </div>
-
+                    @if($items->isNotEmpty())
+                        <div class="grand-total-wrap">
+                            <div class="grand-total-btn">
+                                <a class="btn btn-link" href="{{route('checkout.index')}}">{{ __('shop-cart.proceed_checkout') }}</a>
+                            </div>
+                        </div>
+                    @endif
                     <div class="cart-shiping-update-wrapper">
                         <div class="cart-shiping-btn continure-btn">
                             <a class="btn btn-link" href="javascript:void(0);" onclick="history.back();"><i
@@ -102,88 +108,9 @@
                             <a class="btn btn-link" href="{{ route('home.index') }}"><i class="ion-ios-reload"></i> {{ __('shop-cart.home') }}</a>
                         </div>
                     </div>
-                </div>
 
-                @if($items->isNotEmpty())
-                <div class="col-lg-4">
-                </div>
-                @endif
-
-            </div>
-
-            @if($items->isNotEmpty())
-            <div class="row">
-                <div class="col-md-6 col-lg-4">
-                    <div class="cart-calculate-discount-wrap mb-40">
-                        <h4>{{ __('shop-cart.calculate_shipping') }}</h4>
-                        <div class="calculate-discount-content">
-                            <div class="select-style">
-                                <select class="select-active">
-                                    <option>{{ __('shop-cart.egypt') }}</option>
-
-                                </select>
-                            </div>
-                            <div class="select-style">
-                                <select class="select-active">
-                                    <option>{{ __('shop-cart.state_county') }}</option>
-                                    <option>{{ __('shop-cart.bahrain') }}</option>
-                                    <option>{{ __('shop-cart.azerbaijan') }}</option>
-                                    <option>{{ __('shop-cart.barbados') }}</option>
-                                    <option>{{ __('shop-cart.barbados') }}</option>
-                                </select>
-                            </div>
-                            <div class="input-style">
-                                <input type="text" placeholder="{{ __('shop-cart.town_city') }}">
-                            </div>
-                            <div class="input-style">
-                                <input type="text" placeholder="{{ __('shop-cart.postcode_zip') }}">
-                            </div>
-                            <div class="calculate-discount-btn">
-                                <a class="btn btn-link" href="#/">{{ __('shop-cart.update') }}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="cart-calculate-discount-wrap mb-40">
-                        <h4>{{ __('shop-cart.coupon_discount') }}</h4>
-                        <div class="calculate-discount-content">
-                            <p>{{ __('shop-cart.enter_coupon_code') }}</p>
-                            <div class="input-style">
-                                <input type="text" placeholder="{{ __('shop-cart.coupon_code') }}">
-                            </div>
-                            <div class="calculate-discount-btn">
-                                <a class="btn btn-link" href="#/">{{ __('shop-cart.apply_coupon') }}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 col-lg-4">
-                    <div class="grand-total-wrap">
-                        <div class="grand-total-content">
-                            <h3>{{ __('shop-cart.subtotal') }} <span>$180.00</span></h3>
-                            <div class="grand-shipping">
-                                <span>{{ __('shop-cart.shipping') }}</span>
-                                <ul>
-                                    <li><input type="radio" name="shipping" value="info" checked="checked"><label>{{ __('shop-cart.free_shipping') }}</label></li>
-                                    <li><input type="radio" name="shipping" value="info" checked="checked"><label>{{ __('shop-cart.flat_rate') }} <span>$100.00</span></label></li>
-                                    <li><input type="radio" name="shipping" value="info" checked="checked"><label>{{ __('shop-cart.local_pickup') }} <span>$120.00</span></label></li>
-                                </ul>
-                            </div>
-                            <div class="shipping-country">
-                                <p>{{ __('shop-cart.shipping_country') }}</p>
-                            </div>
-                            <div class="grand-total">
-                                <h4>{{ __('shop-cart.total') }} <span>$185.00</span></h4>
-                            </div>
-                        </div>
-                        <div class="grand-total-btn">
-                            <a class="btn btn-link" href="shop-checkout.html">{{ __('shop-cart.proceed_checkout') }}</a>
-                        </div>
-                    </div>
                 </div>
             </div>
-            @endif
 
         </div>
     </section>
@@ -227,7 +154,9 @@
                 document.getElementById('total-price-' + id).innerText = total + ' {{ __('shop-cart.currency') }}';
 
                 // حساب وإظهار الإجمالي الكلي الجديد
+                updateQuantity(id, quantity)
                 updateGrandTotal();
+
             });
         });
 
@@ -237,6 +166,27 @@
                 grandTotal += parseFloat(span.innerText);
             });
             document.getElementById('grand-total').innerText = grandTotal + ' {{ __('shop-cart.currency') }}';
+        }
+
+            // تحديث الكمية في السلة بعد تغييرها بالاجاكس
+        function updateQuantity(productId, quantity) {
+            $.ajax({
+                url: `{{route('cart.update')}}`,
+                type: 'POST',
+                data: {
+                    quantity: quantity,
+                    product_id:productId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if (data.success) {
+                        console.log('Quantity updated successfully');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating quantity:', error);
+                }
+            });
         }
 
         // حذف منتج من السلة

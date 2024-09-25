@@ -14,18 +14,18 @@ class homeController extends Controller
     public function index(){
 
         $categories = Category::with('products')->get();
-        $products = Product::with('images')->get();
+//        $products = Product::with('images')->get();
         // جلب المنتجات المضافة حديثاً بترتيب تاريخ الإضافة تنازلياً
         $newProducts = Product::orderBy('created_at', 'desc')->take(8)->get();
 
         // جلب المنتجات المحددة كأكثر مبيعا ً
-        $bestProducts = Product::where('is_best_seller',1)->orderBy('updated_at', 'desc')->take(8)->get();
+        $bestProducts = Product::where('is_best_seller',1)->orderBy('updated_at', 'desc')->take(2)->get();
 
      // جلب المنتجات المحددة كترند   ً
         $trendingProducts = Product::where('is_trend',1)->orderBy('updated_at', 'desc')->take(8)->get();
 
         $siteImages = SiteImage::first();
-        return view('front.index', compact('categories','products','bestProducts','newProducts','siteImages','trendingProducts'));
+        return view('front.index', compact('categories','bestProducts','newProducts','siteImages','trendingProducts'));
     }
 
     public function productDetails($id)
@@ -38,7 +38,8 @@ class homeController extends Controller
 
         return response()->json([
             'name' => $product->name,
-            'price' => $product->price,
+            'discounted_price' => $product->discounted_price,
+            'price' => $product->product_price,
             'description' => $product->description,
             'images' => $product->images,
             'categories'=> $product->categories

@@ -87,7 +87,7 @@
                                     <form action="{{ route('product.search') }}" method="GET">
                                         <div class="form-input-item">
                                             <label for="search" class="sr-only">{{ __('main_header.search_placeholder') }}</label>
-                                            <input type="text" id="search" name="search" placeholder="{{ __('main_header.search_placeholder') }}">
+                                            <input type="text" id="search" name="search" placeholder="{{ __('main_header.search_placeholder') }}" >
                                             <button type="submit" class="btn-src">
                                                 <i class="pe-7s-search"></i>
                                             </button>

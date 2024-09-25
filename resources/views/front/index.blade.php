@@ -18,17 +18,22 @@
                                                 <div class="inner-content text-center" style="direction: rtl">
                                                     <h2>{!! __('home.hero_title') !!}  </h2>
                                                     <p>{!!  __('home.hero_description') !!} </p>
-                                                    <a href="{{route('categories.index')}}" class="btn-theme"><strong>{{ __('home.shop_now') }}</strong></a>
+                                                    <a href="{{route('categories.index')}}"
+                                                       class="btn-theme"><strong>{{ __('home.shop_now') }}</strong></a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <img class="thumb-two" src="{{asset('storage').'/'.$siteImages?->slider_image ?? ''}}" alt="Image">
-                                <img class="thumb-four" src="{{asset('storage').'/'.$siteImages?->car_icon ?? ''}}" alt="Image">
+                                <img class="thumb-two" src="{{asset('storage').'/'.$siteImages?->slider_image ?? ''}}"
+                                     alt="Image">
+                                <img class="thumb-four" src="{{asset('storage').'/'.$siteImages?->car_icon ?? ''}}"
+                                     alt="Image">
                             </div>
-                            <div class="shape-top bg-img" data-bg-img="{{asset('front/assets/img/photos/1.png')}}"></div>
-                            <div class="shape-bottom bg-img" data-bg-img="{{asset('front/assets/img/photos/2.png')}}"></div>
+                            <div class="shape-top bg-img"
+                                 data-bg-img="{{asset('front/assets/img/photos/1.png')}}"></div>
+                            <div class="shape-bottom bg-img"
+                                 data-bg-img="{{asset('front/assets/img/photos/2.png')}}"></div>
                         </div>
                         <!-- End Slide Item -->
                     </div>
@@ -52,7 +57,8 @@
                                         <h3 class="title text-white">{{$cat->name}}</h3>
                                         <h4 class="price text-white">{{$cat->description}}</h4>
                                     </div>
-                                    <a class="btn-theme" href="{{route('category.show',$cat->id)}}">{{__('home.shop_now')}}</a>
+                                    <a class="btn-theme"
+                                       href="{{route('category.show',$cat->id)}}">{{__('home.shop_now')}}</a>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +70,8 @@
     <!--== End Category Area Wrapper ==-->
 
     <!--== Start Deal of Day Area Wrapper ==-->
-    <section class="divider-area divider-style1-area bg-img" data-bg-img={{asset('front/assets')}}/img/divider/bg1.png" data-aos="fade-up" data-aos-duration="1000">
+    <section class="divider-area divider-style1-area bg-img" data-bg-img={{asset('front/assets')}}/img/divider/bg1.png"
+             data-aos="fade-up" data-aos-duration="1000">
         <div class="container position-relative">
             <div class="row">
                 <div class="col-lg-6 m-auto">
@@ -73,10 +80,14 @@
                         <div>{!! __('home.deal_of_day_desc') !!}</div>
                         <div class="countdown-content">
                             <ul class="countdown-timer">
-                                <li><span class="days">00</span><p class="days_text">Days</p></li>
-                                <li><span class="hours">00</span><p class="hours_text">Hours</p></li>
-                                <li><span class="minutes">00</span><p class="minutes_text">MINUTES</p></li>
-                                <li><span class="seconds">00</span><p class="seconds_text">SECONDS</p></li>
+                                <li><span class="days">00</span>
+                                    <p class="days_text">Days</p></li>
+                                <li><span class="hours">00</span>
+                                    <p class="hours_text">Hours</p></li>
+                                <li><span class="minutes">00</span>
+                                    <p class="minutes_text">MINUTES</p></li>
+                                <li><span class="seconds">00</span>
+                                    <p class="seconds_text">SECONDS</p></li>
                             </ul>
                         </div>
                         <a class="btn-theme" href="{{route('products.all')}}">{{__('home.shop_now')}}</a>
@@ -107,10 +118,15 @@
                     <div class="product-tab-content">
                         <ul class="nav nav-tabs" id="myTab" role="tablist" data-aos="fade-up" data-aos-duration="1000">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="best-sellers-tab" data-bs-toggle="tab" data-bs-target="#best-sellers" type="button" role="tab" aria-controls="best-sellers" aria-selected="false">{{ __('home.newly_added') }}</button>
+                                <button class="nav-link active" id="new-items-tab" data-bs-toggle="tab"
+                                        data-bs-target="#new-items" type="button" role="tab"
+                                        aria-controls="new-items"
+                                        aria-selected="true">{{ __('home.newly_added') }}</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="new-items-tab" data-bs-toggle="tab" data-bs-target="#new-items" type="button" role="tab" aria-controls="new-items" aria-selected="false">{{ __('home.best_sellers') }}</button>
+                                <button class="nav-link" id="best-sellers-tab" data-bs-toggle="tab"
+                                        data-bs-target="#best-sellers" type="button" role="tab" aria-controls="best-sellers"
+                                        aria-selected="false">{{ __('home.best_sellers') }}</button>
                             </li>
                         </ul>
 
@@ -120,7 +136,7 @@
                                     <div class="col-lg-12">
                                         <div class="product">
                                             <div class="row">
-                                                @foreach($products as $product)
+                                                @foreach($newProducts as $product)
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <!-- Start Product Item -->
                                                         <div class="product-item">
@@ -140,9 +156,11 @@
                                                                     <span class="fa fa-star"></span>
                                                                     <span class="fa fa-star"></span>
                                                                 </div>
-                                                                <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
+                                                                <h4 class="title">
+                                                                    <a href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
+                                                                </h4>
                                                                 <div class="prices">
-                                                                    <span class="price">{{$product->price}} {{__('home.currency')}}</span>
+                                                                    <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -154,52 +172,53 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="tab-pane fade" id="best-sellers" role="tabpanel" aria-labelledby="best-sellers-tab">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                    <div class="product">
+                                        <div class="product">
                                             <div class="row">
                                                 @foreach($bestProducts as $product)
                                                     <div class="col-lg-3 col-md-4 col-6">
-                                                    <!-- Start Product Item -->
-                                                    <div class="product-item">
-                                                        <div class="product-thumb">
-                                                            <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-
-                                                            <div class="product-action">
-                                                                <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-
-                                                                <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                                <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
+                                                        <!-- Start Product Item -->
+                                                        <div class="product-item">
+                                                            <div class="product-thumb">
+                                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
+                                                                <div class="product-action">
+                                                                    <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
+                                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
+                                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-info">
+                                                                <div class="rating">
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                    <span class="fa fa-star"></span>
+                                                                </div>
+                                                                <h4 class="title">
+                                                                    <a href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
+                                                                </h4>
+                                                                <div class="prices">
+                                                                    <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="product-info">
-                                                            <div class="rating">
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                                <span class="fa fa-star"></span>
-                                                            </div>
-                                                            <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
-                                                            <div class="prices">
-                                                                <span class="price">{{$product->price}} {{__('home.currency')}}</span>
-                                                            </div>
-                                                        </div>
+                                                        <!-- End Product Item -->
                                                     </div>
-                                                    <!-- End Product Item -->
-                                                </div>
                                                 @endforeach
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="tab-pane fade" id="new-items" role="tabpanel" aria-labelledby="new-items-tab">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                    <div class="product">
+                                        <div class="product">
                                             <div class="row">
                                                 @foreach($newProducts as $product)
                                                     <div class="col-lg-3 col-md-4 col-6">
@@ -207,10 +226,8 @@
                                                         <div class="product-item">
                                                             <div class="product-thumb">
                                                                 <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-
                                                                 <div class="product-action">
                                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-
                                                                     <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
                                                                     <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
                                                                 </div>
@@ -223,22 +240,23 @@
                                                                     <span class="fa fa-star"></span>
                                                                     <span class="fa fa-star"></span>
                                                                 </div>
-                                                                <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
+                                                                <h4 class="title">
+                                                                    <a href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
+                                                                </h4>
                                                                 <div class="prices">
-                                                                    <span class="price">{{$product->price}} {{__('home.currency')}}</span>
+                                                                    <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <!-- End Product Item -->
                                                     </div>
                                                 @endforeach
-
-                                            </div>                                        </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -261,36 +279,42 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="product-tab1-slider"  data-aos="fade-up" data-aos-duration="1500">
-                    @foreach($trendingProducts as $product)
-                        <div class="slide-item" >
-                            <!-- Start Product Item -->
-                            <div class="product-item">
-                                <div class="product-thumb">
-                                    <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-                                    <div class="product-action">
-                                        <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-                                        <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                        <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
+                    <div class="product-tab1-slider" data-aos="fade-up" data-aos-duration="1500">
+                        @foreach($trendingProducts as $product)
+                            <div class="slide-item">
+                                <!-- Start Product Item -->
+                                <div class="product-item">
+                                    <div class="product-thumb">
+                                        <img src="{{ asset('storage/' . $product->images?->first()?->path) }}"
+                                             alt="{{ $product->name }}">
+                                        <div class="product-action">
+                                            <a class="action-quick-view-cart" href="#"
+                                               onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
+                                            <a class="action-quick-view" href="#" data-id="{{ $product->id }}"
+                                               onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
+                                            <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}"
+                                               onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="rating">
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                        </div>
+                                        <h4 class="title"><a
+                                                href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
+                                        </h4>
+                                        <div class="prices">
+                                            <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="product-info">
-                                    <div class="rating">
-                                        <span class="fa fa-star"></span>
-                                        <span class="fa fa-star"></span>
-                                        <span class="fa fa-star"></span>
-                                        <span class="fa fa-star"></span>
-                                        <span class="fa fa-star"></span>
-                                    </div>
-                                    <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
-                                    <div class="prices">
-                                        <span class="price">{{$product->price}} {{__('home.currency')}}</span>
-                                    </div>
-                                </div>
+                                <!-- End Product Item -->
                             </div>
-                            <!-- End Product Item -->
-                        </div>
-                    @endforeach
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -298,66 +322,64 @@
     </section>
     <!--== End Trending Products Area ==-->
 
-
 @endsection
 
 
 @push('styles')
     <style>
 
-    .slider-content-area {
-        background-color: #c2e0eb; /* اختر لون الخلفية المطلوب */
-        /*max-height: 650px;*/
+        .slider-content-area {
+            background-color: #c2e0eb; /* اختر لون الخلفية المطلوب */
+            /*max-height: 650px;*/
 
-    }
+        }
 
 
+        .custom-title {
+            font-family: 'Cairo', sans-serif; /* تغيير الخط */
+            font-size: 24px; /* حجم الخط */
+            color: #f379a7; /* لون النص */
+        }
 
-    .custom-title {
-        font-family: 'Cairo', sans-serif; /* تغيير الخط */
-        font-size: 24px; /* حجم الخط */
-        color: #f379a7; /* لون النص */
-    }
+        .custom-popup {
+            border-radius: 15px; /* شكل الحواف */
+            border: 1px solid #f379a7; /* إضافة إطار حول النافذة */
+        }
 
-    .custom-popup {
-        border-radius: 15px; /* شكل الحواف */
-        border: 1px solid #f379a7; /* إضافة إطار حول النافذة */
-    }
+        .custom-footer a {
+            font-weight: bold;
+            text-decoration: underline;
+        }
 
-    .custom-footer a {
-        font-weight: bold;
-        text-decoration: underline;
-    }
+        .custom-confirm-btn {
+            border: 2px solid #f379a7; /* البوردر حول زر التأكيد */
+            border-radius: 8px; /* زاوية مستديرة للزر */
+            padding: 10px 20px; /* تعديل مساحة الزر */
+            background-color: #f379a7; /* لون الخلفية */
+            color: white; /* لون النص */
+            font-weight: bold;
+            transition: 0.3s; /* تأثيرات عند التمرير */
+        }
 
-    .custom-confirm-btn {
-        border: 2px solid #f379a7; /* البوردر حول زر التأكيد */
-        border-radius: 8px; /* زاوية مستديرة للزر */
-        padding: 10px 20px; /* تعديل مساحة الزر */
-        background-color: #f379a7; /* لون الخلفية */
-        color: white; /* لون النص */
-        font-weight: bold;
-        transition: 0.3s; /* تأثيرات عند التمرير */
-    }
+        .custom-confirm-btn:hover {
+            background-color: #f379a7; /* لون الخلفية عند التمرير */
+            border-color: #f379a7; /* لون البوردر عند التمرير */
+        }
 
-    .custom-confirm-btn:hover {
-        background-color: #f379a7; /* لون الخلفية عند التمرير */
-        border-color: #f379a7; /* لون البوردر عند التمرير */
-    }
+        div:where(.swal2-icon) {
+            border: 0px solid #f379a7; /* البوردر حول الصورة */
+            border-radius: 50%; /* زاوية دائرية للصورة */
+            padding: 5px; /* مسافة داخلية حول الصورة */
+            /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); !* ظل حول الصورة *!*/
+            height: 90px;
+            width: 250px
+        }
 
-    div:where(.swal2-icon) {
-        border: 0px solid #f379a7; /* البوردر حول الصورة */
-        border-radius: 50%; /* زاوية دائرية للصورة */
-        padding: 5px; /* مسافة داخلية حول الصورة */
-        /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); !* ظل حول الصورة *!*/
-        height:90px;
-        width:250px
-    }
-
-    div:where(.swal2-container) button:where(.swal2-styled):not([disabled]):focus {
-        outline: none !important; /* إزالة الـ default outline */
-        border:0 ; /* لون البوردر عند التركيز (focus) */
-        box-shadow: 0 0 3px rgb(228, 107, 255) !important; /* إضافة تأثير ظل */
-    }
+        div:where(.swal2-container) button:where(.swal2-styled):not([disabled]):focus {
+            outline: none !important; /* إزالة الـ default outline */
+            border: 0; /* لون البوردر عند التركيز (focus) */
+            box-shadow: 0 0 3px rgb(228, 107, 255) !important; /* إضافة تأثير ظل */
+        }
     </style>
 
 @endpush
@@ -365,29 +387,29 @@
 @push('scripts')
     <script>
 
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'عرض خاص!',
-                    text: 'استفد من خصم 20% على جميع المنتجات اليوم فقط!',
-                    iconHtml: '<img src="{{asset('front/assets/img/logo.png')}}" width="200" height="120" />',
-                    background: '#f0f0f0', // لون الخلفية
-                    color: '#333333', // لون النص
-                    confirmButtonText: 'عرض المنتجات',
-                    confirmButtonColor: '#f379a7', // لون زر التأكيد
-                    footer: '<a href="/offers" style="color: #f379a7;">شاهد المزيد من العروض</a>',
-                    customClass: {
-                        title: 'custom-title', // تخصيص نمط العنوان
-                        popup: 'custom-popup', // تخصيص نمط النافذة
-                        footer: 'custom-footer' // تخصيص نمط الـ footer
-                    }
-                });
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                title: 'عرض خاص!',
+                text: 'استفد من خصم 20% على جميع المنتجات اليوم فقط!',
+                iconHtml: '<img src="{{asset('front/assets/img/logo.png')}}" width="200" height="120" />',
+                background: '#f0f0f0', // لون الخلفية
+                color: '#333333', // لون النص
+                confirmButtonText: 'عرض المنتجات',
+                confirmButtonColor: '#f379a7', // لون زر التأكيد
+                footer: '<a href="/offers" style="color: #f379a7;">شاهد المزيد من العروض</a>',
+                customClass: {
+                    title: 'custom-title', // تخصيص نمط العنوان
+                    popup: 'custom-popup', // تخصيص نمط النافذة
+                    footer: 'custom-footer' // تخصيص نمط الـ footer
+                }
+            });
         });
 
-            $(document.ready(function(){
+        $(document.ready(function () {
             $('.slick-prev, .slick-next').css('display', 'block');
             $('.product-tab1-slider').slick({
                 arrows: true,
             });
-            }))
+        }))
     </script>
- @endpush
+@endpush

@@ -321,25 +321,9 @@ class OrderController extends Controller
                     }
 
 
-                    // استرجاع خصم المنتج من قاعدة البيانات
-                    $productDiscount = $product->discount;
 
-                    if($request->user_id){
-                    $productPrice = $user?->customer_type == 'goomla' ? $product->goomla_price : $product->price;
-                    }else{
-                        $productPrice = $product->price;
-                    }
+                    $priceAfterDiscount =$product->discounted_price;
 
-                    $discountAmount = 0;
-                    if ($productDiscount) {
-                        if ($productDiscount->discount_type === 'percentage') {
-                            $discountAmount = ($productPrice * $productDiscount->discount) / 100;
-                        } elseif ($productDiscount->discount_type === 'fixed') {
-                            $discountAmount = $productDiscount->discount;
-                        }
-                    }
-
-                    $priceAfterDiscount = $productPrice - $discountAmount;
                     $priceForProduct = $priceAfterDiscount * $productData['quantity'];
 
 
