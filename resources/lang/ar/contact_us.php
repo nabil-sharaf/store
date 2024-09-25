@@ -8,7 +8,7 @@ return [
 'email_web' => 'البريد الإلكتروني',
 'send_your_request' => 'ارسل لنا طلبك',
 'name_placeholder' => 'الاسم هنا',
-'email_placeholder' => 'بريدك الالكتروني *',
+'phone_placeholder' => 'رقم الواتس الخاص بك *',
 'subject_placeholder' => 'عنوان الموضوع (اختياري)',
 'message_placeholder' => 'رسالتك',
 'submit_button' => 'ارسل استفسارك',
