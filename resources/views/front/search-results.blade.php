@@ -14,6 +14,10 @@
             <div class="row align-items-center">
                 <div class="col-lg-12 m-auto">
                     <div class="page-title-content text-center">
+                        @if(session()->has('filteredProducts'))
+                                dfgsfasdgadfgsdfgsdffgsdfg
+                        @endif
+
                         <h2 class="title">نتائج البحث عن :  {{$query}}</h2>
                         <div class="bread-crumbs"><a href="{{ route('home.index') }}"> {{__('home.title')}} </a><span class="breadcrumb-sep"> / </span><span class="active">{{__('search.search')}}</span></div>
                     </div>
