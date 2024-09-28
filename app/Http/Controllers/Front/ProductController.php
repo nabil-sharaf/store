@@ -64,13 +64,29 @@ class ProductController extends Controller
             ;
         }
 
-        // تطبيق الفلترة بناءً على السعر
+//        // تطبيق الفلترة بناءً على السعر
+//        if ($request->filled('min_price')) {
+//            $query->where('price', '>=', $request->min_price);
+//        }
+//
+//        if ($request->filled('max_price')) {
+//            $query->where('price', '<=', $request->max_price);
+//        }
+
+        // استرجاع المنتجات
+        $products = $query->get();
+
+        // تطبيق الفلترة بعد استرجاع المنتجات بناءً على السعر المخصوم
         if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $products = $products->filter(function ($product) use ($request) {
+                return $product->discounted_price >= $request->min_price;
+            });
         }
 
         if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $products = $products->filter(function ($product) use ($request) {
+                return $product->discounted_price <= $request->max_price;
+            });
         }
 
         // تطبيق الترتيب بناءً على اختيار المستخدم
@@ -90,7 +106,7 @@ class ProductController extends Controller
         }
 
         // استرجاع المنتجات بعد الفلترة
-        $products = $query->get();
+//        $products = $query->get();
 
         // الاحتفاظ بالنتائج واستخدام redirect()->back()
         return redirect()->back()->with('filteredProducts', $products);
