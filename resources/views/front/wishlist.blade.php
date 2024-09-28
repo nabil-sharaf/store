@@ -72,14 +72,18 @@
                                                     <span class="amount">{{ $item->product->price }} {{ __('wishlist.currency') }}</span>
                                                 </td>
                                                 <td class="stock-status">
-                                                    @if($item->product->quantity > 0)
+                                                    @if($item->product->quantity >0)
                                                         <span><i class="fa fa-check"></i> {{ __('wishlist.in_stock') }}</span>
                                                     @else
                                                         <span style="color: red"><i class="fa fa-times"></i> {{ __('wishlist.out_of_stock') }}</span>
                                                     @endif
                                                 </td>
                                                 <td class="wishlist-cart">
-                                                    <a href="{{ route('cart.add', $item->product->id)}}" class="btn btn-lg"><strong>{{ __('wishlist.add_to_cart') }} &nbsp;<i class="ion-ios-cart"></i></strong></a>
+                                                    @if($item->product->quantity > 0)
+                                                    <a href="" class="btn btn-lg" onclick="addToCart(event,{{$item->product->id}})"><strong>{{ __('wishlist.add_to_cart') }} &nbsp;<i class="ion-ios-cart"></i></strong></a>
+                                                    @else
+                                                        <a href="#" class="btn btn-lg disabled" onclick="return false;"><strong>{{ __('wishlist.add_to_cart') }} &nbsp;<i class="ion-ios-cart"></i></strong></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -41,6 +41,12 @@
                   <p>صور الموقع</p>
                 </a>
               </li>
+                <li class="nav-item">
+                <a href="{{route('admin.shipping-rates.index')}}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings/shipping-rates/') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>ادارة تكاليف الشحن </p>
+                </a>
+              </li>
             </ul>
           </li>
             @if(auth('admin')->user()->hasAnyRole(['superAdmin']))

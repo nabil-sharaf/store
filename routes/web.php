@@ -4,6 +4,7 @@ use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\CategoryController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\homeController;
+use App\Http\Controllers\Front\OrderController;
 use App\Http\Controllers\Front\ProductController;
 use App\Http\Controllers\Front\ProfileController;
 use App\Http\Controllers\Front\WishlistController;
@@ -28,16 +29,22 @@ Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.u
 Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::get('/cart/details', [CartController::class, 'getCartDetails'])->name('cart.details');
 
-Route::get('/cart/shop-cart',[CartController::class,'shoppingCartDetails'])->name('home.shop-cart');
+Route::get('/cart/shop-cart/{order?}',[CartController::class,'shoppingCartDetails'])->name('home.shop-cart');
 
 //---------------------------------------------------------------------------------
 
 
 //-----------------------------------checkout Routes-----------------------------------------
 
-Route::get('/shop/checkout',[CheckoutController::class,'index'])->name('checkout.index');
-Route::post('/shop/checkout',[CheckoutController::class,'store'])->name('checkout.store');
-Route::post('/checkout/coupon',[CheckoutController::class,'checkCoupon'])->name('checkout.promo');
+Route::get('/shop/checkout',[OrderController::class,'index'])->name('checkout.index');
+Route::get('/shop/checkout/{order}',[OrderController::class,'indexEdit'])->name('checkout.indexEdit');
+Route::post('/shop/checkout',[OrderController::class,'store'])->name('checkout.store');
+Route::put('/shop/checkout/{order}',[OrderController::class,'update'])->name('checkout.update');
+Route::post('/checkout/coupon',[OrderController::class,'checkCoupon'])->name('checkout.promo');
+Route::get('order/show/{order}',[OrderController::class,'show'])->name('order.show');
+Route::get('order/edit/{order}',[OrderController::class,'edit'])->name('order.edit');
+Route::get('/orders/clear-cart', [OrderController::class, 'clearCartSession'])->name('orders.clear-cart');
+Route::get('/get-shipping-cost/{state}', [OrderController::class, 'getShippingCost'])->name('checkout.getShippingCost');
 
 //-------------------------------------------------------------------------------------------
 
@@ -65,6 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.all');
     Route::get('/products/{product}', [ProductController::class, 'showProduct'])->name('product.show');
     Route::get('/search', [ProductController::class, 'search'])->name('product.search');
+    Route::get('/search/filter', [ProductController::class, 'filterProducts'])->name('products.filter');
+    Route::get('/category/{category_id}/filter', [ProductController::class, 'filterProducts'])->name('category.filter');
 
 
 

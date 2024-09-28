@@ -213,3 +213,13 @@
         </div>
     </header>
     <!--== End Header Wrapper ==-->
+
+    @if(session()->has('editing_order_id'))
+        <div class="alert alert-info pb-2 pt-2 font-medium font" style="font-size: 13px">
+            {{ __('shop-cart.editing_order_message').' '. session('editing_order_id') .' - '}}
+            <a class="text-primary" href="{{ route('home.shop-cart', session('editing_order_id')) }}"> العودة للسلة </a>
+            <a class="text-orange" href="{{ route('orders.clear-cart') }}">- الغاء التعديل   </a>
+        </div>
+   @endif
+
+

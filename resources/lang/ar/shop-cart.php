@@ -36,4 +36,5 @@ return [
     'total' => 'الإجمالي',
     'proceed_checkout' => 'اتمام الطلب ',
     'egypt' =>'مصر',
+    'editing_order_message'=> 'انت تقوم حاليا بتعديل الاوردر رقم'
 ];

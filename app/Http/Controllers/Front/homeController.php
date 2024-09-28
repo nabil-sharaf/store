@@ -41,6 +41,7 @@ class homeController extends Controller
             'discounted_price' => $product->discounted_price,
             'price' => $product->product_price,
             'description' => $product->description,
+            'info' => $product->info,
             'images' => $product->images,
             'categories'=> $product->categories
         ]);

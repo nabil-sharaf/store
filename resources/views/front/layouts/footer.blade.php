@@ -16,7 +16,7 @@ $siteImages = \App\Models\Admin\SiteImage::first() ?? null;
                             <div class="widget-social-icons">
                                 <a href="{{\App\Models\Admin\Setting::getValue('facebook')}}" target="_blank"><i class="ion-social-facebook"></i></a>
                                 <a href="{{\App\Models\Admin\Setting::getValue('insta')}}" target="_blank"><i class="ion-social-instagram-outline"></i></a>
-                                <a href="{{\App\Models\Admin\Setting::getValue('whats-app')}}" target="_blank"><i class="ion-social-whatsapp-outline"></i></a>
+                                <a href="https://wa.me/2{{\App\Models\Admin\Setting::getValue('whats-app')}}" target="_blank"><i class="ion-social-whatsapp-outline"></i></a>
                             </div>
                         </div>
                     </div>

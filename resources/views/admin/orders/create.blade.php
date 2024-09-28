@@ -163,14 +163,23 @@
                     </div>
                     <div class="form-group">
                         <label for="state">المحافظة</label>
-                        <input type="text" class="form-control" id="state" name="state"
-                               {{ old('state', $user->address?->state )}} required>
-                    </div>
+                            <select class="form-control" name="state" data-user-state="{{ $user->address?->state ?? '' }}">
+                                <option value="" disabled selected>اختر اسم محافظتك</option>
+                                @foreach($states as $state)
+                                    <option value="{{$state->state}}" {{ old('state', $user->address->state ?? '') == $state->state ? 'selected' : '' }}>{{$state->state}}</option>
+                                @endforeach
+                            </select>
+                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputTotalOrder">إجمالي الأورد بعد الخصم</label>
                     <input type="text" class="form-control" id="inputTotalOrder" readonly>
+                </div>
+
+                <div class="form-group " id= 'shipping-cost-div' style = 'display: none;'>
+                    <label for="shipping_cost">تكلفة الشحن</label>
+                    <input type="text" class="form-control" id="shipping_cost" readonly>
                 </div>
 
             </div>
@@ -609,14 +618,65 @@
                 });
             });
 
+
+
+            // -------------------  حساب تكلفة الشحن --------------------
+
+            const stateSelect = $('select[name="state"]');
+
+
+            // وظيفة لحساب تكلفة الشحن
+            function calculateShippingCost(state) {
+                if (!state) {
+                    $('#shipping_cost').val('غير متوفر');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{route('admin.checkout.getShippingCost',':state')}}".replace(':state',state),
+                    method: 'GET',
+                    success: function(response) {
+                        const shippingCost = response.shipping_cost;
+                        if (shippingCost == 0 || !shippingCost) {
+                            $('#shipping_cost').val(' شحن مجاني');
+                            alert('0000')
+                        }
+                        else {
+                            $('#shipping_cost').val(shippingCost + ' جنيه  ');
+                         }
+                   },
+
+                    error: function() {
+                        $('#shipping_cost').val('خطأ في جلب تكلفة الشحن');
+                    }
+                });
+            }
+
+            // تحقق مما إذا كان المستخدم مسجلاً ولديه محافظة مسجلة
+            const userState = stateSelect.data('user-state'); // افترض أن الحقل يحتفظ بالمحافظة المخزنة
+            if (userState) {
+                // حساب تكلفة الشحن بناءً على المحافظة المسجلة
+                calculateShippingCost(userState);
+            }
+
+            // حدث عند تغيير المحافظة
+            stateSelect.change(function() {
+                const state = $(this).val();
+                calculateShippingCost(state);
+
+
+            });
+
         });
 
+        // اخفاء واظهار سيكشن العنوان واضافة المنتجات والتبديل بينهما
         document.addEventListener('DOMContentLoaded', function () {
             const initialFormSection = document.getElementById('initialFormSection');
             const addressSection = document.getElementById('addressSection');
             const showAddressButton = document.getElementById('showAddressButton');
             const submitOrderButton = document.getElementById('submitOrderButton');
             const goBackButton = document.getElementById('goBackButton');
+            const ShippingDiv = document.getElementById('shipping-cost-div')
 
             // الانتقال لأعلى الصفحة
             function scrollToTop() {
@@ -632,6 +692,7 @@
                 showAddressButton.style.display = 'none';
                 submitOrderButton.style.display = 'block';
                 goBackButton.style.display = 'block'; // عرض زر الرجوع
+                ShippingDiv.style.display = 'block';  // أظهار تكلفة الشحن
 
                 scrollToTop(); // الانتقال لأعلى الصفحة عند الضغط على "أكمل الطلب"
             });
@@ -642,10 +703,14 @@
                 showAddressButton.style.display = 'block';
                 submitOrderButton.style.display = 'none';
                 goBackButton.style.display = 'none'; // إخفاء زر الرجوع عند الرجوع
+                ShippingDiv.style.display = 'none';  // اخفاء تكلفة الشحن
+
 
                 scrollToTop(); // الانتقال لأعلى الصفحة عند الضغط على "رجوع"
             });
         });
+
+
     </script>
 @endpush
 @push('styles')

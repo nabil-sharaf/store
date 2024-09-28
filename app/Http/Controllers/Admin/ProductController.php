@@ -48,6 +48,7 @@ class ProductController extends Controller implements HasMiddleware
             $product = Product::create([
                 'name' => $request->name,
                 'description' => $request->description,
+                'info'=>$request->info,
                 'quantity' => $request->quantity,
                 'price' => $request->price,
                 'goomla_price' => $request->goomla_price,
@@ -112,6 +113,7 @@ class ProductController extends Controller implements HasMiddleware
                 $product->update([
                     'name'=>$request->name,
                     'description'=>$request->description,
+                    'info'=>$request->info,
                     'price'=> $request->price,
                     'quantity'=>$request->quantity,
                     'goomla_price' => $request->goomla_price,

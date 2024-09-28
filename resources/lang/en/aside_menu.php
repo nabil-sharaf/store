@@ -16,6 +16,7 @@ return [
     'total' => 'Total',
     'view_cart' => 'View Cart',
     'checkout' => 'Checkout',
+    'checkout_edit' => 'Edit Order',
     'free_shipping' => 'Free Shipping',
     'support_247' => '24/7 Support',
     'money_return' => 'Money Return',

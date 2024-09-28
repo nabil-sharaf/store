@@ -94,3 +94,24 @@ a.brand-link{
     margin-bottom: -3%;
 }
 
+/*summer note editor*/
+.note-toolbar{
+    position: static !important;
+}
+.note-editor .note-toolbar .note-color .dropdown-toggle, .note-popover .popover-content .note-color .dropdown-toggle{
+    padding-left: 25px !important;
+}
+.note-toolbar button {
+    font-size: 12px; /* تصغير حجم الخط داخل الأزرار */
+    padding: 4px 6px; /* تصغير المسافة حول الأيقونات */
+}
+
+.note-editor .dropdown-toggle {
+    font-size: 10px; /* تصغير حجم أيقونات القوائم المنسدلة */
+    padding: 4px 6px;
+}
+
+.note-editor .note-btn {
+    font-size: 12px; /* تصغير حجم الأيقونات في الأزرار */
+    padding: 4px 6px;
+}

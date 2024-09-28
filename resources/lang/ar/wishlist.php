@@ -10,7 +10,7 @@ return [
     'image' => 'صورة المنتج',
     'stock_status' => 'تواجد المنتج',
     'in_stock' => 'موجود بالستوك',
-    'out_of_stock' => 'غير متوفر',
+    'out_of_stock' => 'غير متوفر حاليا',
     'no_products' => 'لا توجد منتجات في قائمة الأمنيات.',
     'currency' => 'ج',
     'image_alt' => 'صورة',

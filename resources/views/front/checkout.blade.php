@@ -15,7 +15,13 @@ if(auth()->user()){
             <div class="row align-items-center">
                 <div class="col-lg-12 m-auto">
                     <div class="page-title-content text-center">
-                        <h2 class="title">{{ __('checkout.page_title') }}</h2>
+                        <h2 class="title">
+                            @if(session()->has('editing_order_id'))
+                                {{ __('checkout.page_title_edit') }}
+                            @else
+                                {{ __('checkout.page_title') }}
+                            @endif
+                        </h2>
                         <div class="bread-crumbs"><a href="{{ route('home.index') }}"> {{ __('checkout.home') }} </a><span
                                 class="breadcrumb-sep"> {{ __('checkout.breadcrumb_sep') }} </span><span class="active"> {{ __('checkout.checkout_page') }}</span></div>
                     </div>
@@ -32,7 +38,13 @@ if(auth()->user()){
             <div class="row">
                 <div class="col-lg-6 m-auto">
                     <div class="section-title text-center">
-                        <h2 class="title">{{ __('checkout.page_title') }}</h2>
+                        <h2 class="title">
+                            @if(session()->has('editing_order_id'))
+                                {{ __('checkout.page_title_edit') .' رقم :'. session()->get('editing_order_id') }}
+                            @else
+                                {{ __('checkout.page_title') }}
+                            @endif
+                        </h2>
                     </div>
                 </div>
             </div>
@@ -54,8 +66,11 @@ if(auth()->user()){
             </div>
             <div class="row">
                 <div class="col-lg-7">
-                    <form id="checkout-form" method="POST" action="{{ route('checkout.store') }}">
+                    <form id="checkout-form" method="POST" action=" @if(session()->has('editing_order_id')) {{ route('checkout.update',session()->get('editing_order_id')) }} @else {{ route('checkout.store') }} @endif">
                         @csrf
+                        @if(session()->has('editing_order_id'))
+                            @method('PUT')
+                        @endif
                         <div class="billing-info-wrap">
                             <h3>{{ __('checkout.billing_details') }}</h3>
                             <div class="row">
@@ -81,35 +96,12 @@ if(auth()->user()){
                                     <div class="billing-select mb-20">
                                         <label>{{ __('checkout.state') }} <abbr class="required" title="{{ __('checkout.required') }}">*</abbr></label>
                                         <div class="select-style ">
-                                            <select class=" select-active" name="state">
+                                            <select class=" select-active" name="state" data-user-state="{{ auth()->check() ? auth()->user()?->address?->state : '' }}">
                                                 <option value="" disabled selected>اختر اسم محافظتك</option>
-                                                <option value="القاهرة" {{ old('state', auth()->user() ? $address?->state : '') == 'القاهرة' ? 'selected' : '' }}>القاهرة</option>
-                                                <option value="الجيزة" {{ old('state', auth()->user() ? $address?->state : '') == 'الجيزة' ? 'selected' : '' }}>الجيزة</option>
-                                                <option value="الإسكندرية" {{ old('state', auth()->user() ? $address?->state : '') == 'الإسكندرية' ? 'selected' : '' }}>الإسكندرية</option>
-                                                <option value="الدقهلية" {{ old('state', auth()->user() ? $address?->state : '') == 'الدقهلية' ? 'selected' : '' }}>الدقهلية</option>
-                                                <option value="البحر الأحمر" {{ old('state', auth()->user() ? $address?->state : '') == 'البحر الأحمر' ? 'selected' : '' }}>البحر الأحمر</option>
-                                                <option value="البحيرة" {{ old('state', auth()->user() ? $address?->state : '') == 'البحيرة' ? 'selected' : '' }}>البحيرة</option>
-                                                <option value="الفيوم" {{ old('state', auth()->user() ? $address?->state : '') == 'الفيوم' ? 'selected' : '' }}>الفيوم</option>
-                                                <option value="الغربية" {{ old('state', auth()->user() ? $address?->state : '') == 'الغربية' ? 'selected' : '' }}>الغربية</option>
-                                                <option value="الإسماعيلية" {{ old('state', auth()->user() ? $address?->state : '') == 'الإسماعيلية' ? 'selected' : '' }}>الإسماعيلية</option>
-                                                <option value="المنوفية" {{ old('state', auth()->user() ? $address?->state : '') == 'المنوفية' ? 'selected' : '' }}>المنوفية</option>
-                                                <option value="المنيا" {{ old('state', auth()->user() ? $address?->state : '') == 'المنيا' ? 'selected' : '' }}>المنيا</option>
-                                                <option value="القليوبية" {{ old('state', auth()->user() ? $address?->state : '') == 'القليوبية' ? 'selected' : '' }}>القليوبية</option>
-                                                <option value="الوادي الجديد" {{ old('state', auth()->user() ? $address?->state : '') == 'الوادي الجديد' ? 'selected' : '' }}>الوادي الجديد</option>
-                                                <option value="الشرقية" {{ old('state', auth()->user() ? $address?->state : '') == 'الشرقية' ? 'selected' : '' }}>الشرقية</option>
-                                                <option value="سوهاج" {{ old('state', auth()->user() ? $address?->state : '') == 'سوهاج' ? 'selected' : '' }}>سوهاج</option>
-                                                <option value="أسوان" {{ old('state', auth()->user() ? $address?->state : '') == 'أسوان' ? 'selected' : '' }}>أسوان</option>
-                                                <option value="أسيوط" {{ old('state', auth()->user() ? $address?->state : '') == 'أسيوط' ? 'selected' : '' }}>أسيوط</option>
-                                                <option value="بني سويف" {{ old('state', auth()->user() ? $address?->state : '') == 'بني سويف' ? 'selected' : '' }}>بني سويف</option>
-                                                <option value="بورسعيد" {{ old('state', auth()->user() ? $address?->state : '') == 'بورسعيد' ? 'selected' : '' }}>بورسعيد</option>
-                                                <option value="دمياط" {{ old('state', auth()->user() ? $address?->state : '') == 'دمياط' ? 'selected' : '' }}>دمياط</option>
-                                                <option value="السويس" {{ old('state', auth()->user() ? $address?->state : '') == 'السويس' ? 'selected' : '' }}>السويس</option>
-                                                <option value="الأقصر" {{ old('state', auth()->user() ? $address?->state : '') == 'الأقصر' ? 'selected' : '' }}>الأقصر</option>
-                                                <option value="قنا" {{ old('state', auth()->user() ? $address?->state : '') == 'قنا' ? 'selected' : '' }}>قنا</option>
-                                                <option value="مطروح" {{ old('state', auth()->user() ? $address?->state : '') == 'مطروح' ? 'selected' : '' }}>مطروح</option>
-                                                <option value="شمال سيناء" {{ old('state', auth()->user() ? $address?->state : '') == 'شمال سيناء' ? 'selected' : '' }}>شمال سيناء</option>
-                                                <option value="جنوب سيناء" {{ old('state', auth()->user() ? $address?->state : '') == 'جنوب سيناء' ? 'selected' : '' }}>جنوب سيناء</option>
-                                            </select>
+                                                  @foreach($states as $state)
+                                                    <option value="{{$state->state}}" {{ old('state', auth()->user() ? $address?->state : '') == $state->state ? 'selected' : '' }}>{{$state->state}}</option>
+                                                   @endforeach
+                                              </select>
                                         </div>
                                     </div>
                                 </div>
@@ -162,7 +154,7 @@ if(auth()->user()){
                                 @endif
 
                                 <div class="your-order-total">
-                                    <h3>{{ __('checkout.total') }} <span id="totalAfterDiscount" class="total-amount">{{$totalPrice - $vipDiscount}} {{ __('checkout.currency') }}</span></h3>
+                                    <h3>{{ __('checkout.total') }} <span id="totalAfterDiscount" class="total-amount">{{ floatval($totalPrice) - floatval($vipDiscount) }} {{ __('checkout.currency') }}</span></h3>
                                 </div>
                             </div>
 {{--                            <div class="payment-method">--}}
@@ -175,7 +167,11 @@ if(auth()->user()){
 {{--                                </div>--}}
 {{--                            </div>--}}
                             <div class="Place-order">
-                                <button type="submit" id="submit-order" class="place-order-btn btn btn-block btn-lg">{{ __('checkout.place_order') }}</button>
+                                @if(session()->has('editing_order_id'))
+                                    <button type="submit" id="submit-order" class="place-order-btn btn btn-block btn-lg">{{ __('checkout.edit_order') }}</button>
+                                @else
+                                     <button type="submit" id="submit-order" class="place-order-btn btn btn-block btn-lg">{{ __('checkout.place_order') }}</button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -286,10 +282,11 @@ if(auth()->user()){
                 var submitButton = $('#submit-order');
                 submitButton.prop('disabled', true).text('جاري الإرسال...');
 
+                var method =  @if(session()->has('editing_order_id')) "PUT" @else "POST" @endif;
                 // إرسال البيانات المجمعة عبر AJAX
                 $.ajax({
                     url: $('#checkout-form').attr('action'), // الرابط الموجه للفورم
-                    method: 'POST',
+                    method: method,
                     data: formData,
                     success: function(response) {
                         if (response.success) {
@@ -304,15 +301,74 @@ if(auth()->user()){
                     error: function(response) {
                         if (response.responseJSON && response.responseJSON.message) {
                             toastr.error(response.responseJSON.message);
+                            console.log(response)
                         } else {
-                            alert('حدث خطأ غير متوقع.');
+                            alert('حدث خطأ حاول مرة أخرى.');
                         }
-                        submitButton.prop('disabled', false).text('اتمام الطلب');
+                        @if(isset($order?->id))
+                            submitButton.prop('disabled', false).text('تأكيد التعديل');
+                        @else
+                             submitButton.prop('disabled', false).text('اتمام الطلب');
+                        @endif
 
                     }
                 });
             });
 
+             // -------------------  حساب تكلفة الشحن --------------------
+
+                const stateSelect = $('select[name="state"]');
+                const totalAfterDiscount = $('#totalAfterDiscount');
+                const totalAmount = parseFloat(totalAfterDiscount.text());
+
+                // إنشاء عنصر لتكلفة الشحن بالتنسيق المناسب
+                const shippingCostElement = $('<div class="your-order-subtotal"><h3>تكلفة الشحن: <span id="shipping-cost">---</span></h3></div>');
+                totalAfterDiscount.closest('.your-order-info-wrap').find('.your-order-total').before(shippingCostElement);
+
+                // وظيفة لحساب تكلفة الشحن
+                function calculateShippingCost(state) {
+                    if (!state) {
+                        $('#shipping-cost').text('غير متوفر');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: "{{route('checkout.getShippingCost',':state')}}".replace(':state',state),
+                        method: 'GET',
+                        success: function(response) {
+                            const shippingCost = response.shipping_cost;
+                            if (shippingCost == 0 || !shippingCost) {
+                                $('#shipping-cost').text(' شحن مجاني');
+                            } else {
+                                $('#shipping-cost').text(shippingCost + ' {{ __('checkout.currency') }}');
+                            }
+
+                            // تحديث إجمالي المبلغ بعد إضافة تكلفة الشحن
+                            const updatedTotal = (totalAmount + (shippingCost ? parseFloat(shippingCost) : 0)).toFixed(2);
+                            totalAfterDiscount.html(updatedTotal + ' <span>{{ __("checkout.currency") }}</span>');              },
+
+                        error: function() {
+                            $('#shipping-cost').text('خطأ في جلب تكلفة الشحن');
+                        }
+                    });
+                }
+
+                // تحقق مما إذا كان المستخدم مسجلاً ولديه محافظة مسجلة
+                const userState = stateSelect.data('user-state'); // افترض أن الحقل يحتفظ بالمحافظة المخزنة
+                if (userState) {
+                    // حساب تكلفة الشحن بناءً على المحافظة المسجلة
+                    calculateShippingCost(userState);
+                }
+
+                // حدث عند تغيير المحافظة
+                stateSelect.change(function() {
+                    const state = $(this).val();
+                    calculateShippingCost(state);
+
+
+                });
         });
+
+
     </script>
 @endpush

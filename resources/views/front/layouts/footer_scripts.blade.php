@@ -111,7 +111,7 @@
                             `);
                     }
                     // إدخال القيم في الـ HTML
-                    $('.product-quick-view-modal .product-desc').text(response.description);
+                    $('.product-quick-view-modal .product-desc').html(response.description);
 
                     categoriesContainer.empty();
                     response.categories.forEach(function(cat){
@@ -182,6 +182,8 @@
                     toastr.warning('{{ __('scripts.login_required') }}');
                 } else {
                     toastr.error('{{ __('scripts.error') }}', 'خطأ');
+                    console.log(xhr
+                    )
                 }
             }
         });
@@ -306,6 +308,23 @@
             }
         });
     }
+
+    //------------------------ products filter toolbar-----------
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleFilterBtn = document.getElementById('toggleFilter');
+        const filterContent = document.getElementById('filterContent');
+
+        toggleFilterBtn.addEventListener('click', function() {
+            if (filterContent.style.display === 'none') {
+                filterContent.style.display = 'block';
+                toggleFilterBtn.innerHTML  = '<i class="fa fa-filter mr-2"></i>اخفاء التصفية ';
+            } else {
+                filterContent.style.display = 'none';
+                toggleFilterBtn.innerHTML  = '<i class="fa fa-filter mr-2"></i>تصفية المنتجات';
+            }
+        });
+    });
 
     // ------------------------------- Toastr options -------------------------------
 

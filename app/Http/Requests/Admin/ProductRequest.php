@@ -20,6 +20,7 @@ class ProductRequest extends FormRequest
         return [
             'name' => 'required|max:255|'. Rule::unique('products','name')->ignore($id),
             'description' => 'required',
+            'info' => 'required',
             'price' => 'required|numeric|gt:0',
             'goomla_price' => 'required|numeric|gt:0',
             'quantity' => 'required|integer|min:0',
@@ -42,6 +43,7 @@ class ProductRequest extends FormRequest
             'name.unique' => 'اسم المنتج موجود مسبقا',
             'name.max' => 'اسم المنتج يجب أن لا يتجاوز 255 حرفًا',
             'description.required' => 'وصف المنتج مطلوب',
+            'info.required' => 'حقل معلومات المنتج مطلوب',
             'price.required' => 'سعر المنتج مطلوب',
             'price.numeric' => 'يجب أن يكون السعر رقمًا',
             'price.gt' => 'يجب أن يكون السعر أكبر من الصفر',

@@ -35,6 +35,17 @@
                         <div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
+
+                <div class="form-group row mt-4">
+                    <label for="inputInfo" class="col-sm-2 control-label">معلومات المنتج</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control @error('info') is-invalid @enderror" id="inputInfo"
+                                  rows="3" placeholder="أدخل وصف المنتج"
+                                  name='info'>{{ old('info', $product->info) }}</textarea>
+                        @error('info')
+                        <div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
                 <div class="form-group row mt-4">
                     <label for="inputPrice" class="col-sm-2 control-label">السعر</label>
                     <div class="col-sm-10">

@@ -29,7 +29,7 @@
                     <div class="col-lg-10 m-auto">
                         <div class="contact-info-items text-center">
                             <div class="row row-gutter-80">
-                                <div class="col-sm-6 col-md-4">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="contact-info-item">
                                         <div class="icon">
                                             <img class="icon-img" src="{{ asset('front/assets/img/icons/5.png') }}" alt="Icon">
@@ -40,7 +40,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-4">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="contact-info-item mt-xs-30">
                                         <div class="icon">
                                             <img class="icon-img" src="{{ asset('front/assets/img/icons/6.png') }}" alt="Icon">
@@ -51,7 +51,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-4">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="contact-info-item mt-sm-30">
+                                        <div class="icon">
+                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/7.png') }}" alt="Icon">
+                                        </div>
+                                        <h2>{{ __('contact_us.whats') }}</h2>
+                                        <div class="content">
+                                            {{ \App\Models\Admin\Setting::getValue('whats-app') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
                                     <div class="contact-info-item mt-sm-30">
                                         <div class="icon">
                                             <img class="icon-img" src="{{ asset('front/assets/img/icons/7.png') }}" alt="Icon">
@@ -62,6 +73,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -142,7 +154,7 @@
             var message = document.getElementById('message').value;
 
             // رقم الواتساب الذي سيتم إرسال الرسالة إليه بدون "+"
-            var whatsappNumber = "+201093488094";
+            var whatsappNumber = "2{{\App\Models\Admin\Setting::getValue('whats-app')}}";
 
             // تكوين رابط واتساب مع البيانات
             var whatsappLink = "https://api.whatsapp.com/send?phone=" + whatsappNumber + "&text="

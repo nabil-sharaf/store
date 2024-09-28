@@ -39,7 +39,10 @@
     <link rel="stylesheet" href="{{asset('admin/plugins/select2/css/select2.min.css')}}">
     <link rel="stylesheet" href="{{asset('admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('admin/css/custom.css')}}">
-  @stack('styles')
+    <!-- تضمين ملفات Summernote CSS و JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+
+    @stack('styles')
     <style>
         /*select 2 styles*/
         .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow,

@@ -520,3 +520,108 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 }
 
+/*===================== Products Fitler ==========================*/
+
+.shop-toolbar-wrap {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px 20px 0 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* إضافة ظل خفيف */
+    height:auto !important;
+}
+.toolbar-header {
+    margin-bottom: 15px;
+}
+.sorting-select {
+    min-width: 200px;
+}
+.price-input {
+    width: 120px;
+}
+
+@media (max-width: 989px) {
+
+    #filterContent{
+        display: none ;
+    }
+}
+@media (max-width: 767px) {
+    .price-filter > div {
+        width: 100%;
+    }
+    .price-input {
+        width: calc(50% - 20px);
+    }
+    .sorting-menu {
+        width: 100%;
+    }
+    .sorting-select {
+        width: 100%;
+    }
+}
+@media (max-width: 479px) {
+    #toggleFilter{
+        width: 100%;
+        text-align: center;
+    }
+
+    .sorting-menu {
+        margin-top:15px;
+    }
+    .sorting-span{
+        width:40%;
+        margin-right:0;
+        margin-left:6px
+    }
+
+}
+
+#toggleFilter i {
+    padding-left: 15px ;
+}
+
+.sorting-select {
+    padding-right: 40px; /* تعديل المساحة بين النص والسهم */
+    text-align: right;   /* تأكيد أن النص يكون من اليمين للغة العربية */
+    appearance: none;    /* إخفاء السهم الافتراضي على بعض المتصفحات لتخصيصه */
+    background-repeat: no-repeat;
+    background-position: 95% center;
+}
+@media (min-width: 1200px) {
+    .toolbar-header {
+        justify-content: space-between;
+    }
+    .sorting-menu {
+        width: auto;
+    }
+    .price-input {
+        max-width: 150px;
+    }
+
+}
+
+@media (min-width: 768px) {
+    .mt-md-0 {
+        margin-top: 0 !important;
+        margin-right: 6px;
+    }
+
+    .label-price{
+        padding-top:4px !important;
+    }
+
+    .sorting-span{
+        min-width: 90px;
+        padding-right: 10px;            }
+
+    .filter-content{
+        margin-top:0!important;
+        padding-top: 0 !important;
+        padding-bottom: 15px;
+    }
+
+}
+.product-area.product-grid-area {
+    padding: 30px 0;
+}
+

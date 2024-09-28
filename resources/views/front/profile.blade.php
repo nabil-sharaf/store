@@ -70,29 +70,21 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @forelse( $orders as $order)
                                                 <tr>
-                                                    <td>1</td>
-                                                    <td>Aug 22, 2018</td>
-                                                    <td>Pending</td>
-                                                    <td>$3000</td>
-                                                    <td><a href="shop-cart.html" class="check-btn sqr-btn">{{ __('profile.view') }}</a></td>
+                                                        <td>{{$loop->iteration}}</td>
+                                                        <td>{{date_format($order->created_at,'y-m-d')}}</td>
+                                                        <td>{{$order->status->name}}</td>
+                                                        <td>{{$order->total_after_discount}}</td>
+                                                        <td><a href="{{route('order.show',$order->id)}}" class="check-btn sqr-btn">{{ __('profile.view') }}</a></td>
+                                                    @empty
+                                                        <td colspan="5"> لا توجد اوردرات خاصة بك حاليا</td>
                                                 </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>July 22, 2018</td>
-                                                    <td>Approved</td>
-                                                    <td>$200</td>
-                                                    <td><a href="shop-cart.html" class="check-btn sqr-btn">{{ __('profile.view') }}</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>June 12, 2017</td>
-                                                    <td>On Hold</td>
-                                                    <td>$990</td>
-                                                    <td><a href="shop-cart.html" class="check-btn sqr-btn">{{ __('profile.view') }}</a></td>
-                                                </tr>
+                                                    @endforelse
+
                                                 </tbody>
                                             </table>
+
                                         </div>
                                     </div>
                                 </div>
@@ -131,33 +123,10 @@
                                                     <div class="select-style ">
                                                         <select class=" select-active" name="state">
                                                             <option value="" disabled selected>اختر اسم محافظتك</option>
-                                                            <option value="القاهرة"{{ $address?->state == 'القاهرة' ? 'selected' : '' }}>القاهرة</option>
-                                                            <option value="الجيزة"{{ $address?->state == 'الجيزة' ? 'selected' : '' }}>الجيزة</option>
-                                                            <option value="الإسكندرية"{{ $address?->state == 'الإسكندرية' ? 'selected' : '' }}>الإسكندرية</option>
-                                                            <option value="الدقهلية"{{ $address?->state == 'الدقهلية' ? 'selected' : '' }}>الدقهلية</option>
-                                                            <option value="البحر الأحمر"{{ $address?->state == 'البحر الأحمر' ? 'selected' : '' }}>البحر الأحمر</option>
-                                                            <option value="البحيرة"{{ $address?->state == 'البحيرة' ? 'selected' : '' }}>البحيرة</option>
-                                                            <option value="الفيوم"{{ $address?->state == 'الفيوم' ? 'selected' : '' }}>الفيوم</option>
-                                                            <option value="الغربية"{{ $address?->state == 'الغربية' ? 'selected' : '' }}>الغربية</option>
-                                                            <option value="الإسماعيلية"{{ $address?->state == 'الإسماعيلية' ? 'selected' : '' }}>الإسماعيلية</option>
-                                                            <option value="المنوفية"{{ $address?->state == 'المنوفية' ? 'selected' : '' }}>المنوفية</option>
-                                                            <option value="المنيا"{{ $address?->state == 'المنيا' ? 'selected' : '' }}>المنيا</option>
-                                                            <option value="القليوبية"{{ $address?->state == 'القليوبية' ? 'selected' : '' }}>القليوبية</option>
-                                                            <option value="الوادي الجديد"{{ $address?->state == 'الوادي الجديد' ? 'selected' : '' }}>الوادي الجديد</option>
-                                                            <option value="الشرقية"{{ $address?->state == 'الشرقية' ? 'selected' : '' }}>الشرقية</option>
-                                                            <option value="سوهاج"{{ $address?->state == 'سوهاج' ? 'selected' : '' }}>سوهاج</option>
-                                                            <option value="أسوان"{{ $address?->state == 'أسوان' ? 'selected' : '' }}>أسوان</option>
-                                                            <option value="أسيوط"{{ $address?->state == 'أسيوط' ? 'selected' : '' }}>أسيوط</option>
-                                                            <option value="بني سويف"{{ $address?->state == 'بني سويف' ? 'selected' : '' }}>بني سويف</option>
-                                                            <option value="بورسعيد"{{ $address?->state == 'بورسعيد' ? 'selected' : '' }}>بورسعيد</option>
-                                                            <option value="دمياط"{{ $address?->state == 'دمياط' ? 'selected' : '' }}>دمياط</option>
-                                                            <option value="السويس"{{ $address?->state == 'السويس' ? 'selected' : '' }}>السويس</option>
-                                                            <option value="الأقصر"{{ $address?->state == 'الأقصر' ? 'selected' : '' }}>الأقصر</option>
-                                                            <option value="قنا"{{ $address?->state == 'قنا' ? 'selected' : '' }}>قنا</option>
-                                                            <option value="مطروح"{{ $address?->state == 'مطروح' ? 'selected' : '' }}>مطروح</option>
-                                                            <option value="شمال سيناء"{{ $address?->state == 'شمال سيناء' ? 'selected' : '' }}>شمال سيناء</option>
-                                                            <option value="جنوب سيناء"{{ $address?->state == 'جنوب سيناء' ? 'selected' : '' }}>جنوب سيناء</option>
-                                                        </select>
+                                                            @foreach($states as $state)
+                                                                <option value="{{$state->state}}"{{ $address?->state == $state->state ? 'selected' : '' }}>{{$state->state}}</option>
+                                                            @endforeach
+                                                         </select>
                                                     </div>
                                                     @error('state','addressErrors')
                                                     <span class="text-danger">{{ $message }}</span>

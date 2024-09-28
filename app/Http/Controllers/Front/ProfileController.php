@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Admin\Order;
+use App\Models\Admin\ShippingRate;
 use App\Models\Front\UserAddress;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,8 +22,11 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $address = UserAddress::where('user_id',\auth()->user()->id)->first();
-        return \view('front.profile',compact('address'));
+        $id = \auth()->user()->id;
+        $states = ShippingRate::get();
+        $address = UserAddress::where('user_id',$id)->first();
+        $orders = Order::where('user_id',$id)->get();
+        return \view('front.profile',compact('address','orders','states'));
     }
     public function edit(Request $request): View
     {

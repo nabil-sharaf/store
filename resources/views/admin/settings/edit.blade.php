@@ -57,34 +57,10 @@
         .form-group{
             margin-bottom: 30px;
         }
-    .note-toolbar{
-        position: static !important;
-    }
-    .note-editor .note-toolbar .note-color .dropdown-toggle, .note-popover .popover-content .note-color .dropdown-toggle{
-        padding-left: 25px !important;
-    }
-        .note-toolbar button {
-            font-size: 12px; /* تصغير حجم الخط داخل الأزرار */
-            padding: 4px 6px; /* تصغير المسافة حول الأيقونات */
-        }
-
-        .note-editor .dropdown-toggle {
-            font-size: 10px; /* تصغير حجم أيقونات القوائم المنسدلة */
-            padding: 4px 6px;
-        }
-
-        .note-editor .note-btn {
-            font-size: 12px; /* تصغير حجم الأيقونات في الأزرار */
-            padding: 4px 6px;
-        }
     </style>
 @endpush
 
 @push('scripts')
-    <!-- تضمين ملفات Summernote CSS و JS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
-
     <script>
         $(document).ready(function() {
             // تفعيل محرر Summernote لكل textarea

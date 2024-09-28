@@ -11,6 +11,7 @@ use App\Models\Admin\Product;
 use App\Models\Admin\ProductDiscount;
 use App\Models\Admin\PromoCode;
 use App\Models\Admin\Setting;
+use App\Models\Admin\ShippingRate;
 use App\Models\Admin\UserAddress;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -45,7 +46,8 @@ class OrderController extends Controller
     {
         $users = User::all();
         $products = Product::with('discount')->get();
-        return view('admin.orders.create', compact('users', 'products'));
+        $states = ShippingRate::all();
+        return view('admin.orders.create', compact('users', 'products','states'));
     }
 
     public function store(OrderRequest $request)
@@ -241,7 +243,9 @@ class OrderController extends Controller
             $user  = $order->user;
             $address = $order->userAddress ?? $order->guestAddress;
 
-            return view('admin.orders.edit', compact('order', 'products','user','address'));
+            $states = ShippingRate::all();
+
+            return view('admin.orders.edit', compact('order', 'products','user','address','states'));
         }
         return redirect(route('admin.orders.index'));
     }
@@ -542,6 +546,12 @@ class OrderController extends Controller
         ]);
     }
 
+    public function getShippingCost($state)
+    {
+        $shippingCost = ShippingRate::where('state', $state)->first()->shipping_cost;
+
+        return response()->json(['shipping_cost' => $shippingCost]);
+    }
 
 
 }

@@ -53,6 +53,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+ <!-- تضمين ملفات Summernote CSS و JS -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
+
+
  <!--select2-->
  <script src="{{asset('admin/plugins/select2/js/select2.full.min.js')}}"></script>
 <script>
@@ -69,6 +74,9 @@
          "timeOut": "4000", // مدة عرض الرسالة قبل الاختفاء (بالملي ثانية)
     };
 
+
+
+
     @if(Session::has('success'))
         toastr.success("{{ Session::get('success') }}");
     @endif
@@ -79,9 +87,31 @@
     @endif
 
 
+    $('#inputInfo,#inputDescription').summernote({
+        placeholder: 'ادخل تفاصيل او معلومات المنتج هنا ',
+        tabsize: 2,
+        height: 110, // تعيين ارتفاع المحرر
+        fontSizes: ['12', '14', '16', '18', '20', '22', '24','36' ,'48','72'], // إضافة 16 بكسل
 
-
-
+        toolbar: [
+            // تقسيم الأدوات إلى مجموعات
+            ['font', ['bold', 'italic', 'underline', 'clear']], // إضافة تنسيق النص
+            ['fontsize', ['fontsize']], // تغيير حجم الخط
+            ['color', ['forecolor']], // تغيير لون النص والخلفية
+            ['para', ['ul', 'ol', 'paragraph']], // خيارات الفقرات والقوائم
+            ['style', ['style']], // إضافة خيارات نمط النص
+            ['height', ['height']], // تغيير ارتفاع السطر
+            ['insert', ['link']], // إدراج روابط وصور وفيديوهات
+            ['view', ['fullscreen']] // عرض كود HTML وخيارات إضافية
+        ],
+        lang: 'ar-AR', // دعم اللغة العربية
+        direction: 'rtl', // دعم الكتابة من اليمين لليسار
+        callbacks: {
+            onInit: function() {
+                $('.note-editable p').css('margin-bottom', '12px');
+            }
+        }
+    });
 </script>
     @stack('scripts')
 </body>

@@ -12,4 +12,6 @@ return [
 'subject_placeholder' => 'Subject (Optional)',
 'message_placeholder' => 'Your Message',
 'submit_button' => 'Submit Your Inquiry',
+  'whats'=>'Whats-app'
+
 ];

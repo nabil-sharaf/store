@@ -18,8 +18,8 @@ class CategoryController extends Controller
     public function categoryProducts(Category $category){
 
         $products = $category->products()->get();
-        $title = $category->name;
-        return view ('front.category-products',compact('products','title'));
+
+        return view ('front.category-products',compact('products','category'));
 
     }
 

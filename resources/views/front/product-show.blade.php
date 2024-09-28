@@ -67,19 +67,9 @@
                                 <span class="fa fa-star"></span>
                                 <span class="fa fa-star"></span>
                             </div>
-                            <div class="review">
-                                <a href="#">( 5 Customer Review )</a>
-                            </div>
                         </div>
                         <div class="single-product-featured">
-                            <ul>
-                                <li><i class="fa fa-check"></i> {{ __('aside_menu.free_shipping') }}</li>
-                                <li><i class="fa fa-check"></i> {{ __('aside_menu.support_247') }}</li>
-                                <li><i class="fa fa-check"></i> {{ __('aside_menu.money_return') }}</li>
-                            </ul>
                         </div>
-
-                        <p class="product-desc">{{ __('aside_menu.product_description') }}</p>
                         <div class="quick-product-action">
                             <div class="action-top">
                                 <div class="pro-qty">
@@ -119,129 +109,14 @@
                             <div class="tab-content product-description-tab-content" id="myTabContent">
                                 <div class="tab-pane fade" id="commentProduct" role="tabpanel" aria-labelledby="product-aditional-tab">
                                     <div class="product-desc">
-                                        <p> {{$product->description}}</p>
+                                        <p> {!!  $product->info !!}</p>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade show active" id="productDesc" role="tabpanel" aria-labelledby="product-desc-tab">
                                     <div class="product-desc">
-                                        <p>{{$product->description??'لا يوجد مواصفات للمنتج حاليا'}}</p>
+                                        <p>{!! $product->description !!}</p>
                                     </div>
                                 </div>
-{{--                                <div class="tab-pane fade" id="productReview" role="tabpanel" aria-labelledby="product-review-tab">--}}
-{{--                                    <div class="product-review">--}}
-{{--                                        <div class="review-header">--}}
-{{--                                            <h4 class="title">Customer Reviews</h4>--}}
-{{--                                            <div class="review-info">--}}
-{{--                                                <ul class="review-rating">--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star-o"></i></li>--}}
-{{--                                                </ul>--}}
-{{--                                                <span class="review-caption">Based on 1 review</span>--}}
-{{--                                                <span class="review-write-btn">Write a review</span>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="product-review-form">--}}
-{{--                                            <h4 class="title">Write a review</h4>--}}
-{{--                                            <form action="#" method="post">--}}
-{{--                                                <div class="review-form-content">--}}
-{{--                                                    <div class="row">--}}
-{{--                                                        <div class="col-md-12">--}}
-{{--                                                            <div class="form-group">--}}
-{{--                                                                <label for="reviewFormName">Name</label>--}}
-{{--                                                                <input class="form-control" id="reviewFormName" type="text" placeholder="Enter your name" required="">--}}
-{{--                                                            </div>--}}
-{{--                                                        </div>--}}
-{{--                                                        <div class="col-md-12">--}}
-{{--                                                            <div class="form-group">--}}
-{{--                                                                <label for="reviewFormEmail">Email</label>--}}
-{{--                                                                <input class="form-control" id="reviewFormEmail" type="email" placeholder="john.smith@example.com" required="">--}}
-{{--                                                            </div>--}}
-{{--                                                        </div>--}}
-{{--                                                        <div class="col-md-12">--}}
-{{--                                                            <div class="rating">--}}
-{{--                                                                <span class="rating-title">Rating</span>--}}
-{{--                                                                <span>--}}
-{{--                                    <a class="fa fa-star-o" href="#/"></a>--}}
-{{--                                    <a class="fa fa-star-o" href="#/"></a>--}}
-{{--                                    <a class="fa fa-star-o" href="#/"></a>--}}
-{{--                                    <a class="fa fa-star-o" href="#/"></a>--}}
-{{--                                    <a class="fa fa-star-o" href="#/"></a>--}}
-{{--                                  </span>--}}
-{{--                                                            </div>--}}
-{{--                                                        </div>--}}
-{{--                                                        <div class="col-md-12">--}}
-{{--                                                            <div class="form-group">--}}
-{{--                                                                <label for="reviewReviewTitle">Review Title</label>--}}
-{{--                                                                <input class="form-control" id="reviewReviewTitle" type="text" placeholder="Give your review a title" required="">--}}
-{{--                                                            </div>--}}
-{{--                                                        </div>--}}
-{{--                                                        <div class="col-md-12">--}}
-{{--                                                            <div class="form-group">--}}
-{{--                                                                <label for="reviewFormTextarea">Body of Review <span>(1500)</span></label>--}}
-{{--                                                                <textarea class="form-control textarea" id="reviewFormTextarea" name="comment" rows="7" placeholder="Write your comments here" required=""></textarea>--}}
-{{--                                                            </div>--}}
-{{--                                                        </div>--}}
-{{--                                                    </div>--}}
-{{--                                                    <div class="row">--}}
-{{--                                                        <div class="col-md-12">--}}
-{{--                                                            <div class="form-group pull-right">--}}
-{{--                                                                <button class="btn btn-theme" type="submit">Submit Review</button>--}}
-{{--                                                            </div>--}}
-{{--                                                        </div>--}}
-{{--                                                    </div>--}}
-{{--                                                </div>--}}
-{{--                                            </form>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="review-content">--}}
-{{--                                            <div class="review-item">--}}
-{{--                                                <ul class="review-rating">--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star-o"></i></li>--}}
-{{--                                                </ul>--}}
-{{--                                                <h4 class="title">Cobus Bester</h4>--}}
-{{--                                                <h5 class="review-date"><span>Cobus Bester</span> on <span>Mar 03, 2021</span></h5>--}}
-{{--                                                <p>Can’t wait to start mixin’ with this one! Irba-irr-Up-up-up-up-date your theme!</p>--}}
-{{--                                                <a class="review-report" href="#/">Report as Inappropriate</a>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="review-content">--}}
-{{--                                            <div class="review-item">--}}
-{{--                                                <ul class="review-rating">--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star-o"></i></li>--}}
-{{--                                                </ul>--}}
-{{--                                                <h4 class="title">Cobus Bester</h4>--}}
-{{--                                                <h5 class="review-date"><span>Cobus Bester</span> on <span>Mar 05, 2021</span></h5>--}}
-{{--                                                <p>Can’t wait to start mixin’ with this one! Irba-irr-Up-up-up-up-date your theme!</p>--}}
-{{--                                                <a class="review-report" href="#/">Report as Inappropriate</a>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="review-content">--}}
-{{--                                            <div class="review-item">--}}
-{{--                                                <ul class="review-rating">--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star"></i></li>--}}
-{{--                                                    <li><i class="fa fa-star-o"></i></li>--}}
-{{--                                                </ul>--}}
-{{--                                                <h4 class="title">Cobus Bester</h4>--}}
-{{--                                                <h5 class="review-date"><span>Cobus Bester</span> on <span>Mar 07, 2021</span></h5>--}}
-{{--                                                <p>Can’t wait to start mixin’ with this one! Irba-irr-Up-up-up-up-date your theme!</p>--}}
-{{--                                                <a class="review-report" href="#/">Report as Inappropriate</a>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
                             </div>
                         </div>
                     </div>

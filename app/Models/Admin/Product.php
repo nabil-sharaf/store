@@ -19,6 +19,7 @@ class Product extends Model
         'is_best_seller',
         'offer_quantity',
         'free_quantity',
+        'info',
     ];
 
     public function categories()

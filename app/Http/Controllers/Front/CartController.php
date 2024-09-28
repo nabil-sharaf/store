@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Models\Admin\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
@@ -27,6 +28,24 @@ class CartController extends Controller
             $totalQuantity = $quantity;
         }
 
+        // التحقق مما إذا كان هناك طلب قيد التعديل
+        $editingOrderId = session()->get('editing_order_id');
+
+        if ($editingOrderId) {
+            Cart::add([
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->discounted_price,
+                'quantity' => $totalQuantity,
+                'attributes' => [
+                    'url' => route('product.show', $product->id),
+                    'image' => $product?->images?->first()?->path,
+                    'free_quantity' => $freeProducts, // إضافة عدد المنتجات المجانية
+                ]
+            ]);
+            return response()->json(['message' => 'تمت الاضافة في تعديل الاوردر']);
+
+        }else{
 
         Cart::add([
             'id' => $product->id,
@@ -37,11 +56,12 @@ class CartController extends Controller
                 'url' => route('product.show', $product->id),
                 'image' => $product?->images?->first()?->path,
                 'free_quantity' => $freeProducts, // إضافة عدد المنتجات المجانية
-
+                'editing_order_id' => $editingOrderId, // حفظ معرف الطلب في السلة
             ]
         ]);
-
         return response()->json(['message' => 'تم اضافة المنتج لسلة الشراء']);
+        }
+
     }
 
     // تحديث كمية المنتج في السلة
@@ -78,6 +98,9 @@ class CartController extends Controller
     {
         $items = Cart::getContent()->map(function ($item) {
             $product = Product::find($item->id);
+            if (!$product) {
+                return null; // تجاهل المنتجات التي لم يتم العثور عليها
+            }
             $item->price = $product->discounted_price;
             $item->id = $product->id;
             $item->name = $product->name;
@@ -85,14 +108,20 @@ class CartController extends Controller
             $item->attributes['image'] = $product?->images?->first()?->path;
 
             return $item;
-        });
+        })->filter();
 
         $totalQuantity = Cart::getTotalQuantity();
 
+
         $totalPrice = $items->sum(function ($item) {
-            return $item->price * ($item->quantity - $item->attributes['free_quantity']); // خصم أي كمية مجانية
+            $freeQuantity = $item->attributes['free_quantity'] ?? 0; // استخدام 0 كقيمة افتراضية
+            return $item->price * ($item->quantity - $freeQuantity); // خصم أي كمية مجانية
         });
+
+        $order = session('order_id') ? Order::find(session('order_id')) : null;
+
         return response()->json([
+            'order'=>$order,
             'items' => $items->values()->toArray(), // تأكيد تحويل العناصر إلى Array
             'totalQuantity' => $totalQuantity,
             'totalPrice' => $totalPrice,
@@ -117,13 +146,14 @@ class CartController extends Controller
     }
 
 
-    public function shoppingCartDetails()
+    public function shoppingCartDetails(Order $order=null)
     {
         $items = Cart::getContent();
         $totalQuantity = Cart::getTotalQuantity();
         $totalPrice = Cart::getTotal();
 
-        return view('front.shop-cart', compact(['items', 'totalPrice', 'totalQuantity']));
+
+        return view('front.shop-cart', compact(['items', 'totalPrice', 'totalQuantity','order']));
     }
 
 

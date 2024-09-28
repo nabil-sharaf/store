@@ -1,7 +1,6 @@
 @extends('front.layouts.app')
 @section('title','سلة المشتريات')
 @section('content')
-
     <!--== Start Page Title Area ==-->
     <section class="page-title-area">
         <div class="container">
@@ -95,7 +94,11 @@
                     @if($items->isNotEmpty())
                         <div class="grand-total-wrap">
                             <div class="grand-total-btn">
-                                <a class="btn btn-link" href="{{route('checkout.index')}}">{{ __('shop-cart.proceed_checkout') }}</a>
+                                @if(session()->has('editing_order_id'))
+                                    <a id = 'update-button-id' class="btn btn-link" href="{{route('checkout.indexEdit',session()->get('editing_order_id'))}}">تعديل الأوردر</a>
+                                @else
+                                <a class="btn btn-link" href="{{route('checkout.index',session()->get('editing_order_id'))}}">{{ __('shop-cart.proceed_checkout') }}</a>
+                                @endif
                             </div>
                         </div>
                     @endif
@@ -144,7 +147,9 @@
 @endpush
 
 @push('scripts')
+
     <script>
+
         document.querySelectorAll('.quantity-input').forEach(function (input) {
             input.addEventListener('input', function () {
                 var quantity = this.value;
@@ -211,5 +216,34 @@
                 }
             });
         }
+
+
+        // مسح بيانات السلة في حالة مغادرة صفحة تعديل الاوردر
+        let isUpdating = false; // متغير لتتبع حالة التحديث
+        let isEditingOrder = {{ $order?->id ? 'true' : 'false' }}; // تحقق إذا كان هناك طلب يتم تعديله
+
+        // إضافة حدث على زر التحديث
+        $('#update-button-id').on('click', function() {
+            isUpdating = true; // إذا تم الضغط على زر التحديث
+        });
+
+        // إضافة حدث على مغادرة الصفحة
+        {{--$(window).on('beforeunload', function() {--}}
+
+        {{--    if (isEditingOrder && !isUpdating) { // إذا كان في وضع تعديل وليس هناك تحديث--}}
+        {{--        // استدعاء رابط لمسح السلة--}}
+        {{--        $.ajax({--}}
+        {{--            url: '{{ route('orders.clear-cart') }}',--}}
+        {{--            type: 'POST',--}}
+        {{--            headers: {--}}
+        {{--                'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
+        {{--            },--}}
+        {{--            success: function(response) {--}}
+        {{--                // يمكن معالجة الاستجابة هنا إذا لزم الأمر--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    }--}}
+        {{--});--}}
+
     </script>
 @endpush

@@ -33,8 +33,6 @@
                         @endif
                     </div>
                     <div class="col-md-6">
-                        <h4 class="text-primary">الوصف</h4>
-                        <p>{{ $product->description }}</p>
 
                         <h4 class="text-primary mt-4">التفاصيل</h4>
                         <ul class="list-group">
@@ -72,6 +70,15 @@
                             <li class="list-group-item"><strong>تاريخ البدء:</strong> {{ $product->discount?->start_date ? $product->discount->start_date->format('Y-m-d') : 'لا يوجد' }}</li>
                             <li class="list-group-item"><strong>تاريخ الانتهاء:</strong> {{ $product->discount?->end_date ? $product->discount->end_date->format('Y-m-d') : 'لا يوجد' }}</li>
                         </ul>
+
+                        <h4 class="text-primary">الوصف</h4>
+                        <p>{!! $product->description ?? ' لا يوجد ' !!}</p>
+
+                        <h4 class="text-primary text-decoration-underline">معلومات وتفاصيل اضافية:- </h4>
+                        <p>{!! $product->info ?? 'لا يوجد' !!}  </p>
+
+
+
                     </div>
                 </div>
 
@@ -109,6 +116,10 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
+        }
+
+        .swiper-button-prev ,.swiper-button-next{
+            top:200px;
         }
     </style>
 
