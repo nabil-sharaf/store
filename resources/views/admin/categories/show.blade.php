@@ -30,8 +30,8 @@
                     </div>
                     <div class="card-body">
                         <p><strong>الاسم:</strong> {{ $category->name }}</p>
-                        <p><strong>الوصف:</strong> {{ $category->description }}</p>
-                        <p><strong>النوع:</strong> 
+                        <p><strong>الوصف:</strong> {{ strip_tags($category->description) }}</p>
+                        <p><strong>النوع:</strong>
                             @if($category->parent_id)
                                 <span class="badge bg-gradient-gray-dark">فرعي</span>
                             @else
@@ -49,7 +49,7 @@
                     <div class="card-body">
                         @if($category->parent)
                             <p><strong>الاسم:</strong> <a href="{{ route('admin.categories.show', $category->parent->id) }}">{{ $category->parent->name }}</a></p>
-                            <p><strong>الوصف:</strong> {{ Str::limit($category->parent->description, 100) }}</p>
+                            <p><strong>الوصف:</strong> {{ Str::limit(strip_tags($category->parent->description), 100) }}</p>
                         @else
                             <p>هذا قسم رئيسي وليس له قسم أب.</p>
                         @endif
@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">

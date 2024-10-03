@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="form-group row mt-4">
-                    <label for="role_id" class="col-sm-2 control-label">الرول</label>
+                    <label for="role_id" class="col-sm-2 control-label">الصلاحيات</label>
                     <div class="col-sm-10">
                         <select class="form-control @error('role_id') is-invalid @enderror" id="role_id" name="role_id">
                             <option value="">اختر الرول</option>

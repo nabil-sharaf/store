@@ -54,10 +54,10 @@ class User extends Authenticatable
             $now->endOfDay()->lessThanOrEqualTo($this->vip_end_date->endOfDay());
     }
 
-    public function getVipDiscount()
+    public function getVipDiscountAttribute()
     {
         if ($this->isVip()) {
-            return $this->vip_discount;
+            return $this->discount;
         }
         return 0;
     }

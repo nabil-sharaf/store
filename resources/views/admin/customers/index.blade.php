@@ -8,216 +8,203 @@
     <!-- /.card -->
     <div class="card">
         <div class="card-header">
-            <a href="{{ ''}}" class="btn btn-primary float-left mr-2">
-                <i class="fas fa-plus mr-1"></i> إضافة مستخدم جديد
-            </a>
-            <button id="vip-selected-btn" class="btn btn-secondary float-left mr-2">
-                <i class="fas fa-star-alt mr-1 ml-2 mt-1 float-right"></i> إضافة VIP للمستخدمين المحددين
+            <button id="vip-selected-btn" class="btn btn-secondary mb-2" data-toggle="modal" data-target="#modal-default-all">
+                <i class="fas fa-star-alt mr-1 ml-2 mt-1"></i> إضافة VIP للمستخدمين المحددين
             </button>
-
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <table class="table table-bordered text-center">
-                <thead>
-                <tr>
-                    <th><input type="checkbox" id="select-all"></th>
-                    <th>#</th>
-                    <th>الاسم</th>
-                    <th>رقم الموبايل</th>
-                    <th>نوع المستخدم</th>
-                    <th>تاريخ انتهاء VIP</th>
-                    <th>نسبة الخصم</th>
-                    <th>الحالة</th>
-                    <th>العمليات</th>
-                </tr>
-                </thead>
-                <tbody>
-                @forelse($users as $user)
-                    @if($user->customer_type == 'goomla')
-                        @php $customer_type = 'جملة' ; @endphp
-                    @elseif($user->customer_type == 'regular')
-                        @php $customer_type = 'قطاعي' ; @endphp
-                    @endif
-                    <tr id="customer-data-{{$user->id}}" style="background-color:{{$user->status ? '#fff':'#ccc'}}">
-                        <td><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
-                        <td>{{ $loop->iteration }}.</td>
-                        <td id="user-name-{{$user->id}}">{{ $user->name }}</td>
-                        <td>{{ $user->phone }}</td>
-                        <td id="user-type-{{$user->id}}">
-                            @if($user->is_vip)
-                                {{$customer_type}}&nbsp; <i class="fas fa-crown" style="color:darkviolet; "></i>
-                            @else
+            <div class="table-responsive">
+                <table class="table table-bordered ">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select-all"></th>
+                        <th>#</th>
+                        <th>الاسم</th>
+                        <th>رقم الموبايل</th>
+                        <th>نوع المستخدم</th>
+                        <th>تاريخ انتهاء VIP</th>
+                        <th>نسبة الخصم</th>
+                        <th>الحالة</th>
+                        <th>العمليات</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($users as $user)
+                        @php
+                            $customer_type = $user->customer_type == 'goomla' ? 'جملة' : 'قطاعي';
+                        @endphp
+                        <tr id="customer-data-{{$user->id}}" style="background-color:{{$user->status ? '#fff':'#ccc'}}">
+                            <td data-label="اختيار"><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
+                            <td data-label="#">{{ $loop->iteration }}.</td>
+                            <td data-label="الاسم" id="user-name-{{$user->id}}">{{ $user->name }}</td>
+                            <td data-label="رقم الموبايل">{{ $user->phone }}</td>
+                            <td data-label="نوع المستخدم" id="user-type-{{$user->id}}">
                                 {{$customer_type}}
-                            @endif
-                        </td>
-                        <td id="vip-end-date-{{$user->id}}">
-                            {{ $user->is_vip && $user->vip_end_date ? $user->vip_end_date->format('Y-m-d') : 'N/A' }}
-                        </td>
-                        <td id="user-discount-{{$user->id}}">{{ $user->discount!=0 ? $user->discount . '%' : 'لا يوجد' }}</td>
-                        <td id="user-status-{{$user->id}}"><span  class="btn btn-sm {{$user->status==1?'btn-success' : 'btn-danger'}}">{{$user->status==1?'مفعل' : 'غير مفعل'}}</span></td>
-                        <td id="vip-td-change-{{$user->id}}">
-                            @if($user->is_vip)
-                                <a class="btn btn-sm btn-light mr-1 disabled" title="Make Vip" aria-disabled="true" data-target="#modal-default{{$user->id}}" data-id="{{$user->id}}">
-                                    <i  class="icon-changer-{{$user->id}} fas fa-crown" style="color:#5f5f5f;"></i>
-                                </a>
-                            @else
-                                <a href="#" class=" btn btn-sm btn-light mr-1" title="Make Vip" data-toggle="modal" data-target="#modal-default{{$user->id}}" data-id="{{$user->id}}">
-                                    <i class=" fas fa-crown" style="color:darkviolet; background-color:#e2e2e2"></i>
-                                 </a>
-                            @endif
+                                @if($user->isVip())
+                                    <i class="fas fa-crown" style="color:darkviolet;"></i>
+                                @endif
+                            </td>
+                            <td data-label="تاريخ انتهاء VIP" id="vip-end-date-{{$user->id}}" class="{{ $user->isVip() ? 'show-vip' : 'hide-vip' }}">
+                                {{ $user->isVip() && $user->vip_end_date ? $user->vip_end_date->format('Y-m-d') : 'N/A' }}
+                            </td>
+                            <td data-label="نسبة الخصم" id="user-discount-{{$user->id}}" class="{{ $user->isVip() ? 'show-vip' : 'hide-vip' }}">{{ $user->vip_discount != 0 ? $user->discount . '%' : 'لا يوجد' }}</td>
+                            <td data-label="الحالة" id="user-status-{{$user->id}}">
+                                <span class="btn btn-sm {{$user->status==1 ? 'btn-success' : 'btn-danger'}}">
+                                    {{$user->status==1 ? 'مفعل' : 'غير مفعل'}}
+                                </span>
+                            </td>
+                            <td data-label="العمليات" id="vip-td-change-{{$user->id}}">
+                                <div class="btn-group" role="group">
+                                    @if(!$user->isVip())
+                                        <button class="btn btn-sm btn-light mr-1 mb-1" title="Make Vip" data-toggle="modal" data-target="#modal-default{{$user->id}}" id="vip-icon-{{$user->id}}">
+                                            <i class="fas fa-crown" style="color:darkviolet;"></i>
+                                        </button>
+                                    @endif
+                                    <a href="{{ route('admin.customers.show', $user->id) }}" class="btn btn-sm btn-warning mr-1 mb-1" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button class="btn-edit-customer btn btn-sm btn-info mr-1 mb-1" data-toggle="modal" data-target="#editCustomerModal-{{ $user->id }}" title="تعديل">
+                                        <i class="fas fa-user-edit"></i>
+                                    </button>
+                                </div>
 
-                            <div class="modal fade" id="modal-default{{$user->id}}">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">تمييز العميل {{$user->name}}  كـ vip</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-
-
-                                            <div class="form-group row mt-4">
-                                                <label for="start_date{{$user->id}}" class="col-sm-2 control-label">تاريخ البدء</label>
-                                                <div class="col-sm-10">
-                                                 <input type="date" class="form-control "  id ='start_date{{$user->id}}' name="start_date" value="">
-                                                 </div>
+                                <!-- VIP Modal -->
+                                <div class="modal fade" id="modal-default{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="vipModalLabel{{$user->id}}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="vipModalLabel{{$user->id}}">تمييز العميل {{$user->name}} كـ VIP</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
                                             </div>
-                                            <div class="form-group row mt-4">
-                                                <label for="end_date{{$user->id}}" class="col-sm-2 control-label">تاريخ الانتهاء</label>
-                                                <div class="col-sm-10">
-                                                 <input type="date" class="form-control " id = 'end_date{{$user->id}}' name="end_date" value="">
-                                                 </div>
-                                            </div>
-
-                                            <div class="form-group row mt-4">
-                                                <label for="userDiscount{{$user->id}}" class="col-sm-2 control-label">نسبة الخصم % </label>
-                                                <div class="col-sm-10">
-                                                    <input type="number" step="0.01" id = 'userDiscount{{$user->id}}' class="form-control inline-block "  placeholder="أدخل نسبة الخصم" name="userDiscount" value="0" min="0">
-
+                                            <div class="modal-body">
+                                                <!-- VIP Modal content -->
+                                                <div class="form-group row mt-4">
+                                                    <label for="start_date{{$user->id}}" class="col-sm-2 control-label">تاريخ البدء</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="date" class="form-control" id="start_date{{$user->id}}" name="start_date" value="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mt-4">
+                                                    <label for="end_date{{$user->id}}" class="col-sm-2 control-label">تاريخ الانتهاء</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="date" class="form-control" id="end_date{{$user->id}}" name="end_date" value="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mt-4">
+                                                    <label for="userDiscount{{$user->id}}" class="col-sm-2 control-label">نسبة الخصم %</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" step="0.01" id="userDiscount{{$user->id}}" class="form-control inline-block" placeholder="أدخل نسبة الخصم" name="userDiscount" value="0" min="0">
+                                                    </div>
                                                 </div>
                                             </div>
-
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                                                <button type="button" class="vip-user-btn btn btn-primary" data-id="{{$user->id}}">تأكيد التغييرات</button>
+                                            </div>
                                         </div>
-                                        <div class="modal-footer justify-content-between">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">الغاء</button>
-                                            <button type="button" class="vip-user-btn btn btn-primary" data-id="{{$user->id}}">تأكيد التغييرات</button>
+                                    </div>
+                                </div>
+
+                                <!-- Edit Customer Modal -->
+                                <div class="modal fade" id="editCustomerModal-{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="editCustomerModalLabel-{{ $user->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header customer-edit-label bg-primary text-white">
+                                                <h5 class="modal-title" id="editCustomerModalLabel-{{ $user->id }}">تعديل بيانات العميل</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="editCustomerForm-{{ $user->id }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="mb-4">
+                                                        <label for="customerName-{{ $user->id }}" class="form-label mb-3">اسم العميل :</label>
+                                                        <input type="text" class="form-control form-control-lg" id="customerName-{{ $user->id }}" name="name" value="{{ $user->name }}">
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <label for="customerType-{{ $user->id }}" class="form-label mb-3">نوع العميل :</label>
+                                                        <select class="form-control form-select form-select-lg" id="customerType-{{ $user->id }}" name="type">
+                                                            <option value="goomla" {{ $user->customer_type == 'goomla' ? 'selected' : '' }}>جملة</option>
+                                                            <option value="regular" {{ $user->customer_type == 'regular' ? 'selected' : '' }}>قطاعي</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <label for="customerStatus-{{ $user->id }}" class="form-label mb-3">حالة الحساب :</label>
+                                                        <select class="form-control form-select form-select-lg" id="customerStatus-{{ $user->id }}" name="status">
+                                                            <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>مفعل</option>
+                                                            <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>غير مفعل</option>
+                                                        </select>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="save-customerChanges btn btn-primary" data-id="{{ $user->id }}">حفظ التغييرات</button>
+                                                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">إغلاق</button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <!-- /.modal-content -->
                                 </div>
-                                <!-- /.modal-dialog -->
-                            </div>
-
-                            <a href="{{ route('admin.customers.show', $user->id) }}" class="btn btn-sm btn-warning mr-1" title="عرض التفاصيل">
-                                <i class="fas fa-eye"></i>
-                            </a>
-
-                                <a href="#" class="btn-edit-customer btn btn-sm btn-info mr-1"
-                                   data-toggle="modal"
-                                   data-target="#editCustomerModal-{{ $user->id }}"
-                                   data-id="{{ $user->id }}"
-                                   data-name="{{ $user->name }}"
-                                   data-type="{{ $user->customer_type }}"
-                                   data-status="{{ $user->status }}"
-                                   title="تعديل">
-                               <i class="fas fa-user-edit "></i>
-                            </a>
-                                <!-- تعديل نموذج بيانات العميل لكل مستخدم -->
-                            <div class=" text-left modal fade" id="editCustomerModal-{{ $user->id }}" tabindex="-1" aria-labelledby="editCustomerModalLabel-{{ $user->id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header customer-edit-label bg-primary text-white">
-                                        <h5 class="modal-title" id="editCustomerModalLabel-{{ $user->id }}">تعديل بيانات العميل</h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="editCustomerForm-{{ $user->id }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="mb-4">
-                                                <label for="customerName-{{ $user->id }}" class="form-label mb-3">اسم العميل :</label>
-                                                <input type="text" class="form-control form-control-lg" id="customerName-{{ $user->id }}" name="name" value="{{ $user->name }}">
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="customerType-{{ $user->id }}" class="form-label mb-3">نوع العميل :</label>
-                                                <select class="form-control form-select form-select-lg" id="customerType-{{ $user->id }}" name="type">
-                                                    <option value="goomla" {{ $user->customer_type == 'goomla' ? 'selected' : '' }}>جملة</option>
-                                                    <option value="regular" {{ $user->customer_type == 'regular' ? 'selected' : '' }}>قطاعي</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="customerStatus-{{ $user->id }}" class="form-label mb-3">حالة الحساب :</label>
-                                                <select class="form-control form-select form-select-lg" id="customerStatus-{{ $user->id }}" name="status">
-                                                    <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>مفعل</option>
-                                                    <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>غير مفعل</option>
-                                                </select>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" form="editCustomerForm-{{ $user->id }}" class="save-customerChanges btn btn-primary ">حفظ التغييرات</button>
-                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closeModalBtn-{{ $user->id }}">إغلاق</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="9">لا يوجد مستخدمين حاليا</td>
-                    </tr>
-                @endforelse
-
-                <div class="modal fade" id="modal-default-all" tabindex="-1" aria-labelledby="modal-default-all" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">تمييز العملاء المحددين كـ vip</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group row mt-4">
-                                    <label for="all_start_date" class="col-sm-2 control-label">تاريخ البدء</label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" id="all_start_date" name="all_start_date" value="">
-                                    </div>
-                                </div>
-                                <div class="form-group row mt-4">
-                                    <label for="all_end_date" class="col-sm-2 control-label">تاريخ الانتهاء</label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" id="all_end_date" name="all_end_date" value="">
-                                    </div>
-                                </div>
-                                <div class="form-group row mt-4">
-                                    <label for="all_userDiscount" class="col-sm-2 control-label">نسبة الخصم %</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" step="0.01" id="all_userDiscount" class="form-control inline-block" placeholder="أدخل نسبة الخصم" name="all_userDiscount" value="0" min="0">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">إلغاء</button>
-                                <button type="button" id="confirm-vip-btn" class="btn btn-primary">تأكيد التغييرات</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9">لا يوجد مستخدمين حاليا</td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
             {{ $users->links('vendor.pagination.custom') }}
         </div>
     </div>
-@endsection
 
+    <!-- VIP for Selected Users Modal -->
+    <div class="modal fade" id="modal-default-all" tabindex="-1" role="dialog" aria-labelledby="vipAllModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="vipAllModalLabel">تمييز العملاء المحددين كـ VIP</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row mt-4">
+                        <label for="all_start_date" class="col-sm-2 control-label">تاريخ البدء</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="all_start_date" name="all_start_date" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row mt-4">
+                        <label for="all_end_date" class="col-sm-2 control-label">تاريخ الانتهاء</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="all_end_date" name="all_end_date" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row mt-4">
+                        <label for="all_userDiscount" class="col-sm-2 control-label">نسبة الخصم %</label>
+                        <div class="col-sm-10">
+                            <input type="number" step="0.01" id="all_userDiscount" class="form-control inline-block" placeholder="أدخل نسبة الخصم" name="all_userDiscount" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="button" id="confirm-vip-btn" class="btn btn-primary">تأكيد التغييرات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection
 
 @push('scripts')
 
@@ -278,6 +265,7 @@
                                         if (userType.find('i.fas.fa-crown').length === 0) {
                                             userType.append(' <i class="fas fa-crown" style="color:darkviolet;"></i>'); // إضافة أيقونة التاج
                                         }
+
                                         $('#user-discount-' + userId).text(all_discount + ' %'); // تحديث نسبة الخصم
                                         $('#vip-start-date-' + userId).text(all_startDate); // تحديث تاريخ البدء
                                         $('#vip-end-date-' + userId).text(all_endDate); // تحديث تاريخ الانتهاء
@@ -330,6 +318,7 @@
 
                         // تحديث حالة العضو في الجدول
                         var userType = $('#user-type-' + userId);
+
                         userType.append(' <i class="fas fa-crown" style="color:darkviolet;"></i>'); // إضافة أيقونة التاج
 
                         $('#user-discount-' + userId).text(discount+' %'); // تحديث تاريخ الانتهاء
@@ -337,9 +326,12 @@
                         $('#vip-end-date-' + userId).text(endDate); // تحديث تاريخ الانتهاء
 
                         // تعطيل الأيقونة وتغيير لونها
-                        var vipIcon = $('#vip-td-change-' + userId + ' a[data-target="#modal-default' + userId + '"]');
+                        var vipIcon = $('#vip-icon-' + userId );
                         vipIcon.addClass('disabled').attr('aria-disabled', 'true'); // جعل الأيقونة معطلة
                         vipIcon.find('i').css('color', '#5f5f5f'); // تغيير لون الأيقونة للرمادي
+                        vipIcon.attr('aria-disabled', 'true');
+                        vipIcon.attr('data-target','');
+                        vipIcon.attr('data-toggle','');
                     },
                     error: function(response) {
                         toastr.error('حدث خطأ أثناء التعديل تأكد من التواريخ وقيمة ')
@@ -435,5 +427,51 @@
             background-color: #17a2b8 !important;
         }
 
+        @media  (max-width: 767px) {
+            .table-responsive {
+                border: 0;
+            }
+            .table-responsive table {
+                border: 0;
+            }
+            .table-responsive table thead {
+                display: none;
+            }
+            .table-responsive table tr {
+                margin-bottom: 10px;
+                display: block;
+                border-bottom: 2px solid #ddd;
+            }
+            .table-responsive table td {
+                display: block;
+                text-align: right;
+                font-size: 13px;
+                border-bottom: 1px dotted #ccc;
+            }
+            .table-responsive table td:last-child {
+                border-bottom: 0;
+            }
+            .table-responsive table td:before {
+                content: attr(data-label);
+                float: right;
+                text-transform: uppercase;
+                font-weight: bold;
+                margin-left:10px;
+            }
+            .table-responsive .btn-group {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+            .table-responsive table td.hide-vip {
+                display: none;
+            }
+        }
+
+        @media (min-width: 768px){
+            .table-responsive{
+                text-align: center;
+            }
+        }
     </style>
 @endpush
