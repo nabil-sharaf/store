@@ -61,7 +61,11 @@
                 @foreach($order->orderDetails as $detail)
                     <tr>
                         <td>{{ $detail->product->name }}</td>
+                        @if($detail->free_quantity > 0)
+                        <td>{{ $detail->product_quantity }} + {{$detail->free_quantity .' هدية '}}</td>
+                        @else
                         <td>{{ $detail->product_quantity }}</td>
+                        @endif
                         <td>{{ $detail->price }} ج</td>
                         <td>{{ $detail->product_quantity * $detail->price }} ج</td>
                     </tr>
@@ -69,25 +73,31 @@
 
                 @if($order->user_id)
                     @if(($order->vip_discount + $order->promo_discount) > 0)
-                        <tr>
-                            <td colspan="3" class="text-left font-weight-bold">اجمالي الاوردر</td>
-                            <td class="">{{ $order->total_price }} ج</td>
+                        <tr class="">
+                            <td colspan="3" class="text-left font-weight-bold">اجمالي سعر المنتجات</td>
+                            <td class="table-active">{{ $order->total_price }} ج</td>
                         </tr>
                         <tr>
                             <td colspan="1" class="text-left font-weight-bold">قيمة الخصم</td>
                             <td colspan="1">خصم
                                 كوبون: {{$order->promo_discount > 0 ? $order->promo_discount.'  ج ' : ' --- '}}</td>
                             <td colspan="1">خصم
-                                VIP: {{$order->vip_discount > 0 ? $order->vip_discount.'  ج ' : ' --- '}}</td>
+                                (vip): {{$order->vip_discount > 0 ? $order->vip_discount.'  ج ' : ' --- '}}</td>
                             <td>{{ $order->vip_discount + $order->promo_discount }} ج</td>
                         </tr>
                     @endif
                 @endif
+                <tr>
+                    <td colspan="3" class="text-left font-weight-bold">
+                     تكاليف الشحن
+                    </td>
+                    <td class="font-weight-bold">{{$order->shipping_cost }} ج</td>
+                </tr>
                 <tr class="table-info">
                     <td colspan="3" class="text-left font-weight-bold">
-                        {{ ($order->vip_discount > 0 || $order->promo_discount > 0) ? 'السعر الإجمالي بعد الخصم' : 'إجمالي الطلب' }}
+                        {{ ($order->vip_discount > 0 || $order->promo_discount > 0) ? 'السعر الإجمالي للاوردر' : 'إجمالي الطلب' }}
                     </td>
-                    <td class="font-weight-bold">{{ $order->total_after_discount }} ج</td>
+                    <td class="font-weight-bold">{{ $order->final_total }} ج</td>
                 </tr>
                 </tbody>
             </table>

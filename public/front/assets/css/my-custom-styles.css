@@ -484,6 +484,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     .product-item .product-thumb {
         min-height: 170px;
         padding-top:10px;
+        position: relative;
     }
     .product-item .product-info {
         min-height: 106px;
@@ -625,3 +626,77 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     padding: 30px 0;
 }
 
+/*تنسيق القطع المجانية في سلة المشتريات*/
+.cart-content ul li .cart-img a img {
+    margin-inline-start: 3px !important;
+}
+
+.cart-content ul li .cart-title {
+    margin-inline-start: 13px !important;
+}
+.cart-content ul li .cart-title h4{
+     margin: 0 0 2px; !important;
+}
+
+.cart-content ul li .cart-title span{
+    font-size:13px
+}
+.cart-content ul li .cart-title span.price{
+
+}
+
+.cart-content ul li .cart-title span.free-quantity{
+    color:green !important;
+}
+.cart-content ul li .cart-title span.free-quantity-number{
+    color:red !important;
+    font-weight: bold;
+}
+
+.cart-content .cart-total h4{
+    margin-inline-start: 38px !important;
+
+}
+
+.sidebar-cart-modal .sidebar-cart-inner .sidebar-cart-content .sidebar-cart-all .cart-header > h3{
+    margin-inline-start: 19px !important;
+}
+
+.cart-content ul li .cart-img a img {
+    max-height: 65px !important;
+}
+.cart-content ul li .cart-delete a {
+    margin-inline-end: 4px !important;
+}
+
+ /*Checkout Page*/
+.your-order-product span.free-quantity{
+    color:green !important;
+    font-size: 14px !important;
+}
+.your-order-product span.free-quantity-number {
+    color:#f379a7 !important;
+    font-weight: bold !important;
+    min-width: 47%;
+}
+
+/*offers badge*/
+.badge-offer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff5e57;
+    color: white;
+    padding: 5px 4px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 10;
+}
+@media(max-width: 479px){
+    .badge-offer {
+        font-size: 10px !important;
+    }
+    .product-item .product-thumb img{
+        padding-top:5px !important;
+    }
+}

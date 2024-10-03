@@ -102,13 +102,13 @@
                                             <!-- اسم المستخدم -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <input class="form-control" type="text" id="name" placeholder="{{ __('contact_us.name_placeholder') }}" required>
+                                                    <input class="form-control" type="text" id="name" placeholder=" {{ __('contact_us.name_placeholder') }} " required>
                                                 </div>
                                             </div>
                                             <!-- رقم الهاتف للتواصل عبر واتساب -->
-                                            <div class="col-md-6">
+                                            <div class="col-md-6 ">
                                                 <div class="form-group">
-                                                    <input class="form-control" type="tel" id="phone" placeholder="{{ __('contact_us.phone_placeholder') }}" required>
+                                                    <input class="form-control text-right" type="tel" id="phone" placeholder=" {{ __('contact_us.phone_placeholder') }} " required>
                                                 </div>
                                             </div>
                                             <!-- الموضوع -->

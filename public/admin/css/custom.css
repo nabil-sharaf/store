@@ -115,3 +115,16 @@ a.brand-link{
     font-size: 12px; /* تصغير حجم الأيقونات في الأزرار */
     padding: 4px 6px;
 }
+
+/*span of free quantity in order add/edit*/
+span.free-quantity{
+    display: inline-block;
+    color:green;
+    margin-bottom: 0;
+    padding-top:3px;
+}
+
+span.free-quantity-number{
+    color: #480909;
+    font-weight: bold;
+}

@@ -23,7 +23,7 @@
                     <p><strong>رقم التليفون:</strong> {{ $address->phone ?? null }}</p>
                     <p><strong>العنوان:</strong> {{ $address->address ?? null }}</p>
                     <p><strong>المدينة :</strong> {{ $address->city ?? null }} &nbsp;-<strong> &nbsp;المحافظة :</strong> {{ $address->state ?? null }} </p>
-                    <p><strong> إجمالي الطلب :</strong> {{ $order->total_after_discount }} جنيه</p>
+                    <p><strong> إجمالي الطلب :</strong> {{ $order->total_after_discount }} ج  {{$order->shipping_cost > 0 ?  ' + '.$order->shipping_cost.'ج  شحن' : ''}} </p>
                     <p class="status-now"><strong>حالة الطلب :</strong> {{ ucfirst($order->status->name) }}</p>
                 </div>
                 <div class="col-md-6 status-now">
@@ -68,7 +68,11 @@
                 @foreach($order->orderDetails as $detail)
                     <tr>
                         <td>{{ $detail->product->name }}</td>
-                        <td>{{ $detail->product_quantity }}</td>
+                        @if($detail->free_quantity > 0)
+                            <td>{{ $detail->product_quantity }} + {{$detail->free_quantity .' هدية '}}</td>
+                        @else
+                            <td>{{ $detail->product_quantity }}</td>
+                        @endif
                         <td>{{ $detail->price }} ج</td>
                         <td>{{ $detail->product_quantity * $detail->price }} ج</td>
                     </tr>
@@ -76,22 +80,32 @@
 
                 @if($order->user_id)
                     @if(($order->vip_discount + $order->promo_discount) > 0)
-                        <tr>
-                            <td colspan="3" class="text-left font-weight-bold"> اجمالي الاوردر </td>
-                            <td class="">{{ $order->total_price }} ج</td>
+                        <tr class="">
+                            <td colspan="3" class="text-left font-weight-bold">اجمالي سعر المنتجات</td>
+                            <td class="table-active">{{ $order->total_price }} ج</td>
                         </tr>
-
                         <tr>
-                            <td colspan="1" class="text-left font-weight-bold">قيمة الخصم </td>
-                            <td colspan="1">   خصم كوبون : {{$order->promo_discount > 0 ?  $order->promo_discount.'  ج ' : ' --- ' }}  </td>
-                            <td dir="ltr" colspan="1"> خصم (vip) : {{$order->vip_discount > 0 ?  $order->vip_discount.'  ج ' : ' --- ' }}  </td>
-                            <td class="">{{  $order->vip_discount+$order->promo_discount . ' ج ' }} </td>
+                            <td colspan="1" class="text-left font-weight-bold">قيمة الخصم</td>
+                            <td colspan="1">خصم
+                                كوبون: {{$order->promo_discount > 0 ? $order->promo_discount.'  ج ' : ' --- '}}</td>
+                            <td colspan="1">
+                                خصم
+                                (vip): {{$order->vip_discount > 0 ? $order->vip_discount.'  ج ' : ' --- '}}</td>
+                            <td>{{ $order->vip_discount + $order->promo_discount }} ج</td>
                         </tr>
                     @endif
                 @endif
+                <tr>
+                    <td colspan="3" class="text-left font-weight-bold">
+                        تكاليف الشحن
+                    </td>
+                    <td class="font-weight-bold">{{$order->shipping_cost > 0 ? $order->shipping_cost.' ج ' :'لا يوجد' }}</td>
+                </tr>
                 <tr class="table-info">
-                    <td colspan="3" class="text-left font-weight-bold">{{($order->vip_discount >0 || $order->promo_discount > 0) ? 'السعر الإجمالي بعد الخصم' : 'إجمالي الطلب'}}  </td>
-                    <td class="font-weight-bold">{{ $order->total_after_discount }} ج</td>
+                    <td colspan="3" class="text-left font-weight-bold">
+                        {{ ($order->vip_discount > 0 || $order->promo_discount > 0) ? 'السعر الإجمالي للاوردر' : 'إجمالي الطلب' }}
+                    </td>
+                    <td class="font-weight-bold">{{ $order->final_total }} ج</td>
                 </tr>
                 </tbody>
             </table>

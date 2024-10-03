@@ -65,6 +65,11 @@
                                                        data-price="{{ $item->price }}" data-id="{{ $item->id }}"
                                                        step="1" min="1" max="100" name="quantity"
                                                        value="{{ $item->quantity }}" title="{{ __('shop-cart.qty_title') }}" placeholder="">
+                                                <p class="free_quantity" id="free_quantity{{$item->id}}">
+                                                    @if($item['attributes']->free_quantity > 0)
+                                                        + عدد  <span>  {{$item['attributes']->free_quantity}}</span> قطعة مجاني
+                                                    @endif
+                                                </p>
                                             </div>
                                         </td>
                                         <td class="product-total">
@@ -143,79 +148,25 @@
             color: #d9534f;
             margin-left: 30px;
         }
+
+        .free_quantity{
+            font-size: 13px;
+            text-align: right;
+            color: green;
+            margin-bottom: -15px;
+
+        }
+        .free_quantity span {
+            color: #d9534f;
+            font-weight: bold;
+            font-size: 14px;
+        }
     </style>
 @endpush
 
 @push('scripts')
 
     <script>
-
-        document.querySelectorAll('.quantity-input').forEach(function (input) {
-            input.addEventListener('input', function () {
-                var quantity = this.value;
-                var price = this.getAttribute('data-price');
-                var id = this.getAttribute('data-id');
-                var total = price * quantity;
-                document.getElementById('total-price-' + id).innerText = total + ' {{ __('shop-cart.currency') }}';
-
-                // حساب وإظهار الإجمالي الكلي الجديد
-                updateQuantity(id, quantity)
-                updateGrandTotal();
-
-            });
-        });
-
-        function updateGrandTotal() {
-            var grandTotal = 0;
-            document.querySelectorAll('.product-total span').forEach(function (span) {
-                grandTotal += parseFloat(span.innerText);
-            });
-            document.getElementById('grand-total').innerText = grandTotal + ' {{ __('shop-cart.currency') }}';
-        }
-
-            // تحديث الكمية في السلة بعد تغييرها بالاجاكس
-        function updateQuantity(productId, quantity) {
-            $.ajax({
-                url: `{{route('cart.update')}}`,
-                type: 'POST',
-                data: {
-                    quantity: quantity,
-                    product_id:productId,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(data) {
-                    if (data.success) {
-                        console.log('Quantity updated successfully');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error updating quantity:', error);
-                }
-            });
-        }
-
-        // حذف منتج من السلة
-        function removeItem(event, element) {
-            event.preventDefault();
-            var productId = $(element).data('id');
-
-            $.ajax({
-                url: '{{ route("cart.remove") }}',
-                type: 'POST',
-                data: {
-                    product_id: productId,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function (response) {
-                    $(element).closest('tr').remove();
-                    updateCartDetails();
-                    updateGrandTotal();
-                },
-                error: function (error) {
-                    console.log('Failed to remove product from cart.');
-                }
-            });
-        }
 
 
         // مسح بيانات السلة في حالة مغادرة صفحة تعديل الاوردر
@@ -226,24 +177,6 @@
         $('#update-button-id').on('click', function() {
             isUpdating = true; // إذا تم الضغط على زر التحديث
         });
-
-        // إضافة حدث على مغادرة الصفحة
-        {{--$(window).on('beforeunload', function() {--}}
-
-        {{--    if (isEditingOrder && !isUpdating) { // إذا كان في وضع تعديل وليس هناك تحديث--}}
-        {{--        // استدعاء رابط لمسح السلة--}}
-        {{--        $.ajax({--}}
-        {{--            url: '{{ route('orders.clear-cart') }}',--}}
-        {{--            type: 'POST',--}}
-        {{--            headers: {--}}
-        {{--                'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-        {{--            },--}}
-        {{--            success: function(response) {--}}
-        {{--                // يمكن معالجة الاستجابة هنا إذا لزم الأمر--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    }--}}
-        {{--});--}}
 
     </script>
 @endpush

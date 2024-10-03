@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->integer('offer_quantity')->nullable(); // كمية العرض (مثل 1 أو 5)
-            $table->integer('free_quantity')->nullable(); // كمية الهدية المجانية
+        Schema::table('user_promocode', function (Blueprint $table) {
+            $table->foreignId('order_id')->constrained()->onDelete('cascade'); // الاوردر الذي تم تطبيق الكوبون عليه
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
+        Schema::table('user_promocode', function (Blueprint $table) {
             //
         });
     }

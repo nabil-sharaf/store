@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin as Adm;
+use App\Http\Controllers\Admin\OfferController;
+use App\Http\Controllers\Admin\PopupController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ShippingRateController;
 use App\Http\Middleware\Admin\CheckRole;
@@ -35,6 +37,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
             Route::post('/orders/check-coupon', [ Adm\OrderController::class, 'checkCoupon'])->name('check-promo-code');
             Route::post('/orders/update-coupon', [ Adm\OrderController::class, 'updateCopoun'])->name('update-promo-code');
             Route::get('/get-shipping-cost/{state}', [Adm\OrderController::class, 'getShippingCost'])->name('checkout.getShippingCost');
+            Route::get('/get-free-quantity', [Adm\OrderController::class, 'getFreeQuantity'])->name('orders.free-quantity');
 
 
         Route::middleware([CheckRole::class.":superAdmin"])->group(function () {
@@ -98,6 +101,14 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
             Route::post('/settings/shipping-rates/{id}', [ShippingRateController::class, 'update'])->name('shipping-rates.update');
             Route::post('/settings/shipping-rates', [ShippingRateController::class, 'store'])->name('shipping-rates.store');
             Route::delete('/settings/shipping-rates/{id}', [ShippingRateController::class, 'destroy'])->name('shipping-rates.destroy');
+
+//----------------------------- Offers Routes  ------------------------------
+
+            Route::get('offers/popup', [PopupController::class, 'index'])->name('popup.index');
+            Route::put('offers/popup', [PopupController::class, 'update'])->name('popup.update');
+
+            Route::resource('offers', OfferController::class);
+
         });
 
 });

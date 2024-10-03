@@ -90,7 +90,7 @@
                                     <p class="seconds_text">SECONDS</p></li>
                             </ul>
                         </div>
-                        <a class="btn-theme" href="{{route('products.all')}}">{{__('home.shop_now')}}</a>
+                        <a class="btn-theme" href="{{route('products.offers')}}">{{__('home.shop_now')}}</a>
                     </div>
                 </div>
             </div>
@@ -142,6 +142,12 @@
                                                         <div class="product-item">
                                                             <div class="product-thumb">
                                                                 <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
+
+                                                                <!-- عرض البادج -->
+                                                                @if($product->customer_offer)
+                                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                                                @endif
+
                                                                 <div class="product-action">
                                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
                                                                     <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
@@ -184,6 +190,10 @@
                                                         <div class="product-item">
                                                             <div class="product-thumb">
                                                                 <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
+                                                                <!-- عرض البادج -->
+                                                                @if($product->customer_offer)
+                                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                                                @endif
                                                                 <div class="product-action">
                                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
                                                                     <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
@@ -226,6 +236,10 @@
                                                         <div class="product-item">
                                                             <div class="product-thumb">
                                                                 <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
+                                                                <!-- عرض البادج -->
+                                                                @if($product->customer_offer)
+                                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                                                @endif
                                                                 <div class="product-action">
                                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
                                                                     <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
@@ -287,6 +301,10 @@
                                     <div class="product-thumb">
                                         <img src="{{ asset('storage/' . $product->images?->first()?->path) }}"
                                              alt="{{ $product->name }}">
+                                        <!-- عرض البادج -->
+                                        @if($product->customer_offer)
+                                            <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                        @endif
                                         <div class="product-action">
                                             <a class="action-quick-view-cart" href="#"
                                                onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
@@ -380,6 +398,15 @@
             border: 0; /* لون البوردر عند التركيز (focus) */
             box-shadow: 0 0 3px rgb(228, 107, 255) !important; /* إضافة تأثير ظل */
         }
+        .pop-up-button{
+            text-decoration: none;
+            color:white;
+        }
+        .pop-up-button:hover{
+            color:whitesmoke;
+        }
+
+
     </style>
 
 @endpush
@@ -389,18 +416,18 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
-                title: 'عرض خاص!',
-                text: 'استفد من خصم 20% على جميع المنتجات اليوم فقط!',
-                iconHtml: '<img src="{{asset('front/assets/img/logo.png')}}" width="200" height="120" />',
-                background: '#f0f0f0', // لون الخلفية
-                color: '#333333', // لون النص
-                confirmButtonText: 'عرض المنتجات',
-                confirmButtonColor: '#f379a7', // لون زر التأكيد
-                footer: '<a href="/offers" style="color: #f379a7;">شاهد المزيد من العروض</a>',
+                title: '{{ $popup->title }}',
+                html: '{!! $popup->text !!} ',
+                iconHtml: '<img src="{{ asset('storage/' . $popup->image_path) }}" style="width:200px; max-height:100px;" />',
+                background: '#f0f0f0',
+                color: '#333333',
+                confirmButtonText: '<a class="pop-up-button" href="{{ $popup->button_link }}">{{ $popup->button_text }}</a>',
+                confirmButtonColor: '#f379a7',
+                footer: '<a href="{{ $popup->footer_link_url }}" style="color: #f379a7;">{{ $popup->footer_link_text }}</a>',
                 customClass: {
-                    title: 'custom-title', // تخصيص نمط العنوان
-                    popup: 'custom-popup', // تخصيص نمط النافذة
-                    footer: 'custom-footer' // تخصيص نمط الـ footer
+                    title: 'custom-title',
+                    popup: 'custom-popup',
+                    footer: 'custom-footer'
                 }
             });
         });

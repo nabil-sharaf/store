@@ -87,7 +87,7 @@
     @endif
 
 
-    $('#inputInfo,#inputDescription').summernote({
+    $('#inputInfo,#inputDescription,#popup-text').summernote({
         placeholder: 'ادخل تفاصيل او معلومات المنتج هنا ',
         tabsize: 2,
         height: 110, // تعيين ارتفاع المحرر

@@ -80,6 +80,10 @@
                                     <div class="product-item">
                                         <div class="product-thumb">
                                             <img src="{{asset('storage/'.$product->images?->first()?->path)}}" alt="Image">
+                                            <!-- عرض البادج -->
+                                            @if($product->customer_offer)
+                                                <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                            @endif
                                             <div class="product-action">
                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 
@@ -124,7 +128,10 @@
                                         <div class="product-item">
                                             <div class="product-thumb">
                                                 <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-
+                                                <!-- عرض البادج -->
+                                                @if($product->customer_offer)
+                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                                @endif
                                                 <div class="product-action">
                                                     <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 
@@ -161,6 +168,10 @@
                                     <div class="product-item">
                                         <div class="product-thumb">
                                             <img src="{{asset('storage/'.$product->images?->first()?->path)}}" alt="Image">
+                                            <!-- عرض البادج -->
+                                            @if($product->customer_offer)
+                                                <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                            @endif
                                             <div class="product-action">
                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 

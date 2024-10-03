@@ -27,11 +27,16 @@
                     <div class="tab-pane fade show active" id="column-three" role="tabpanel" aria-labelledby="column-three-tab">
                         <div class="row">
                             @forelse($products as $product)
+                                @if($product->discount || $product->customer_offer)
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <!-- Start Product Item -->
                                     <div class="product-item">
                                         <div class="product-thumb">
                                             <img src="{{asset('storage/'.$product?->images?->first()?->path)}}" alt="Image">
+                                            <!-- عرض البادج -->
+                                            @if($product->customer_offer)
+                                                <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                            @endif
                                             <div class="product-action">
                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 
@@ -55,8 +60,9 @@
                                     </div>
                                     <!-- End Product Item -->
                                 </div>
+                                @endif
                             @empty
-                                <div> لا يوجد منتجات متاحة حاليا</div>
+                                <div> لا يوجد عروض  متاحة حاليا</div>
                             @endforelse
                         </div>
                     </div>
@@ -70,7 +76,10 @@
                                     <div class="product-item">
                                         <div class="product-thumb">
                                             <img src="{{ asset('storage/' . $product?->images?->first()?->path) }}" alt="{{ $product->name }}">
-
+                                            <!-- عرض البادج -->
+                                            @if($product->customer_offer)
+                                                <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                            @endif
                                             <div class="product-action">
                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 
@@ -107,6 +116,10 @@
                                     <div class="product-item">
                                         <div class="product-thumb">
                                             <img src="{{asset('storage/'.$product->images?->first()?->path)}}" alt="Image">
+                                            <!-- عرض البادج -->
+                                            @if($product->customer_offer)
+                                                <span class="badge badge-offer">{{ $product->customer_offer}}</span>
+                                            @endif
                                             <div class="product-action">
                                                 <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
 

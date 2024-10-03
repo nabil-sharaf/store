@@ -30,17 +30,17 @@
                                     $user = $order->user;
                                     $promocode = $order->promocode;
                                         $user_type = $user?->customer_type == 'goomla' ? 'جملة' : 'قطاعي';
-                                        $user_vip = $user?->is_vip ? ' - vip' : '';
+                                        $user_vip = $user?->isVip() ? ' - vip' : '';
                                 @endphp
                                 @if($user?->status)
                                     <option
-                                        data-vip-discount="{{ $user->is_vip ? $user->discount : 0 }}"
+                                        data-vip-discount="{{ $user->isVip() ? $user->discount : 0 }}"
                                         data-user-type="{{ $user->customer_type }}"
                                         value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                         {{ $user->name . ' (' . $user_type . $user_vip . ')' }}
                                     </option>
                                 @else
-                                    <option value="">Guest</option>
+                                    <option value=""  data-user-type="">Guest</option>
                                 @endif
                             </select>
                             @error('user_id')
@@ -96,6 +96,11 @@
                                                                class="form-control product-quantity"
                                                                value="{{ $orderDetail->product_quantity }}"
                                                                required min="1">
+                                                        <span class="free-quantity">
+                                                            @if($orderDetail->free_quantity > 0)
+                                                             + عدد <span class="free-quantity-number">{{$orderDetail->free_quantity}}</span> قطعة هدية
+                                                            @endif
+                                                        </span>
                                                     </div>
                                                 </div>
 
@@ -458,11 +463,32 @@
                 $('#applyCouponButton').removeAttr('disabled');
 
                 initializeSelect2();
+
+                // Get free Product Quantity
+                var $productField = $(this).closest('.product-field');
+                getFreeQuantity($productField,function(freeQuantity) {
+                    // هنا تستطيع استخدام الكمية المجانية كما تريد
+                    $productField.find('.free-quantity').html(
+                        freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
+                    );
+                });
+
             });
 
             $('#product-fields').on('input', '.product-quantity', function () {
 
                 updateTotal($(this).closest('.card-body'));
+
+                // Get free Product Quantity
+                var $productField = $(this).closest('.product-field');
+                getFreeQuantity($productField,function(freeQuantity) {
+                    // هنا تستطيع استخدام الكمية المجانية كما تريد
+                    $productField.find('.free-quantity').html(
+                        freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
+                    );
+                });
+
+
 
             });
 
@@ -712,7 +738,38 @@
 
 
             });
+
+            // الحصول على الكمية المجانية من المنتج اذا كان عليه عرض واستخدام الكولباك
+            function getFreeQuantity($productField,callback){
+
+                var userType = $('#inputUser').find(':selected').data('user-type'); // الحصول على نوع العميل من البيانات المخزنة
+                var productId = $productField.find('.product-select').val(); // ID المنتج
+                var quantity = $productField.find('.product-quantity').val(); // الكمية المدخلة
+
+                if (productId && quantity) {
+                    $.ajax({
+                        url: "{{route('admin.orders.free-quantity')}}",
+                        method: 'GET',
+                        data : {
+                            productId: productId,
+                            quantity: quantity,
+                            customer_type: userType,
+                        },
+                        success: function (response) {
+                            // نمرر الكمية المجانية للـ callback
+                            if (callback && typeof callback === 'function') {
+                                callback(response.free_quantity);
+                            }
+                        },
+                        error: function (xhr) {
+                            console.log(xhr)
+                            // alert('حدث خطأ أثناء جلب الكمية المجانية');
+                        }
+                    });
+                }
+            }
         });
+
         document.addEventListener('DOMContentLoaded', function () {
             const initialFormSection = document.getElementById('initialFormSection');
             const addressSection = document.getElementById('addressSection');

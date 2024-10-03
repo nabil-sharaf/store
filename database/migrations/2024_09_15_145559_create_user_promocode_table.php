@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // المستخدم الذي استخدم الكوبون
             $table->foreignId('promo_code_id')->constrained()->onDelete('cascade'); // الكوبون الذي تم استخدامه
+
             $table->timestamps();
         });
     }

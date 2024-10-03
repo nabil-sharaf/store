@@ -18,7 +18,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use NunoMaduro\Collision\Adapters\Phpunit\State;
 
 class OrderController extends Controller
 {
@@ -31,7 +30,7 @@ class OrderController extends Controller
 
         if(Auth::user() && Auth::user()->isVip()){
             $discount_percentage = (Auth::user()->discount)/100;
-            $vipDiscount = floatval(number_format(($totalPrice * $discount_percentage), 2));
+            $vipDiscount = round($totalPrice * $discount_percentage,2);
         }else{
             $vipDiscount = 0;
         }
@@ -152,11 +151,10 @@ class OrderController extends Controller
                 $all_order_quantity = 0;
 
                 $items = Cart::getContent();
-                $totalProductPrices = Cart::getTotal();
 
                 foreach($items as $item) {
                     $product = Product::find($item['id']);
-                    if ($product->quantity < $item['quantity']) {
+                    if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
                         throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
 
                     }
@@ -170,15 +168,32 @@ class OrderController extends Controller
                     $priceAfterDiscount = $product->discounted_price;
                     $priceForProduct = $priceAfterDiscount * $item['quantity'];
 
+                    // حساب كمية المنتجات المجانية اذا وجدت
+                    $quantity = $item['quantity'];
+                    $freeProducts = 0;
+
+                    // جلب نوع العميل
+                    $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
+
+                    // الحصول على العرض المناسب من الـ Accessor
+                    $offer = $product->getOfferDetails($customerOfferType);
+
+                    // التأكد إذا كان المنتج يحتوي على عرض
+                    if ($offer && $quantity >= $offer->offer_quantity) {
+                        // حساب عدد المنتجات المجانية التي يستحقها العميل
+                        $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
+                    }
+
                     $orderDetail = new OrderDetail();
                     $orderDetail->order_id = $order->id;
                     $orderDetail->product_id = $item['id'];
                     $orderDetail->Product_quantity = $item['quantity'];
+                    $orderDetail->free_quantity = $freeProducts;
                     $orderDetail->price = $priceAfterDiscount;
                     $orderDetail->save();
 
                     $totalPrice += $priceForProduct;
-                    $product->quantity -= $item['quantity'];
+                    $product->quantity -= ($item['quantity'] + $freeProducts);
                     $product->save();
                 }
 
@@ -244,6 +259,7 @@ class OrderController extends Controller
                     DB::table('user_promocode')->insert([
                         'user_id' => $user ? $user->id : null,
                         'promo_code_id' => $promoCode->id,
+                        'order_id'=>$order->id,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -370,13 +386,19 @@ class OrderController extends Controller
                 $totalPrice = 0;
                 $all_order_quantity = 0;
 
-                // حذف تفاصيل الطلب القديمة
-                OrderDetail::where('order_id', $order->id)->delete();
-
+                // استرجاع الكميات للمنتج  والكميات الفري اذا وجدت
+                foreach($order->orderDetails as $orderDetail){
+                    $product = $orderDetail->product;
+                    $product->quantity = $product->quantity + $orderDetail->product_quantity + ($orderDetail->free_quantity ?? 0);
+                    $product->save();
+                }
                 $items = Cart::getContent();
+
+                $order->orderDetails()->delete();
+
                 foreach ($items as $item) {
                     $product = Product::find($item['id']);
-                    if ($product->quantity < $item['quantity']) {
+                    if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
                         throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
                     }
 
@@ -389,18 +411,40 @@ class OrderController extends Controller
                     $priceAfterDiscount = $product->discounted_price;
                     $priceForProduct = $priceAfterDiscount * $item['quantity'];
 
+                    // حساب كمية المنتجات المجانية اذا وجدت
+                    $quantity = $item['quantity'];
+                    $freeProducts = 0;
+
+                    // جلب نوع العميل
+                    $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
+
+                    // الحصول على العرض المناسب من الـ Accessor
+                    $offer = $product->getOfferDetails($customerOfferType);
+
+                    // التأكد إذا كان المنتج يحتوي على عرض
+                    if ($offer && $quantity >= $offer->offer_quantity) {
+                        // حساب عدد المنتجات المجانية التي يستحقها العميل
+                        $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
+                    }
+
                     // إضافة تفاصيل جديدة للطلب
                     $orderDetail = new OrderDetail();
                     $orderDetail->order_id = $order->id;
                     $orderDetail->product_id = $item['id'];
                     $orderDetail->Product_quantity = $item['quantity'];
+                    $orderDetail->free_quantity = $freeProducts;
                     $orderDetail->price = $priceAfterDiscount;
                     $orderDetail->save();
 
                     $totalPrice += $priceForProduct;
-                    $product->quantity -= $item['quantity'];
+                    $product->quantity -= ($item['quantity'] + $freeProducts);
                     $product->save();
                 }
+
+                // حذف كود الخصم المرتبط بهذا الاوردر اذا وجد
+                DB::table('user_promocode')
+                    ->where('order_id', $order->id)
+                    ->delete();
 
                 // التحقق من كود الخصم
                 if ($request->filled('promo_code')) {
@@ -412,6 +456,15 @@ class OrderController extends Controller
 
                     if (!$promoCode) {
                         throw new \Exception('كود الخصم غير صالح أو منتهي الصلاحية.');
+                    }
+
+                    $promoCodeUsed = DB::table('user_promocode')
+                        ->where('user_id', $user ? $user->id : null)
+                        ->where('promo_code_id', $promoCode->id)
+                        ->exists();
+
+                    if ($promoCodeUsed) {
+                        throw new \Exception('لقد استخدمت هذا الكود من قبل.');
                     }
 
                     $promoDiscount = $promoCode->discount_type === 'percentage'
@@ -454,11 +507,19 @@ class OrderController extends Controller
 
                 // تحديث كود الخصم إذا كان موجودًا
                 if ($promoDiscount) {
-                    DB::table('user_promocode')->updateOrInsert(
-                        ['user_id' => $user ? $user->id : null, 'promo_code_id' => $promoCode->id],
-                        ['created_at' => now(), 'updated_at' => now()]
-                    );
+
+                    DB::table('user_promocode')->insert([
+                        'user_id' => $user ? $user->id : null,
+                        'promo_code_id' => $promoCode->id,
+                        'order_id' => $order->id,
+                        'created_at' => now(), // لا تنسى إضافة timestamps إذا كانت مطلوبة
+                        'updated_at' => now(),
+                    ]);
+
                     $order->update(['promocode_id' => $promoCode->id]);
+                }else{
+                    $order->update(['promocode_id' => null]);
+
                 }
 
                 Cart::clear();
@@ -514,21 +575,32 @@ class OrderController extends Controller
             ->where('end_date', '>=', now())
             ->first();
 
-
         // التحقق من وجود الكوبون
         if (!$coupon) {
-            return response()->json(['error' => 'كود الخصم غير صحيح أو غير صالح']);
+            return response()->json(['valid' => false, 'error' => 'كود الخصم غير صحيح أو غير صالح']);
         }
 
-        // تحقق إذا كان المستخدم قد استخدم الكوبون من قبل
+    // تحقق إذا كان المستخدم قد استخدم الكوبون من قبل
         $couponUsed = DB::table('user_promocode')
             ->where('user_id', $user_id)
             ->where('promo_code_id', $coupon->id)
-            ->exists();
+            ->first();
 
-        if ($couponUsed) {
-            return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون من قبل']);
+    // إذا كان المستخدم يقوم بتعديل الطلب
+        if(session()->has('editing_order_id')){
+            $editingOrderId = session('editing_order_id');
+
+            if($couponUsed && $couponUsed->order_id != $editingOrderId){
+                return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون في طلب آخر من قبل']);
+            }
+        } else {
+            // إذا كان المستخدم يقوم بإنشاء طلب جديد
+            if ($couponUsed) {
+                return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون من قبل']);
+            }
         }
+
+
 
         // التحقق من الحد الأدنى لقيمة الطلب
         if ($orderTotal < $coupon->min_amount) {

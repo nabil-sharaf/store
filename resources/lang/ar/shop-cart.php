@@ -13,7 +13,7 @@ return [
     'currency' => 'ج',
     'qty_title' => 'الكمية',
     'no_products' => 'لا توجد منتجات في سلة المشتريات',
-    'grand_total_title' => 'إجمالي السعر',
+    'grand_total_title' => 'إجمالي سعر المنتجات',
     'go_back' => 'العودة للصفحة السابقة',
     'calculate_shipping' => 'حساب الشحن',
     'bangladesh' => 'بنغلاديش',

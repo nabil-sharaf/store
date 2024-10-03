@@ -93,7 +93,7 @@
                         <!-- العناصر سيتم إضافتها ديناميكيًا بواسطة JavaScript -->
                     </ul>
                     <div class="cart-total">
-                        <h4>{{ __('aside_menu.total') }}: <span id="cart-total-price">$278.90</span></h4>
+                        <h4>{{ __('aside_menu.total') }}: <span id="cart-total-price">0.00</span></h4>
                     </div>
                     <div class="cart-checkout-btn">
                         @if(session()->has('editing_order_id'))

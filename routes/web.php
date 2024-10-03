@@ -25,11 +25,11 @@ Route::get('/product/details/{id}', [HomeController::class, 'productDetails'])->
 
 
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update'); // راوت تحديث الكمية في صفحة السلة
 Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
-Route::get('/cart/details', [CartController::class, 'getCartDetails'])->name('cart.details');
+Route::get('/cart/details', [CartController::class, 'getCartDetails'])->name('cart.details');  // تفاصيل السلة في السايد مينيو
 
-Route::get('/cart/shop-cart/{order?}',[CartController::class,'shoppingCartDetails'])->name('home.shop-cart');
+Route::get('/cart/shop-cart/{order?}',[CartController::class,'shoppingCartDetails'])->name('home.shop-cart'); //جلب المحتويات والتفاصيل  في صفحة السلة
 
 //---------------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/{category}', [CategoryController::class, 'categoryProducts'])->name('category.show');
-    Route::get('/products', [ProductController::class, 'index'])->name('products.all');
+    Route::get('/products-offers', [ProductController::class, 'index'])->name('products.offers');
     Route::get('/products/{product}', [ProductController::class, 'showProduct'])->name('product.show');
     Route::get('/search', [ProductController::class, 'search'])->name('product.search');
     Route::get('/search/filter', [ProductController::class, 'filterProducts'])->name('products.filter');

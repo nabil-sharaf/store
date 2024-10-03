@@ -25,15 +25,18 @@
                         <label for="inputUser">اختر العميل</label>
                         <select class="form-control select2 @error('user_id') is-invalid @enderror" id="inputUser"
                                 name="user_id">
-                            <option value="">  Guest- زائر </option>
+                            <option value="" data-user-type="">
+                                Guest- زائر
+                            </option>
+
                             @foreach($users as $user)
                                 @php
                                     $user_type = $user->customer_type == 'goomla' ? 'جملة' : 'قطاعي';
-                                    $user_vip = $user->is_vip ? ' - vip' : '';
+                                    $user_vip = $user->isVip() ? ' - vip' : '';
                                 @endphp
                                 @if($user->status)
                                     <option
-                                        data-vip-discount="{{ $user->is_vip ? $user->discount : 0 }}"
+                                        data-vip-discount="{{ $user->isVip() ? $user->discount : 0 }}"
                                         data-user-type="{{ $user->customer_type }}"
                                         value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                         {{ $user->name . ' (' . $user_type . $user_vip . ')' }}
@@ -74,6 +77,7 @@
                                             <label for="product-quantity-0">الكمية المطلوبة</label>
                                             <input type="number" id="product-quantity-0" name="products[0][quantity]"
                                                    class="form-control product-quantity" required min="1" value="1">
+                                            <span class="free-quantity"></span>
                                         </div>
                                         <div class="col-md-6 col-lg-4 mb-3">
                                             <label for="product-current-quantity-0">الكمية المتاحة للمنتج</label>
@@ -238,6 +242,7 @@
                     <div class="form-group">
                         <label for="product-quantity-${productCount}">الكمية المطلوبة</label>
                         <input type="number" id="product-quantity-${productCount}" name="products[${productCount}][quantity]" class="form-control product-quantity" required min="1" value="1">
+                          <span class="free-quantity"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -335,13 +340,32 @@
 
                 updateTotal(productBody);
                 initializeSelect2();
+
+                var $productField = $(this).closest('.product-field');
+                getFreeQuantity($productField,function(freeQuantity) {
+                    // هنا تستطيع استخدام الكمية المجانية كما تريد
+                    $productField.find('.free-quantity').html(
+                        freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
+                    );
+                });
             });
 
             $('#product-fields').on('input', '.product-quantity', function () {
                 $('#promo_code').removeAttr('readonly');
                 $('#applyCouponButton').removeAttr('disabled');
                 $('#copounDiscountAmount').val('0');
+
+
                 updateTotal($(this).closest('.card-body'));
+
+                var $productField = $(this).closest('.product-field');
+
+                getFreeQuantity($productField,function(freeQuantity) {
+                    // هنا تستطيع استخدام الكمية المجانية كما تريد
+                    $productField.find('.free-quantity').html(
+                        freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
+                    );
+                });
 
 
             });
@@ -436,6 +460,7 @@
                     $('#state').val('');
                     $('#full_name').val('');
                 }
+
             });
 
             function updateUserTypeAndPrices() {
@@ -469,6 +494,14 @@
 
                     // تحديث إجمالي السعر
                     updateTotal(productBody);
+
+                    getFreeQuantity(productBody,function(freeQuantity) {
+                        // هنا تستطيع استخدام الكمية المجانية كما تريد
+                        productBody.find('.free-quantity').html(
+                            freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
+                        );
+                    });
+
                 });
             }
 
@@ -667,6 +700,36 @@
 
             });
 
+
+            // الحصول على الكمية المجانية من المنتج اذا كان عليه عرض واستخدام الكولباك
+            function getFreeQuantity($productField,callback){
+
+                var userType = $('#inputUser').find(':selected').data('user-type'); // الحصول على نوع العميل من البيانات المخزنة
+                var productId = $productField.find('.product-select').val(); // ID المنتج
+                var quantity = $productField.find('.product-quantity').val(); // الكمية المدخلة
+
+                if (productId && quantity) {
+                    $.ajax({
+                        url: "{{route('admin.orders.free-quantity')}}",
+                        method: 'GET',
+                        data : {
+                            productId: productId,
+                            quantity: quantity,
+                            customer_type: userType,
+                        },
+                        success: function (response) {
+                            // نمرر الكمية المجانية للـ callback
+                            if (callback && typeof callback === 'function') {
+                                callback(response.free_quantity);
+                            }
+                        },
+                        error: function (xhr) {
+                            console.log(xhr)
+                            // alert('حدث خطأ أثناء جلب الكمية المجانية');
+                        }
+                    });
+                }
+            }
         });
 
         // اخفاء واظهار سيكشن العنوان واضافة المنتجات والتبديل بينهما
@@ -752,5 +815,7 @@
                 width: 100%;
             }
         }
+
+
     </style>
 @endpush

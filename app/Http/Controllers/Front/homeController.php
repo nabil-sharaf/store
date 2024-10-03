@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Category;
+use App\Models\Admin\Popup;
 use App\Models\Admin\Product;
 use App\Models\Admin\Setting;
 use App\Models\Admin\SiteImage;
@@ -25,7 +26,8 @@ class homeController extends Controller
         $trendingProducts = Product::where('is_trend',1)->orderBy('updated_at', 'desc')->take(8)->get();
 
         $siteImages = SiteImage::first();
-        return view('front.index', compact('categories','bestProducts','newProducts','siteImages','trendingProducts'));
+        $popup = Popup::first();
+        return view('front.index', compact('categories','bestProducts','newProducts','siteImages','trendingProducts','popup'));
     }
 
     public function productDetails($id)

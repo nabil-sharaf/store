@@ -127,7 +127,13 @@ if(auth()->user()){
                                 <div class="your-order-product">
                                     <ul>
                                         @foreach($items as $item)
+                                            @if($item->attributes['free_quantity'] > 0 )
+                                            <li> {{ $item->quantity }} × {{ $item->name }} &nbsp; +  <span class="free-quantity-number"> {{$item->attributes['free_quantity']}} <span class="free-quantity">  قطعة مجانا </span></span>
+                                                <span>{{ $item->price * $item->quantity }} {{ __('checkout.currency') }}</span>
+                                            </li>
+                                            @else
                                             <li>{{ $item->quantity }} × {{ $item->name }} <span>{{ $item->price * $item->quantity }} {{ __('checkout.currency') }}</span></li>
+                                            @endif
                                         @endforeach
                                     </ul>
                                 </div>
@@ -154,7 +160,7 @@ if(auth()->user()){
                                 @endif
 
                                 <div class="your-order-total">
-                                    <h3>{{ __('checkout.total') }} <span id="totalAfterDiscount" class="total-amount">{{ floatval($totalPrice) - floatval($vipDiscount) }} {{ __('checkout.currency') }}</span></h3>
+                                    <h3>{{ __('checkout.total') }} <span id="totalAfterDiscount" class="total-amount">{{ floatval($totalPrice)}} {{ __('checkout.currency') }}</span></h3>
                                 </div>
                             </div>
 {{--                            <div class="payment-method">--}}
@@ -168,7 +174,8 @@ if(auth()->user()){
 {{--                            </div>--}}
                             <div class="Place-order">
                                 @if(session()->has('editing_order_id'))
-                                    <button type="submit" id="submit-order" class="place-order-btn btn btn-block btn-lg">{{ __('checkout.edit_order') }}</button>
+                                    <P class="copoun-notice">  *  إذا كان لديك كوبون خصم ادخله قبل تأكيد التعديل  </P>
+                                    <button type="submit" id="submit-order" class="place-order-btn btn btn-block btn-lg copoun-notice-button">{{ __('checkout.edit_order') }}</button>
                                 @else
                                      <button type="submit" id="submit-order" class="place-order-btn btn btn-block btn-lg">{{ __('checkout.place_order') }}</button>
                                 @endif
@@ -214,12 +221,46 @@ if(auth()->user()){
                 font-weight: bold !important; /* جعل الخط سميك */
                 color: #e67e22 !important; /* لون مميز للمبلغ */
             }
+            .copoun-notice{
+                color: red;
+                font-size: 13px;
+                margin-top:10px !important;
+                margin-bottom:5px !important;
+                font-weight: bold;
+            }
+            .copoun-notice-button{
+                margin-top:10px;
+            }
     </style>
 @endpush
 
 @push('scripts')
     <script>
         $(document).ready(function() {
+
+            // دالة لحساب الإجمالي بعد الخصومات والشحن
+            function recalculateTotal(orderTotal, vipDiscount, couponDiscount, shippingCost = 0) {
+                var total = orderTotal;
+
+                if (vipDiscount) {
+                    total -= vipDiscount;
+                }
+
+                if (couponDiscount) {
+                    total -= couponDiscount;
+                }
+
+                // إضافة تكلفة الشحن
+                total += shippingCost;
+
+                return total.toFixed(2);
+            }
+
+            const stateSelect = $('select[name="state"]');
+            // تحقق مما إذا كان المستخدم مسجلاً ولديه محافظة مسجلة
+            const userState = stateSelect.data('user-state'); // افترض أن الحقل يحتفظ بالمحافظة المخزنة
+
+            // -------------------  تطبيق الكوبون --------------------
             $('#applyCouponForm').on('submit', function(e) {
                 e.preventDefault();
 
@@ -253,20 +294,30 @@ if(auth()->user()){
 
                             $('#copoun-discount').show();
                             $('#copoun-discount-value').text(parseFloat(data.discount).toFixed(2));
-                            // يمكنك تحديث إجمالي الطلب بعد الخصم هنا مثلاً:
-                            var newTotal = (orderTotal - data.discount - {{$vipDiscount}}).toFixed(2);
+
+                            var vipDiscount = {{$vipDiscount}} || 0;
+                            var couponDiscount = data.discount || 0;
+
+                            var selectedState = $('select[name="state"]').val();
+                            if(selectedState){
+                            calculateShippingCost(selectedState);
+                            }
+
+                            // حساب الإجمالي الجديد باستخدام الدالة
+                            var newTotal = recalculateTotal(orderTotal, vipDiscount, couponDiscount);
                             $('#totalAfterDiscount').text(newTotal);
-                        }else if (data.error) {
+                        } else if (data.error) {
                             $('#couponMessage').html('<p style="color: red;">' + data.error + '</p>');
+                            $('#couponCode').val('');
                         }
                     },
                     error: function(xhr) {
-                        toastr.error('حدث خطأ تأكد من الكوبون وحاول مرة أخرى')
-
+                        toastr.error('حدث خطأ تأكد من الكوبون وحاول مرة أخرى');
                     }
                 });
             });
 
+            // -------------------  إرسال الطلب --------------------
             $('#submit-order').on('click', function(event) {
                 event.preventDefault();
 
@@ -282,7 +333,8 @@ if(auth()->user()){
                 var submitButton = $('#submit-order');
                 submitButton.prop('disabled', true).text('جاري الإرسال...');
 
-                var method =  @if(session()->has('editing_order_id')) "PUT" @else "POST" @endif;
+                var method = @if(session()->has('editing_order_id')) "PUT" @else "POST" @endif;
+
                 // إرسال البيانات المجمعة عبر AJAX
                 $.ajax({
                     url: $('#checkout-form').attr('action'), // الرابط الموجه للفورم
@@ -290,83 +342,81 @@ if(auth()->user()){
                     data: formData,
                     success: function(response) {
                         if (response.success) {
-
-                            window.location.href =response.route;
+                            window.location.href = response.route;
                         } else {
-                            toastr('خطأ: ' + response.message); // عرض رسالة الخطأ
+                            toastr.error('خطأ: ' + response.message); // عرض رسالة الخطأ
                             submitButton.prop('disabled', false).text('اتمام الطلب');
-
                         }
                     },
                     error: function(response) {
                         if (response.responseJSON && response.responseJSON.message) {
                             toastr.error(response.responseJSON.message);
-                            console.log(response)
+                            console.log(response);
                         } else {
                             alert('حدث خطأ حاول مرة أخرى.');
                         }
                         @if(isset($order?->id))
-                            submitButton.prop('disabled', false).text('تأكيد التعديل');
+                        submitButton.prop('disabled', false).text('تأكيد التعديل');
                         @else
-                             submitButton.prop('disabled', false).text('اتمام الطلب');
+                        submitButton.prop('disabled', false).text('اتمام الطلب');
                         @endif
-
                     }
                 });
             });
 
-             // -------------------  حساب تكلفة الشحن --------------------
+            // -------------------  حساب تكلفة الشحن --------------------
 
-                const stateSelect = $('select[name="state"]');
-                const totalAfterDiscount = $('#totalAfterDiscount');
-                const totalAmount = parseFloat(totalAfterDiscount.text());
+            // const stateSelect = $('select[name="state"]');
 
-                // إنشاء عنصر لتكلفة الشحن بالتنسيق المناسب
-                const shippingCostElement = $('<div class="your-order-subtotal"><h3>تكلفة الشحن: <span id="shipping-cost">---</span></h3></div>');
-                totalAfterDiscount.closest('.your-order-info-wrap').find('.your-order-total').before(shippingCostElement);
+            const totalAfterDiscount = $('#totalAfterDiscount');
 
-                // وظيفة لحساب تكلفة الشحن
-                function calculateShippingCost(state) {
-                    if (!state) {
-                        $('#shipping-cost').text('غير متوفر');
-                        return;
-                    }
+            const totalAmount = parseFloat(totalAfterDiscount.text());
 
-                    $.ajax({
-                        url: "{{route('checkout.getShippingCost',':state')}}".replace(':state',state),
-                        method: 'GET',
-                        success: function(response) {
-                            const shippingCost = response.shipping_cost;
-                            if (shippingCost == 0 || !shippingCost) {
-                                $('#shipping-cost').text(' شحن مجاني');
-                            } else {
-                                $('#shipping-cost').text(shippingCost + ' {{ __('checkout.currency') }}');
-                            }
+            // إنشاء عنصر لتكلفة الشحن بالتنسيق المناسب
+            const shippingCostElement = $('<div class="your-order-subtotal"><h3>تكلفة الشحن: <span id="shipping-cost">---</span></h3></div>');
+            totalAfterDiscount.closest('.your-order-info-wrap').find('.your-order-total').before(shippingCostElement);
 
-                            // تحديث إجمالي المبلغ بعد إضافة تكلفة الشحن
-                            const updatedTotal = (totalAmount + (shippingCost ? parseFloat(shippingCost) : 0)).toFixed(2);
-                            totalAfterDiscount.html(updatedTotal + ' <span>{{ __("checkout.currency") }}</span>');              },
+            // وظيفة لحساب تكلفة الشحن
+            function calculateShippingCost(state) {
+                if (!state) {
+                    $('#shipping-cost').text('غير متوفر');
+                    return;
+                }
 
-                        error: function() {
-                            $('#shipping-cost').text('خطأ في جلب تكلفة الشحن');
+                $.ajax({
+                    url: "{{route('checkout.getShippingCost', ':state')}}".replace(':state', state),
+                    method: 'GET',
+                    success: function(response) {
+                        const shippingCost = response.shipping_cost;
+                        if (shippingCost == 0 || !shippingCost) {
+                            $('#shipping-cost').text(' شحن مجاني');
+                        } else {
+                            $('#shipping-cost').text(shippingCost + ' {{ __("checkout.currency") }}');
                         }
-                    });
-                }
 
-                // تحقق مما إذا كان المستخدم مسجلاً ولديه محافظة مسجلة
-                const userState = stateSelect.data('user-state'); // افترض أن الحقل يحتفظ بالمحافظة المخزنة
-                if (userState) {
-                    // حساب تكلفة الشحن بناءً على المحافظة المسجلة
-                    calculateShippingCost(userState);
-                }
-
-                // حدث عند تغيير المحافظة
-                stateSelect.change(function() {
-                    const state = $(this).val();
-                    calculateShippingCost(state);
-
-
+                        // تحديث إجمالي المبلغ بعد إضافة تكلفة الشحن
+                        var updatedTotal = recalculateTotal(totalAmount, {{$vipDiscount}} || 0, parseFloat($('#copoun-discount-value').text()) || 0, parseFloat(shippingCost));
+                        totalAfterDiscount.html(updatedTotal + ' <span>{{ __("checkout.currency") }}</span>');
+                    },
+                    error: function() {
+                        $('#shipping-cost').text('خطأ في جلب تكلفة الشحن');
+                    }
                 });
+            }
+
+                 if (userState) {
+                // حساب تكلفة الشحن بناءً على المحافظة المسجلة
+                calculateShippingCost(userState);
+                 recalculateTotal();
+            }
+
+            // حدث عند تغيير المحافظة
+            stateSelect.change(function() {
+                const state = $(this).val();
+                calculateShippingCost(state);
+                recalculateTotal();
+            });
+
         });
 
 

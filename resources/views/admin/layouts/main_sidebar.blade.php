@@ -122,6 +122,36 @@
               </li>
             </ul>
           </li>
+
+          <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/offers*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p class='font-weight-bold'>
+                عروض المنتجات
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.offers.index') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/offers') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>كل عروض المنتجات</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.offers.create') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/offers/create') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>إضافة عرض</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.popup.index') }}" class="nav-link {{ Request::is(app()->getLocale() .'/admin/offers/popup') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p> pop-up الرئيسية</p>
+                </a>
+              </li>
+            </ul>
+          </li>
           <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/orders*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-chart-pie"></i>

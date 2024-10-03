@@ -32,7 +32,7 @@ class OrderController extends Controller
 
         if ($request->has('sort')) {
             $query->orderBy($request->sort, 'asc');
-        }else{
+        } else {
             $query->orderBy('id', 'desc');
 
         }
@@ -47,7 +47,7 @@ class OrderController extends Controller
         $users = User::all();
         $products = Product::with('discount')->get();
         $states = ShippingRate::all();
-        return view('admin.orders.create', compact('users', 'products','states'));
+        return view('admin.orders.create', compact('users', 'products', 'states'));
     }
 
     public function store(OrderRequest $request)
@@ -68,37 +68,42 @@ class OrderController extends Controller
                 if ($isGuest) {
                     // حفظ معلومات الزائر في الطلب
                     $guest = new GuestAddress();
-                    $guest->full_name =  $request->full_name;
-                    $guest->phone     =  $request->phone;
-                    $guest->address =  $request->address;
-                    $guest->city    =  $request->city;
-                    $guest->state    =  $request->state;
+                    $guest->full_name = $request->full_name;
+                    $guest->phone = $request->phone;
+                    $guest->address = $request->address;
+                    $guest->city = $request->city;
+                    $guest->state = $request->state;
                     $guest->save();
                     $order->guest_address_id = $guest->id;
                 } else {
                     $order->user_id = $user->id;
                     // انشاء  أو تحديث عنوان المستخدم
-                   $userAddress =  UserAddress::updateOrCreate(
+                    $userAddress = UserAddress::updateOrCreate(
 
                         ['user_id' => $user->id],
                         [
                             'full_name' => $request->full_name,
-                            'phone'     => $request->phone,
-                            'address'   => $request->address,
-                            'city'      => $request->city,
-                            'state'     => $request->state,
+                            'phone' => $request->phone,
+                            'address' => $request->address,
+                            'city' => $request->city,
+                            'state' => $request->state,
                         ]
                     );
                     $order->user_address_id = $userAddress->id;
 
 
-
                 }
+
+                // إضافة تكلفة الشحن
+                $shippingCost = ShippingRate::where('state', $request->state)->first()->shipping_cost;
+
+                $order->shipping_cost = $shippingCost;
 
                 $order->total_price = 0;
                 $order->vip_discount = 0;
                 $order->promo_discount = 0;
                 $order->total_after_discount = 0;
+                $order->final_total = 0;
                 $order->save();
 
                 $totalPrice = 0;
@@ -106,8 +111,25 @@ class OrderController extends Controller
 
 
                 foreach ($request->products as $productData) {
+
                     $product = Product::find($productData['id']);
-                    if ($product->quantity < $productData['quantity']) {
+
+                    $freeProducts = 0;
+                    $quantity = $productData['quantity'];
+
+                    // جلب نوع العميل
+                    $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
+
+                    // الحصول على العرض المناسب من الـ Accessor
+                    $offer = $product->getOfferDetails($customerOfferType);
+
+                    // التأكد إذا كان المنتج يحتوي على عرض
+                    if ($offer && $quantity >= $offer->offer_quantity) {
+                        // حساب عدد المنتجات المجانية التي يستحقها العميل
+                        $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
+                    }
+
+                    if ($product->quantity < ($productData['quantity'] + $freeProducts)) {
                         throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
                     }
 
@@ -131,15 +153,17 @@ class OrderController extends Controller
                     $priceAfterDiscount = $productPrice - $discountAmount;
                     $priceForProduct = $priceAfterDiscount * $productData['quantity'];
 
+
                     $orderDetail = new OrderDetail();
                     $orderDetail->order_id = $order->id;
                     $orderDetail->product_id = $productData['id'];
                     $orderDetail->Product_quantity = $productData['quantity'];
                     $orderDetail->price = $priceAfterDiscount;
+                    $orderDetail->free_quantity = $freeProducts;
                     $orderDetail->save();
 
                     $totalPrice += $priceForProduct;
-                    $product->quantity -= $productData['quantity'];
+                    $product->quantity -= ($productData['quantity'] + $freeProducts);
                     $product->save();
                 }
 
@@ -188,16 +212,19 @@ class OrderController extends Controller
                     }
                 }
 
+
                 $order->total_price = $totalPrice;
                 $order->vip_discount = $vip_discount;
                 $order->promo_discount = $promoDiscount;
                 $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
+                $order->final_total = $totalPrice - $vip_discount - $promoDiscount + $shippingCost;
                 $order->save();
 
                 if ($promoDiscount) {
                     DB::table('user_promocode')->insert([
                         'user_id' => $user ? $user->id : null,
                         'promo_code_id' => $promoCode->id,
+                        'order_id' => $order->id,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -239,13 +266,13 @@ class OrderController extends Controller
 
 
             $products = Product::all();
-            $order->load('orderDetails','user','promocode','userAddress','guestAddress');
-            $user  = $order->user;
+            $order->load('orderDetails', 'user', 'promocode', 'userAddress', 'guestAddress');
+            $user = $order->user;
             $address = $order->userAddress ?? $order->guestAddress;
 
             $states = ShippingRate::all();
 
-            return view('admin.orders.edit', compact('order', 'products','user','address','states'));
+            return view('admin.orders.edit', compact('order', 'products', 'user', 'address', 'states'));
         }
         return redirect(route('admin.orders.index'));
     }
@@ -274,50 +301,65 @@ class OrderController extends Controller
                 // Restore previous quantities
                 foreach ($order->orderDetails as $orderDetail) {
                     $product = $orderDetail->product;
-                    $product->quantity += $orderDetail->product_quantity;
+                    $product->quantity += ($orderDetail->product_quantity + $orderDetail->free_quantity);
                     $product->save();
                 }
 
                 if ($isGuest) {
                     // حفظ معلومات الزائر في الطلب
                     $guest = new GuestAddress();
-                    $guest->full_name =  $request->full_name;
-                    $guest->phone     =  $request->phone;
-                    $guest->address =  $request->address;
-                    $guest->city    =  $request->city;
-                    $guest->state    =  $request->state;
+                    $guest->full_name = $request->full_name;
+                    $guest->phone = $request->phone;
+                    $guest->address = $request->address;
+                    $guest->city = $request->city;
+                    $guest->state = $request->state;
                     $guest->save();
                     $order->guest_address_id = $guest->id;
                 } else {
                     $order->user_id = $user->id;
                     // انشاء  أو تحديث عنوان المستخدم
-                   $userAddress = UserAddress::updateOrCreate(
+                    $userAddress = UserAddress::updateOrCreate(
 
                         ['user_id' => $user->id],
                         [
                             'full_name' => $request->full_name,
-                            'phone'     => $request->phone,
-                            'address'   => $request->address,
-                            'city'      => $request->city,
-                            'state'     => $request->state,
+                            'phone' => $request->phone,
+                            'address' => $request->address,
+                            'city' => $request->city,
+                            'state' => $request->state,
                         ]
                     );
                     $order->user_address_id = $userAddress->id;
-
 
 
                 }
 
                 $order->orderDetails()->delete();
                 $totalPrice = 0;
-                $all_order_quantity=0;
+                $all_order_quantity = 0;
 
                 foreach ($request->products as $productData) {
                     $product = Product::findOrFail($productData['id']);
-                    if ($product->quantity < $productData['quantity']) {
-                        throw new \Exception('الكمية المطلوبة غير متوفرة للمنتج: ' . $product->name);
+
+                    // Get free Quantities if exist
+                    $freeProducts = 0;
+                    $quantity = $productData['quantity'];
+                    // جلب نوع العميل
+                    $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
+
+                    // الحصول على العرض المناسب من الـ Accessor
+                    $offer = $product->getOfferDetails($customerOfferType);
+
+                    // التأكد إذا كان المنتج يحتوي على عرض
+                    if ($offer && $quantity >= $offer->offer_quantity) {
+                        // حساب عدد المنتجات المجانية التي يستحقها العميل
+                        $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
                     }
 
+
+                    if ($product->quantity < ($productData['quantity'] + $freeProducts)) {
+                        throw new \Exception('الكمية المطلوبة غير متوفرة للمنتج: ' . $product->name);
+                    }
 
 
                     if ($productData['quantity'] < 1) {
@@ -325,8 +367,7 @@ class OrderController extends Controller
                     }
 
 
-
-                    $priceAfterDiscount =$product->discounted_price;
+                    $priceAfterDiscount = $product->discounted_price;
 
                     $priceForProduct = $priceAfterDiscount * $productData['quantity'];
 
@@ -336,11 +377,12 @@ class OrderController extends Controller
                     $orderDetail->product_id = $productData['id'];
                     $orderDetail->Product_quantity = $productData['quantity'];
                     $orderDetail->price = $priceAfterDiscount;
+                    $orderDetail->free_quantity = $freeProducts;
                     $orderDetail->save();
 
                     $totalPrice += $priceForProduct;
 
-                    $product->quantity -= $productData['quantity'];
+                    $product->quantity -= ($productData['quantity'] + $freeProducts);
                     $product->save();
 
                     // اضافة الكمية إلى اجمالي عدد القطع في الاوردر
@@ -360,7 +402,6 @@ class OrderController extends Controller
                     }
 
 
-
                     if ($totalPrice < $promoCode->min_amount) {
                         throw new \Exception('يجب أن يكون إجمالي الطلب أكبر من ' . $promoCode->min_amount . ' لاستخدام هذا الكوبون.');
                     }
@@ -373,9 +414,9 @@ class OrderController extends Controller
                 }
 
                 // حساب خصم ال vip
-                if($request->user_id){
+                if ($request->user_id) {
                     $vip_discount = $this->calculateDiscount($user, $totalPrice);
-                }else{
+                } else {
                     $vip_discount = 0;
                 }
 
@@ -385,7 +426,7 @@ class OrderController extends Controller
                 // شرط للحد الأدنى للكمية إذا كان العميل جملة
                 $minQuantity = Setting::getValue('goomla_min_number');
 
-                if($request->user_id){
+                if ($request->user_id) {
                     if ($user?->customer_type == 'goomla') {
                         if ($all_order_quantity < $minQuantity && $totalPrice < $minProductsPrice) {
                             throw new \Exception("يجب أن يكون عدد القطع على الأقل " . $minQuantity . " أو يكون إجمالي السعر على الأقل " . $minProductsPrice . " لعميل الجملة.");
@@ -393,10 +434,17 @@ class OrderController extends Controller
                     }
                 }
 
+                // إضافة تكلفة الشحن
+                $shippingCost = ShippingRate::where('state', $request->state)->first()->shipping_cost;
+
+                $order->shipping_cost = $shippingCost;
+
                 $order->total_price = $totalPrice;
                 $order->vip_discount = $vip_discount;
                 $order->promo_discount = $promoDiscount;
                 $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
+                $order->final_total = $totalPrice - $vip_discount - $promoDiscount + $shippingCost;
+
                 $order->save();
 
                 return response()->json([
@@ -414,9 +462,9 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load('orderDetails', 'user','userAddress','guestAddress');
+        $order->load('orderDetails', 'user', 'userAddress', 'guestAddress');
         $address = $order->userAddress ?? $order->guestAddress;
-        return view('admin.orders.show', compact('order','address'));
+        return view('admin.orders.show', compact('order', 'address'));
     }
 
 
@@ -433,10 +481,10 @@ class OrderController extends Controller
         if ($request->input('status') == 4) {
 
             foreach ($order->orderDetails as $orderDetail) {
-            $product = $orderDetail->product;
-            $product->quantity += $orderDetail->product_quantity;
-            $product->save();
-        }
+                $product = $orderDetail->product;
+                $product->quantity += $orderDetail->product_quantity;
+                $product->save();
+            }
 
         }
 
@@ -461,7 +509,7 @@ class OrderController extends Controller
         $orderTotal = $request->input('total_order'); // إجمالي الطلب
         $user_id = $request->input('user_id');
 
-        if(!$user_id){
+        if (!$user_id) {
             return response()->json(['error' => 'كوبونات الخصم للأعضاء المسجلين فقط'], 400);
         }
 
@@ -507,6 +555,7 @@ class OrderController extends Controller
             'discount' => $discount,
         ]);
     }
+
     public function updateCopoun(Request $request)
     {
 
@@ -553,7 +602,32 @@ class OrderController extends Controller
         return response()->json(['shipping_cost' => $shippingCost]);
     }
 
+    public function getFreeQuantity(Request $request)
+    {
+        $id = $request->input('productId');
+        $quantity = $request->input('quantity'); // الكمية المدخلة من المستخدم
 
+        // جلب نوع العميل
+        $customerOfferType = $request->input('customer_type') ?? 'regular'; // نوع العميل الافتراضي هو "reqular"
+
+        $product = Product::findOrfail($id);
+        $freeProducts = 0;
+
+
+        // الحصول على العرض المناسب من الـ Accessor
+        $offer = $product->getOfferDetails($customerOfferType);
+
+        // التأكد إذا كان المنتج يحتوي على عرض
+        if ($offer && $quantity >= $offer->offer_quantity) {
+            // حساب عدد المنتجات المجانية التي يستحقها العميل
+            $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
+        }
+
+        return response()->json(['success' => true,
+            'message' => 'quantity fetched successfully',
+            'free_quantity' => $freeProducts,
+        ]);
+    }
 }
 
 

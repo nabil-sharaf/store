@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::paginate(8);
+        $products = Product::paginate(20);
         return view('front.products',compact('products'));
     }
     public function showProduct(Product $product)
@@ -26,6 +26,7 @@ class ProductController extends Controller
         session([
             'search' => $request->input('search'), // حفظ قيمة البحث في الجلسة
         ]);
+
         $query = $request->input('search');
 
         // البحث في المنتجات
@@ -64,14 +65,6 @@ class ProductController extends Controller
             ;
         }
 
-//        // تطبيق الفلترة بناءً على السعر
-//        if ($request->filled('min_price')) {
-//            $query->where('price', '>=', $request->min_price);
-//        }
-//
-//        if ($request->filled('max_price')) {
-//            $query->where('price', '<=', $request->max_price);
-//        }
 
         // استرجاع المنتجات
         $products = $query->get();
@@ -91,22 +84,21 @@ class ProductController extends Controller
 
         // تطبيق الترتيب بناءً على اختيار المستخدم
         switch ($request->sort_by) {
+            // الفرز هنا سيتم من خلال الاكسيسورز وليس قيمة مباشرة في الداتابيز
             case 'price-asc':
-                $query->orderBy('price', 'asc');
+                $products = $products->sortBy('discounted_price'); // فرز حسب السعر المخصوم تصاعديًا
                 break;
             case 'price-desc':
-                $query->orderBy('price', 'desc');
+                $products = $products->sortByDesc('discounted_price'); // فرز حسب السعر المخصوم تنازليًا
                 break;
             case 'latest':
-                $query->orderBy('created_at', 'desc');
+                $products = $products->sortByDesc('created_at'); // فرز حسب أحدث المنتجات
                 break;
             default:
-                $query->orderBy('id', 'asc');
+                $products = $products->sortBy('id'); // الفرز الافتراضي
                 break;
         }
 
-        // استرجاع المنتجات بعد الفلترة
-//        $products = $query->get();
 
         // الاحتفاظ بالنتائج واستخدام redirect()->back()
         return redirect()->back()->with('filteredProducts', $products);
