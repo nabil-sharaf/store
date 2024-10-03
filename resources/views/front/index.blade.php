@@ -413,7 +413,7 @@
 
 @push('scripts')
     <script>
-
+        @if(isset($popup))
         document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 title: '{{ $popup->title }}',
@@ -431,6 +431,7 @@
                 }
             });
         });
+        @endif
 
         $(document.ready(function () {
             $('.slick-prev, .slick-next').css('display', 'block');
