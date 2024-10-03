@@ -35,7 +35,7 @@ class PromoCodeController extends Controller
             'discount_type' => 'required|in:fixed,percentage',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
-            'min_amount' => 'nullable|numeric|min:0',
+            'min_amount' => 'numeric|min:0',
             'active' => 'nullable|boolean',
         ]);
 
@@ -60,7 +60,7 @@ class PromoCodeController extends Controller
             'discount_type' => 'required|in:fixed,percentage',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
-            'min_amount' => 'nullable|numeric|min:0',
+            'min_amount' => 'min:0|numeric',
             'active' => 'nullable|in:0,1',
         ]);
 

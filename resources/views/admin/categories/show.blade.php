@@ -49,8 +49,7 @@
                     <div class="card-body">
                         @if($category->parent)
                             <p><strong>الاسم:</strong> <a href="{{ route('admin.categories.show', $category->parent->id) }}">{{ $category->parent->name }}</a></p>
-                            <p><strong>الوصف:</strong> {{ Str::limit(strip_tags($category->parent->description), 100) }}</p>
-                        @else
+                            <p><strong>الوصف:</strong> {{ Str::limit(strip_tags($category->parent->description), 100) }}</p>                        @else
                             <p>هذا قسم رئيسي وليس له قسم أب.</p>
                         @endif
                     </div>
@@ -73,7 +72,7 @@
                                             <h5 class="mb-1">{{ $child->name }}</h5>
                                             <small>{{ $child->created_at->diffForHumans() }}</small>
                                         </div>
-                                        <p class="mb-1">{{ Str::limit($child->description, 100) }}</p>
+                                        <p class="mb-1">{{ Str::limit(strip_tags($child->description), 100) }}</p>
                                     </a>
                                 @endforeach
                             </div>

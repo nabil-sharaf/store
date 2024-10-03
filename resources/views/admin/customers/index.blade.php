@@ -58,7 +58,7 @@
                                 <div class="btn-group" role="group">
                                     @if(!$user->isVip())
                                         <button class="btn btn-sm btn-light mr-1 mb-1" title="Make Vip" data-toggle="modal" data-target="#modal-default{{$user->id}}" id="vip-icon-{{$user->id}}">
-                                            <i class="fas fa-crown" style="color:darkviolet;"></i>
+                                            <i class="fas fa-crown" style="color:#0023ff;"></i>
                                         </button>
                                     @endif
                                     <a href="{{ route('admin.customers.show', $user->id) }}" class="btn btn-sm btn-warning mr-1 mb-1" title="عرض التفاصيل">
@@ -266,9 +266,10 @@
                                             userType.append(' <i class="fas fa-crown" style="color:darkviolet;"></i>'); // إضافة أيقونة التاج
                                         }
 
-                                        $('#user-discount-' + userId).text(all_discount + ' %'); // تحديث نسبة الخصم
+                                        $('#user-discount-' + userId).text(all_discount + ' %').removeClass('hide-vip'); // تحديث نسبة الخصم
                                         $('#vip-start-date-' + userId).text(all_startDate); // تحديث تاريخ البدء
-                                        $('#vip-end-date-' + userId).text(all_endDate); // تحديث تاريخ الانتهاء
+                                        $('#vip-end-date-' + userId).removeClass('hide-vip').text(all_endDate); // تحديث تاريخ الانتهاء
+                                        $('#vip-icon-' + userId).hide(); // تحديث تاريخ الانتهاء
 
                                     });
 
@@ -321,17 +322,13 @@
 
                         userType.append(' <i class="fas fa-crown" style="color:darkviolet;"></i>'); // إضافة أيقونة التاج
 
-                        $('#user-discount-' + userId).text(discount+' %'); // تحديث تاريخ الانتهاء
+                        $('#user-discount-' + userId).text(discount+' %').removeClass('hide-vip'); // تحديث تاريخ الانتهاء
 
-                        $('#vip-end-date-' + userId).text(endDate); // تحديث تاريخ الانتهاء
+                        $('#vip-end-date-' + userId).text(endDate).removeClass('hide-vip'); // تحديث تاريخ الانتهاء
 
                         // تعطيل الأيقونة وتغيير لونها
                         var vipIcon = $('#vip-icon-' + userId );
-                        vipIcon.addClass('disabled').attr('aria-disabled', 'true'); // جعل الأيقونة معطلة
-                        vipIcon.find('i').css('color', '#5f5f5f'); // تغيير لون الأيقونة للرمادي
-                        vipIcon.attr('aria-disabled', 'true');
-                        vipIcon.attr('data-target','');
-                        vipIcon.attr('data-toggle','');
+                        vipIcon.hide(); // جعل الأيقونة معطلة
                     },
                     error: function(response) {
                         toastr.error('حدث خطأ أثناء التعديل تأكد من التواريخ وقيمة ')
@@ -411,6 +408,9 @@
                 });
             });
 
+
+
+
         });
 
 
@@ -472,6 +472,9 @@
             .table-responsive{
                 text-align: center;
             }
+        }
+        label:not(.form-check-label):not(.custom-file-label){
+            float:right;
         }
     </style>
 @endpush

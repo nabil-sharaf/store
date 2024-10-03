@@ -60,7 +60,11 @@
 
  <!--select2-->
  <script src="{{asset('admin/plugins/select2/js/select2.full.min.js')}}"></script>
+    @stack('scripts')
 <script>
+
+    $(document).ready(function(){
+
     // select2
     $('.select2').select2({
         theme: 'bootstrap4'
@@ -112,7 +116,20 @@
             }
         }
     });
+        $(document).ajaxComplete(function() {
+            $('.modal-backdrop').remove();  // إزالة الخلفية
+            $('body').css('overflow', 'auto');
+            $('.modal').on('hidden.bs.modal', function () {
+                $('body').css('overflow', 'auto'); // إعادة التمرير
+            });
+            $('.modal').on('show.bs.modal', function () {
+                $('body').css('overflow', 'hidden'); // تعطيل التمرير أثناء ظهور المودال
+            }).on('hidden.bs.modal', function () {
+                $('body').css('overflow', 'auto'); // إعادة التمرير بعد إغلاق المودال
+            });
+        });
+
+    });
 </script>
-    @stack('scripts')
 </body>
 </html>
