@@ -14,7 +14,7 @@ class ModeratorController extends Controller
 
        // جلب المشرفين مع كل الأدوار المرتبطة بهم وتفعيل الـ Pagination
        $moderators = Admin::with('roles') // لجلب كل الأدوار المرتبطة بكل مشرف
-       ->paginate(10);
+       ->paginate(get_pagination_count());
 
        return view('admin.moderators.index',compact('moderators'));
 

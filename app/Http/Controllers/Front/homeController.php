@@ -17,13 +17,13 @@ class homeController extends Controller
         $categories = Category::with('products')->get();
 //        $products = Product::with('images')->get();
         // جلب المنتجات المضافة حديثاً بترتيب تاريخ الإضافة تنازلياً
-        $newProducts = Product::orderBy('created_at', 'desc')->take(8)->get();
+        $newProducts = Product::orderBy('created_at', 'desc')->take(get_last_added_count())->get();
 
         // جلب المنتجات المحددة كأكثر مبيعا ً
-        $bestProducts = Product::where('is_best_seller',1)->orderBy('updated_at', 'desc')->take(2)->get();
+        $bestProducts = Product::where('is_best_seller',1)->orderBy('updated_at', 'desc')->take(get_best_seller_count())->get();
 
      // جلب المنتجات المحددة كترند   ً
-        $trendingProducts = Product::where('is_trend',1)->orderBy('updated_at', 'desc')->take(8)->get();
+        $trendingProducts = Product::where('is_trend',1)->orderBy('updated_at', 'desc')->take(get_trending_count())->get();
 
         $siteImages = SiteImage::first();
         $popup = Popup::first();

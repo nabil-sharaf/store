@@ -42,7 +42,7 @@ class OrderController extends Controller
             $query->whereDate('created_at', $request->date);
         }
 
-        $orders = $query->with('orderDetails', 'user')->paginate(10);
+        $orders = $query->with('orderDetails', 'user')->paginate(get_pagination_count());
 
         return view('admin.orders.index', compact('orders'));
     }

@@ -10,9 +10,20 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::paginate(20);
-        return view('front.products-offers',compact('products'));
+        $allProducts = Product::with(['images', 'discount'])->get();
+
+       // تصفية المنتجات باستخدام الـ attributes
+        $productsWithDiscount = $allProducts->filter(function ($product) {
+            return $product->discount || $product->customer_offer;
+        });
+
+        // استخدم هيلبر ميثود  الباجينيشان
+        $filteredProducts = paginateProducts($productsWithDiscount);
+
+
+        return view('front.products-offers',compact('filteredProducts'));
     }
+
     public function showProduct(Product $product)
     {
         $product->load('categories','images');
@@ -32,7 +43,8 @@ class ProductController extends Controller
         // البحث في المنتجات
         $products = Product::where('name', 'LIKE', "%{$query}%")
             ->orWhere('description', 'LIKE', "%{$query}%")
-            ->get();
+            ->paginate(get_pagination_count())
+            ->appends(['search' => $query]);;
 
         // عرض النتائج في عرض مخصص
         return view('front.search-results', compact('products', 'query'));
@@ -99,8 +111,9 @@ class ProductController extends Controller
                 break;
         }
 
+        $filteredProducts = paginateProducts($products);
 
         // الاحتفاظ بالنتائج واستخدام redirect()->back()
-        return redirect()->back()->with('filteredProducts', $products);
+        return redirect()->back()->with('filteredProducts', $filteredProducts);
     }
 }

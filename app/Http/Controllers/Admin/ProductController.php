@@ -36,7 +36,7 @@ class ProductController extends Controller implements HasMiddleware
         }
 
         // إضافة العلاقات المطلوبة مثل الفئات والخصومات
-        $products = $query->with('categories', 'discount')->paginate(20);
+        $products = $query->with('categories', 'discount')->paginate(get_pagination_count());
 
         return view('admin.products.index', compact('products'));
     }

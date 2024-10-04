@@ -75,7 +75,7 @@
                         <div class="tab-pane fade show active" id="column-three" role="tabpanel" aria-labelledby="column-three-tab">
                             <div class="row">
                                 @forelse($products as $product)
-                                <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                                     <!-- Start Product Item -->
                                     <div class="product-item">
                                         <div class="product-thumb">
@@ -123,7 +123,7 @@
                             <div class="row">
 
                                 @forelse($products as $product)
-                                    <div class="col-lg-3 col-md-4 col-sm-6">
+                                    <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                                         <!-- Start Product Item -->
                                         <div class="product-item">
                                             <div class="product-thumb">
@@ -163,7 +163,7 @@
                         <div class="tab-pane fade" id="column-two" role="tabpanel" aria-labelledby="column-two-tab">
                             <div class="row">
                                 @forelse($products as $product)
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 col-6">
                                     <!-- Start Product Item -->
                                     <div class="product-item">
                                         <div class="product-thumb">
@@ -205,20 +205,8 @@
                             <div class="pagination-area">
                                 <nav>
                                     <ul class="page-numbers">
-                                        <li>
-                                            <a class="page-number active" href="shop.html">1</a>
-                                        </li>
-                                        <li>
-                                            <a class="page-number" href="shop.html">2</a>
-                                        </li>
-                                        <li>
-                                            <a class="page-number" href="shop.html">3</a>
-                                        </li>
-                                        <li>
-                                            <a class="page-number next" href="shop.html">
-                                                <i class="fa fa-angle-right"></i>
-                                            </a>
-                                        </li>
+                                        {{ $products->links('vendor.pagination.custom') }}
+
                                     </ul>
                                 </nav>
                             </div>

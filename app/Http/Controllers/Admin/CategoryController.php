@@ -24,7 +24,7 @@ class CategoryController extends Controller implements HasMiddleware
     }
     public function index()
     {
-        $categories = Category::paginate(10);
+        $categories = Category::paginate(get_pagination_count());
         return view('admin.categories.index', compact('categories'));
     }
 
