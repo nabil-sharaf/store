@@ -113,7 +113,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade show active" id="productDesc" role="tabpanel" aria-labelledby="product-desc-tab">
-                                    <div class="product-desc">
+                                    <div class="product-desc ">
                                         <p>{!! $product->description !!}</p>
                                     </div>
                                 </div>
@@ -154,6 +154,9 @@
 
     .single-product-info .prices span{
         font-size: 20px !important;
+    }
+    .product-description-review .tab-content .product-desc{
+        text-align: unset;
     }
     </style>
 @endpush

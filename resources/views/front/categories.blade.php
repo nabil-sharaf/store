@@ -33,7 +33,7 @@
                                 <div class="content">
                                     <div class="contact-info">
                                         <h3 class="title text-white">{{$cat->name}}</h3>
-                                        <h4 class="price text-white">{{$cat->description}}</h4>
+                                        <h4 class="price text-white">{!! $cat->description !!}</h4>
                                     </div>
                                     <a class="btn-theme" href="{{route('category.show',$cat->id)}}">{{__('home.shop_now')}}</a>
                                 </div>

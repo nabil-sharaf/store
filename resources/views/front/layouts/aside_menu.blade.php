@@ -25,17 +25,12 @@
                                 <span class="fa fa-star"></span>
                                 <span class="fa fa-star"></span>
                             </div>
-                            <div class="review">
-                                <a href="#">({{ __('aside_menu.customer_review_count', ['count' => 5]) }})</a>
-                            </div>
                         </div>
-                        <div class="single-product-featured">
-                            <ul>
-                                <li><i class="fa fa-check"></i> {{ __('aside_menu.free_shipping') }}</li>
-                                <li><i class="fa fa-check"></i> {{ __('aside_menu.support_247') }}</li>
-                                <li><i class="fa fa-check"></i> {{ __('aside_menu.money_return') }}</li>
-                            </ul>
-                        </div>
+{{--                        <div class="single-product-featured">--}}
+{{--                            <ul>--}}
+{{--                                <li><i class="fa fa-check"></i> {{ __('aside_menu.money_return') }}</li>--}}
+{{--                            </ul>--}}
+{{--                        </div>--}}
                         <p class="product-desc">{{ __('aside_menu.product_description') }}</p>
                         <div class="quick-product-action">
                             <div class="action-top">
