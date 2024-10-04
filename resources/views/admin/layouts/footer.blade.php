@@ -129,6 +129,8 @@
             });
         });
 
+        $('body').css('overflow', 'auto'); // إعادة التمرير
+
     });
 </script>
 </body>

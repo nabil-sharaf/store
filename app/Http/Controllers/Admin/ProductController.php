@@ -26,11 +26,21 @@ class ProductController extends Controller implements HasMiddleware
             new Middleware('checkRole:superAdmin', only: ['destroy','deleteAll']),
         ];
     }
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('categories', 'discount')->paginate(10);
+        $query = Product::query();
+
+        // تحقق من وجود البحث
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // إضافة العلاقات المطلوبة مثل الفئات والخصومات
+        $products = $query->with('categories', 'discount')->paginate(20);
+
         return view('admin.products.index', compact('products'));
     }
+
 
     public function create()
     {

@@ -37,6 +37,11 @@ class OrderController extends Controller
 
         }
 
+        // البحث بالتاريخ
+        if ($request->has('date') && $request->date != '') {
+            $query->whereDate('created_at', $request->date);
+        }
+
         $orders = $query->with('orderDetails', 'user')->paginate(10);
 
         return view('admin.orders.index', compact('orders'));
