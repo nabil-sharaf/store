@@ -41,8 +41,11 @@ class SalesReportController extends Controller
 
     private function calculateTopCustomers($orders)
     {
-        return $orders->where('status_id',3)
-            ->whereHas("user")->groupBy('user_id')->map(function ($orders) {
+        return $orders->where('status_id', 3)
+            ->filter(function ($order) {
+                return $order->user_id !== null;
+            })
+            ->groupBy('user_id')->map(function ($orders) {
             $user = $orders->first()->user;
             return [
                 'name' => $user->name?? "unknown-user",
