@@ -36,10 +36,20 @@ class OrderController extends Controller
             $query->orderBy('id', 'desc');
 
         }
-
         // البحث بالتاريخ
         if ($request->has('date') && $request->date != '') {
             $query->whereDate('created_at', $request->date);
+        }
+        // البحث باسم العميل
+        if ($request->has('customer_name') && $request->customer_name != '') {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('userAddress', function($subQuery) use ($request) {
+                    $subQuery->where('full_name', 'like', '%' . $request->customer_name . '%');
+                })
+                    ->orWhereHas('guestAddress', function($subQuery) use ($request) {
+                        $subQuery->where('full_name', 'like', '%' . $request->customer_name . '%');
+                    });
+            });
         }
 
         $orders = $query->with('orderDetails', 'user')->paginate(get_pagination_count());

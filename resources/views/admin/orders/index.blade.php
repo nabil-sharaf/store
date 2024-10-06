@@ -22,7 +22,19 @@
 
                 <div class="col-12 col-md-8">
                     <div class="row">
-                        <div class="col-12 col-md-6 mb-2">
+                        <div class="col-12 col-md-4 mb-2">
+                            <form id="customerSearchForm" method="GET">
+                                <label for="customerSearch" class="d-block mb-1">بحث باسم العميل</label>
+                                <div class="input-group">
+                                    <input type="text" name="customer_name" id="customerSearch" class="form-control" value="{{ request('customer_name') }}" placeholder="اسم العميل">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">بحث</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-12 col-md-4 mb-2">
                             <form id="dateFilterForm" method="GET">
                                 <label for="dateFilter" class="d-block mb-1">بحث بتاريخ الأوردر</label>
                                 <div class="input-group">
@@ -34,7 +46,7 @@
                             </form>
                         </div>
 
-                        <div class="col-12 col-md-6 mb-2">
+                        <div class="col-12 col-md-4 mb-2">
                             <form id="statusFilterForm" method="GET">
                                 <label for="statusFilter" class="d-block mb-1">فلتر بحالة الأوردر</label>
                                 <select name="status" id="statusFilter" class="select2 form-control w-100">
@@ -50,18 +62,18 @@
                 </div>
             </div>
         </div>
-
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered text-center" id="ordersTable">
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th data-sort="user">اسم المستخدم <i class="fas fa-sort"></i></th>
+                        <th data-sort="user">اسم العميل <i class="fas fa-sort"></i></th>
+                        <th> نوع العميل</th>
                         <th data-sort="created_at">تاريخ الاوردر <i class="fas fa-sort"></i></th>
                         <th>قيمة الخصم</th>
                         <th data-sort="total_price">الإجمالي بعد الخصم <i class="fas fa-sort"></i></th>
-                        <th>الحالة</th>
+                        <th class="order-status-label"> حالة الأوردر</th>
                         <th>العمليات</th>
                     </tr>
                     </thead>
@@ -69,7 +81,13 @@
                     @foreach($orders as $order)
                         <tr>
                             <td>{{ $loop->iteration }}.</td>
-                            <td>{{ $order->user?->name ?? ' Guest زائر' }}</td>
+                            @if($order->user)
+                                <td>{{ $order->userAddress?->full_name ?:'unknown'}}</td>
+                                <td>{{$order->user->customer_type=='goomla'? 'عميل جملة' : 'عميل قطاعي'}}</td>
+                            @else
+                                <td>{{ $order->guestAddress?->full_name ?:'unknown'}}</td>
+                                <td>Guest</td>
+                            @endif
                             <td>{{ $order->created_at->format('Y-m-d') }}</td>
                             <td>{{ $order->total_price - $order->total_after_discount == 0 ? "لا يوجد " : ($order->total_price - $order->total_after_discount)." جنيه "}}</td>
                             <td>{{ $order->total_after_discount }} جنيه</td>
@@ -93,7 +111,7 @@
                                     <span class="btn-sm btn-danger">{{ $order->status->name }}</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="show-and-edit">
                                 <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-warning mr-1 mb-1" title="عرض التفاصيل">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -163,8 +181,8 @@
         }
 
         @media (max-width: 576px) {
-            .btn {
-                width: 100%;
+            .show-and-edit .btn {
+                width:43% !important;
             }
         }
 
@@ -196,6 +214,10 @@
         }
 body{
     overflow: auto;
+}
+.order-status-label{
+    padding-right: 40px !important;
+    padding-left: 40px !important;
 }
     </style>
 @endpush
