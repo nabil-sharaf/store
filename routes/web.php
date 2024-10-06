@@ -8,11 +8,15 @@ use App\Http\Controllers\Front\OrderController;
 use App\Http\Controllers\Front\ProductController;
 use App\Http\Controllers\Front\ProfileController;
 use App\Http\Controllers\Front\WishlistController;
+use App\Http\Middleware\CheckMaintenanceMode;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
-Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
+Route::group([
+    'prefix' => LaravelLocalization::setLocale(),
+    'middleware' => [CheckMaintenanceMode::class] ,
+], function () {
 
 Route::get('/', [HomeController::class,'index'])->name('home.index');
 Route::get('/contact', [HomeController::class,'contact'])->name('home.contact');

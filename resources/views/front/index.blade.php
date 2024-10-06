@@ -414,7 +414,8 @@
 @push('scripts')
     <script>
         @if(isset($popup))
-        document.addEventListener('DOMContentLoaded', function () {
+            @if(!session()->has('popup_show'))
+                document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 title: '{{ $popup->title }}',
                 html: '{!! $popup->text !!} ',
@@ -431,6 +432,8 @@
                 }
             });
         });
+               <?php session()->put('popup_show', true); ?>
+           @endif
         @endif
 
         $(document.ready(function () {
