@@ -413,7 +413,8 @@
 
 @push('scripts')
     <script>
-        @if(isset($popup))
+        @if(isset($popup) && $popup->status==1)
+
             @if(!session()->has('popup_show'))
                 document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
