@@ -88,6 +88,18 @@
                 @enderror
             </div>
 
+            <!--حالة البوب اب -->
+            <div class="col-md-6">
+                <label for="status" class="form-label">حالة ال popup</label>
+                <select class="form-control" name ='status'>
+                    <option value="1" {{$popup->status == 1 ? 'selected' : ''}}>مفعل</option>
+                    <option value="0" {{$popup->status==0 ? 'selected' : ''}}>غير مفعل</option>
+                </select>
+                @error('status')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
             <!-- زر الحفظ -->
             <div class="col-12 text-center">
                 <button type="submit" class="btn btn-primary mt-4">حفظ التعديلات</button>

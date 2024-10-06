@@ -26,6 +26,7 @@ class PopupController extends Controller
             'footer_link_text' => 'nullable|string|max:255',
             'footer_link_url' => 'nullable|url',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // للتحقق من الصورة
+            'status'=>'required'
         ]);
 
         // محاولة الحصول على أول سجل
@@ -43,6 +44,7 @@ class PopupController extends Controller
         $popup->button_link = $validated['button_link'];
         $popup->footer_link_text = $validated['footer_link_text'] ?? null;
         $popup->footer_link_url = $validated['footer_link_url'] ?? null;
+        $popup->status = $validated['status'] ?? 0;
 
         // التحقق من وجود صورة جديدة وتحميلها
         if ($request->hasFile('image')) {
