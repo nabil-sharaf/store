@@ -349,68 +349,65 @@
                 $(modalId).find('#customerName-' + userId).val($(this).data('name'));
                 $(modalId).find('#customerType-' + userId).val($(this).data('type'));
                 $(modalId).find('#customerStatus-' + userId).val($(this).data('status'));
-
-                // ربط الحدث عند الضغط على زر الحفظ
-                $(modalId).find('.save-customerChanges').off('click').on('click', function(e) {
-                    e.preventDefault();
-
-                    // احصل على بيانات النموذج
-                    var formData = {
-                        _token: $('input[name="_token"]').val(),
-                        name: $(modalId).find('input[name="name"]').val(),
-                        customer_type: $(modalId).find('select[name="type"]').val(),
-                        status: $(modalId).find('select[name="status"]').val(),
-                        _method: 'PUT',
-                        'update_user': true,
-                    };
-
-
-                    var url = "{{ route('admin.customers.update', ':id') }}".replace(':id', userId);
-
-
-                    // إرسال طلب Ajax لتحديث البيانات
-                    $.ajax({
-                        url: url,
-                        method: 'POST',
-                        data: formData,
-                        success: function(response) {
-                            toastr.success(response.success);
-                            $(modalId).fadeOut(400);
-                            $('.modal-backdrop').remove(); // إزالة الخلفية للمودال
-
-                            // تحديث البيانات في الجدول
-                            var userRow = $('#customer-data-'+userId);
-
-                            var userType;
-                            switch (response.userType) {
-                                case 'goomla':
-                                    userType='جملة';
-                                    break;
-                                default:
-                                    userType='قطاعي';
-                                    break;
-                            }
-
-                            var vipIcon = response.is_vip ? '<i class="fas fa-crown" style="color:darkviolet;"></i>' : '';
-
-                            // تحديث البيانات في الجدول
-                            userRow.find('#user-status-' + userId).html(response.status == 1 ? '<span class="btn btn-sm btn-success">مفعل</span>' : '<span class="btn btn-sm btn-danger">غير مفعل</span>')
-                            userRow.find('#user-type-' + userId).html(userType + ' '+ vipIcon);
-                            userRow.find('#user-name-' + userId).text(response.userName);
-
-                        },
-                        error: function(response) {
-                            toastr.error(response.error);
-                        }
-                    });
-
-                    return false; // منع أي تحديث إضافي للصفحة
-                });
             });
 
+            // ربط الحدث عند الضغط على زر الحفظ
+            $('.save-customerChanges').on('click', function(e) {
+                e.preventDefault();
+                var userId = $(this).data('id');
+                var modalId = '#editCustomerModal-' + userId;
+                // احصل على بيانات النموذج
+                var formData = {
+                    _token: $('input[name="_token"]').val(),
+                    name: $(modalId).find('input[name="name"]').val(),
+                    customer_type: $(modalId).find('select[name="type"]').val(),
+                    status: $(modalId).find('select[name="status"]').val(),
+                    _method: 'PUT',
+                    'update_user': true,
+                };
 
 
+                var url = "{{ route('admin.customers.update', ':id') }}".replace(':id', userId);
 
+
+                // إرسال طلب Ajax لتحديث البيانات
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        toastr.success(response.success);
+                        $(modalId).fadeOut(400);
+                        $('.modal-backdrop').remove(); // إزالة الخلفية للمودال
+
+                        // تحديث البيانات في الجدول
+                        var userRow = $('#customer-data-'+userId);
+
+                        var userType;
+                        switch (response.userType) {
+                            case 'goomla':
+                                userType='جملة';
+                                break;
+                            default:
+                                userType='قطاعي';
+                                break;
+                        }
+
+                        var vipIcon = response.is_vip ? '<i class="fas fa-crown" style="color:darkviolet;"></i>' : '';
+
+                        // تحديث البيانات في الجدول
+                        userRow.find('#user-status-' + userId).html(response.status == 1 ? '<span class="btn btn-sm btn-success">مفعل</span>' : '<span class="btn btn-sm btn-danger">غير مفعل</span>')
+                        userRow.find('#user-type-' + userId).html(userType + ' '+ vipIcon);
+                        userRow.find('#user-name-' + userId).text(response.userName);
+
+                    },
+                    error: function(response) {
+                        toastr.error(response.error);
+                    }
+                });
+
+                return false; // منع أي تحديث إضافي للصفحة
+            });
         });
 
 
