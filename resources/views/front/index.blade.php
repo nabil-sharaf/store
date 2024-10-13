@@ -421,7 +421,7 @@
                 title: '{{ $popup->title }}',
                 html: '{!! $popup->text !!} ',
                 iconHtml: '<img src="{{ asset('storage/' . $popup->image_path) }}" style="width:200px; max-height:100px;" />',
-                background: '#fff',
+                background: '#f0f0f0',
                 color: '#333333',
                 confirmButtonText: '<a class="pop-up-button" href="{{ $popup->button_link }}">{{ $popup->button_text }}</a>',
                 confirmButtonColor: '#f379a7',
