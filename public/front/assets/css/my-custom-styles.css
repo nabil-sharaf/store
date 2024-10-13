@@ -495,7 +495,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     }
 /*--------------------- LogoMain---------------------*/
     .header-logo-area img.logo-main{
-        max-width: 133%;
+        max-width: 130%;
         min-height: 38px;
         max-height: 68px;
 
