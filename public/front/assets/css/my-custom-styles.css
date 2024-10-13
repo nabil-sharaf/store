@@ -254,6 +254,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
             width:100%!important;
     }
     }
+
+/*-----logoMain----*/
+.header-middle .header-align .header-align-left .header-logo-area .logo-main{
+    @media only screen and (min-width: 767.98px) {
+
+        min-width:220px;
+        margin-top:-10px;
+    }
+    }
+
 .header-middle .header-align .header-align-right{
     @media only screen and (max-width: 479.98px) {
 
