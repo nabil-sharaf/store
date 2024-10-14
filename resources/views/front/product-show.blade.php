@@ -161,10 +161,44 @@
         touchReleaseOnEdges: true,
         passiveListeners: true,
         threshold: 10,
+        allowTouchMove: true, // للسماح بالسحب الأفقي
+        touchStartPreventDefault: false, // لتعطيل منع التمرير
         thumbs: {
             swiper: swiperNav,
         },
+        on: {
+            touchMove: function(swiper, event) {
+                if (Math.abs(event.velocityY) > Math.abs(event.velocityX)) {
+                    swiper.allowTouchMove = false; // تعطيل السحب الأفقي إذا كان التمرير عموديًا
+                } else {
+                    swiper.allowTouchMove = true; // إعادة تفعيل السحب الأفقي إذا كان السحب أفقيًا
+                }
+            }
+        }
     });
+    $('[data-fancybox="gallery"]').fancybox({
+        protect: true, // لحماية الصورة من الحفظ
+        buttons: [
+            "zoom",      // زر التكبير
+            "close"      // زر الإغلاق
+        ],
+        image: {
+            preload: true, // تحميل الصور مسبقاً لتحسين الأداء
+        },
+        zoomOpacity: true,  // تمكين التكبير مع تحريك الصورة
+        transitionEffect: "fade", // تأثير عند الانتقال
+        thumbs: {
+            autoStart: true  // عرض الصور المصغرة عند فتح الصور
+        },
+        afterLoad: function(instance, current) {
+            // التأكد من أن الصورة تعرض بالحجم الكامل
+            var img = current.$image;
+            img.css('width', '100%');  // ضبط العرض الكامل
+            img.css('max-width', 'none'); // تعطيل الحد الأقصى للعرض
+            img.css('height', 'auto');  // السماح بالتمدد العمودي حسب النسبة
+        }
+    });
+
 </script>
 
 
