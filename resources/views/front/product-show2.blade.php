@@ -22,27 +22,40 @@
             <div class="row">
                 <div class="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-0">
                     <div class="single-product-slider">
-                        <div class="swiper-container single-product-thumb-slider">
-                            <div class="swiper-wrapper">
-                                @foreach($product->images as $image)
-                                    <div class="swiper-slide">
+                        <div class="single-product-thumb">
+                            <div class="swiper-container single-product-thumb-slider">
+                                <div class="swiper-wrapper">
+                             @foreach($product->images as $image)
+                                    <div class="swiper-slide zoom zoom-hover ">
                                         <div class="thumb-item">
-                                            <a href="{{asset('storage/'.$image->path)}}" data-fancybox="gallery">
+                                            <a class="lightbox-image" data-fancybox="gallery" href="{{asset('storage/'.$image->path)}}">
                                                 <img src="{{asset('storage/'.$image->path)}}" alt="Image-HasTech">
                                             </a>
                                         </div>
                                     </div>
-                                @endforeach
+                              @endforeach
+                                </div>
                             </div>
-                            <div class="swiper-pagination"></div>
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
+                        </div>
+                        <div class="single-product-nav">
+                            <div class="swiper-container single-product-nav-slider">
+                                <div class="swiper-wrapper">
+                                    @foreach($product->images as $image)
+                                    <div class="swiper-slide" >
+                                        <div class="nav-item">
+                                            <img src="{{asset('storage/'.$image->path)}}" alt="Image-HasTech">
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-6">
                     <div class="single-product-info">
-                        <h4 class="title">{{$product->name}}</h4>
+                        <h4 class="title"> {{$product->name}}</h4>
                         <div class="prices">
                             <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
                         </div>
@@ -55,6 +68,8 @@
                                 <span class="fa fa-star"></span>
                             </div>
                         </div>
+                        <div class="single-product-featured">
+                        </div>
                         <div class="quick-product-action">
                             <div class="action-top">
                                 <div class="pro-qty">
@@ -66,19 +81,17 @@
                                 <a class="btn-wishlist" href="" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)">
                                     {{ __('aside_menu.add_to_wishlist') }}
                                 </a>
-                            </div>
-                        </div>
+                            </div>                        </div>
                         <div class="widget">
                             <h3 class="title">{{__('aside_menu.categories')}}:</h3>
                             <div class="widget-tags">
                                 @foreach($product->categories as $cat)
-                                    <a href="{{route('category.show',$cat->id)}}">{{$cat->name}} .  </a>
+                                <a href="{{route('category.show',$cat->id)}}">{{$cat->name}} .  </a>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="product-description-review">
@@ -89,6 +102,9 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="product-desc-tab" data-bs-toggle="tab" data-bs-target="#productDesc" type="button" role="tab" aria-controls="productDesc" aria-selected="true">{{ __('aside_menu.product_description') }}</button>
                                 </li>
+{{--                                <li class="nav-item" role="presentation">--}}
+{{--                                    <button class="nav-link" id="product-review-tab" data-bs-toggle="tab" data-bs-target="#productReview" type="button" role="tab" aria-controls="productReview" aria-selected="false">{{ __('aside_menu.reviews') }} (0)</button>--}}
+{{--                                </li>--}}
                             </ul>
                             <div class="tab-content product-description-tab-content" id="myTabContent">
                                 <div class="tab-pane fade" id="commentProduct" role="tabpanel" aria-labelledby="product-aditional-tab">
@@ -97,7 +113,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade show active" id="productDesc" role="tabpanel" aria-labelledby="product-desc-tab">
-                                    <div class="product-desc">
+                                    <div class="product-desc ">
                                         <p>{!! $product->description !!}</p>
                                     </div>
                                 </div>
@@ -113,39 +129,7 @@
 
 @endsection
 @push('scripts')
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var mySwiper = new Swiper('.single-product-thumb-slider', {
-                slidesPerView: 1,
-                spaceBetween: 10,
-                centeredSlides: true,
-                loop: true,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                breakpoints: {
-                    992: {
-                        slidesPerView: 1.5,
-                        spaceBetween: 30,
-                    }
-                }
-            });
-
-            // تكبير الصور باستخدام Fancybox
-            Fancybox.bind("[data-fancybox]", {
-                // يمكنك إضافة خيارات Fancybox هنا إذا لزم الأمر
-            });
-        });
-    </script>
-
-    <script>
+<script>
     $(document).ready(function() {
         $('[data-bs-toggle="tab"]').on('click', function(e) {
             e.preventDefault(); // منع السلوك الافتراضي
@@ -162,117 +146,17 @@
             }
         });
     });
-    </script>
+
+</script>
 @endpush
-
 @push('styles')
-
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
-
-
     <style>
 
-        /* أنماط عرض الصور */
-        .single-product-slider {
-            width: 100%;
-            max-width: 100%;
-            margin: 0 auto;
-        }
-        .swiper-container {
-            width: 100%;
-            height: 300px;
-        }
-        .swiper-slide {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-        }
-        .thumb-item {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .thumb-item img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        /* تعديلات للشاشات المتوسطة والكبيرة */
-        @media (min-width: 768px) {
-            .swiper-container {
-                height: 400px;
-            }
-        }
-
-        @media (min-width: 992px) {
-            .swiper-container {
-                height: 500px;
-            }
-            .swiper-slide {
-                width: 80%;
-            }
-        }
-
-        /* أنماط معلومات المنتج */
-        .single-product-info {
-            margin-top: 20px;
-        }
-        .single-product-info .title {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .prices {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        .product-rating {
-            margin-bottom: 15px;
-        }
-        .quick-product-action {
-            margin-bottom: 20px;
-        }
-        .widget-tags a {
-            display: inline-block;
-            margin-right: 5px;
-            margin-bottom: 5px;
-            padding: 5px 10px;
-            background-color: #f1f1f1;
-            text-decoration: none;
-            color: #333;
-        }
-
-        /* أنماط التبويبات */
-        .nav-tabs {
-            border-bottom: 1px solid #dee2e6;
-            padding-left: 0;
-        }
-        .nav-tabs .nav-item {
-            margin-bottom: -1px;
-        }
-        .nav-tabs .nav-link {
-            border: 1px solid transparent;
-            border-top-left-radius: 0.25rem;
-            border-top-right-radius: 0.25rem;
-            padding: 0.5rem 1rem;
-            text-decoration: none;
-            color: #495057;
-        }
-        .nav-tabs .nav-link.active {
-            color: #495057;
-            background-color: #fff;
-            border-color: #dee2e6 #dee2e6 #fff;
-        }
-        .tab-content {
-            padding: 20px 0;
-        }
-
+    .single-product-info .prices span{
+        font-size: 20px !important;
+    }
+    .product-description-review .tab-content .product-desc{
+        text-align: unset;
+    }
     </style>
 @endpush
