@@ -1,3 +1,6 @@
+@php
+    $siteImages = \App\Models\Admin\SiteImage::first() ?? null;
+@endphp
 <body>
 
 <!--wrapper start-->
@@ -77,8 +80,8 @@
                             <div class="header-align-left">
                                 <div class="header-logo-area">
                                     <a href="{{route('home.index')}}">
-                                        <img class="logo-main" src="{{asset('front/assets')}}/img/logo.png"  alt="Logo" />
-                                        <img class="logo-light" src="{{asset('front/assets')}}/img/logo.png"  alt="Logo" />
+                                        <img class="logo-main" src="{{asset('storage/'.$siteImages->logo)}}"  alt="Logo" />
+                                        <img class="logo-light" src="{{asset('storage/'.$siteImages->logo)}}"  alt="Logo" />
                                     </a>
                                 </div>
                             </div>
@@ -143,8 +146,8 @@
                     <div class="col-4 col-sm-6 col-lg-2">
                         <div class="header-logo-area">
                             <a href="{{route('home.index')}}">
-                                <img class="logo-main" src="{{asset('front/assets')}}/img/logo.png"  alt="Logo" />
-                                <img class="logo-light" src="{{asset('front/assets')}}/img/logo.png"  alt="Logo" />
+                                <img class="logo-main" src="{{asset('storage/'.$siteImages->logo)}}" alt="Logo" />
+                                <img class="logo-light" src="{{asset('storage/'.$siteImages->logo)}}"  alt="Logo" />
                             </a>
                         </div>
                     </div>

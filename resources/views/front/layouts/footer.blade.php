@@ -10,7 +10,7 @@ $siteImages = \App\Models\Admin\SiteImage::first() ?? null;
                     <div class="widget-item item-style3">
                         <div class="about-widget">
                             <a class="footer-logo" href="">
-                                <img style="width:100px; max-height:50px" src="{{asset('storage').'/'.$siteImages?->footer_image ?? ''}}" alt="{{ __('footer.logo_alt') }}">
+                                <img src="{{asset('storage').'/'.$siteImages?->footer_image ?? ''}}" alt="{{ __('footer.logo_alt') }}">
                             </a>
                             <p>{{ __('footer.description') }}</p>
                             <div class="widget-social-icons">
