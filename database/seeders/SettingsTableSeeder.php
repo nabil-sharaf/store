@@ -118,6 +118,13 @@ class SettingsTableSeeder extends Seeder
                 'description' => 'وصف Trending Product'
             ],
             [
+                'setting_key' => 'footer_message',
+                'setting_value' => 'مرحبا بكم في موقعنا',
+                'setting_type' => 'string',
+                'description' => 'رسالة تظهر أسفل لوجو الفوتر'
+            ],
+
+            [
                 'setting_key' => 'pagination_count',
                 'setting_value' => 25,
                 'setting_type' => 'integer',

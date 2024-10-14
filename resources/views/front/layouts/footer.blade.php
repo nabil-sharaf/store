@@ -12,7 +12,10 @@ $siteImages = \App\Models\Admin\SiteImage::first() ?? null;
                             <a class="footer-logo" href="">
                                 <img src="{{asset('storage').'/'.$siteImages?->footer_image ?? ''}}" alt="{{ __('footer.logo_alt') }}">
                             </a>
-                            <p>{{ __('footer.description') }}</p>
+                            @php $footer_desc=\App\Models\Admin\Setting::getValue('footer_message') ?? false @endphp
+                            @if($footer_desc)
+                            <p>{{$footer_desc}}</p>
+                            @endif
                             <div class="widget-social-icons">
                                 <a href="{{\App\Models\Admin\Setting::getValue('facebook')}}" target="_blank"><i class="ion-social-facebook"></i></a>
                                 <a href="{{\App\Models\Admin\Setting::getValue('insta')}}" target="_blank"><i class="ion-social-instagram-outline"></i></a>
