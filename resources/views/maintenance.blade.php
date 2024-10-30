@@ -122,7 +122,7 @@
 <body>
 
 <div class="maintenance-container">
-    <img src="{{ asset('front/assets/img/logo.png') }}" style="width:300px; max-height:68px;" />'
+    <img src="{{ asset('front/assets/img/logo.png') }}" style="width:300px; max-height:68px;" />
     <h1>مرحبا بكم في ماما ستور</h1>
     <p>الموقع تحت التطوير الآن نأسف على إزعاجكم   سنعود قريبا جدا </p>
     <img class="coming-soon" src="{{ asset('front/assets/img/coming.png') }}" style=" max-height:100px;" />'
@@ -131,7 +131,7 @@
     <div class="progress-bar"></div>
 
     <!-- Social Media Links -->
-    <div class="social-links">
+    <div class="social-links" dir="rtl">
         <a href="{{\App\Models\Admin\Setting::getValue('facebook')}}"><i class="fab fa-facebook"></i></a>
         <a href="{{\App\Models\Admin\Setting::getValue('whats-app')}}"><i class="fab fa-whatsapp"></i></a>
         <a href="{{\App\Models\Admin\Setting::getValue('insta')}}"><i class="fab fa-instagram"></i></a>
