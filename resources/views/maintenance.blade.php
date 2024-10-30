@@ -6,52 +6,59 @@
     <title>We'll Be Back Soon!</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    {{--    font cairo--}}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Custom CSS for Maintenance Page -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* Existing CSS styles */
+        /* ... */
 
+        /* New CSS Adjustments */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            font-family: 'Poppins', sans-serif;
-            color: #333;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Cairo,sans-serif;
+            background: linear-gradient(57deg, #007bffab, #0c00ff26);
         }
 
         .maintenance-container {
             text-align: center;
             padding: 50px;
-            background-color: white;
+            background-color: #FFFFFF;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            max-width: 500px;
+            width: 80%;
         }
 
         .maintenance-container h1 {
-            font-size: 2.5em;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 20px;
+            color: #1E2B4F;
+            margin-bottom: 15px;
+            margin-top: 10px;
         }
 
         .maintenance-container p {
-            font-size: 1.2em;
+            font-size: 18px;
             font-weight: 300;
+            color: #5C6085;
             margin-bottom: 30px;
-
         }
 
         .progress-bar {
             width: 100%;
-            height: 10px;
-            background: #eee;
-            border-radius: 5px;
+            height: 12px;
+            background: #EDF2F7;
+            border-radius: 6px;
             overflow: hidden;
             position: relative;
         }
@@ -62,9 +69,9 @@
             top: 0;
             left: 0;
             height: 100%;
-            width: 70%; /* You can animate this width based on actual maintenance progress */
-            background: #007bff;
-            border-radius: 5px;
+            width: 70%;
+            background: #007BFF;
+            border-radius: 6px;
             animation: loading 3s ease-in-out infinite;
         }
 
@@ -73,36 +80,14 @@
             100% { width: 100%; }
         }
 
-        .social-links {
-            margin-top: 20px;
+        .social-links{
+            padding-top:8px;
         }
-
         .social-links a {
-            margin: 0 10px;
+            margin: 0 12px;
             text-decoration: none;
-            color: #007bff;
-            font-size: 1.5em;
-        }
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* Full height of the viewport */
-            margin: 0; /* Remove any default margin */
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            font-family: 'Poppins', sans-serif;
-            color: #333;
-            padding: 0 20px; /* Adding padding for smaller screens */
-        }
-
-        .maintenance-container {
-            text-align: center;
-            padding: 50px;
-            background-color: white;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            max-width: 500px; /* Limit width for larger screens */
-            width: 100%; /* Ensure it takes full width on mobile */
+            color: #007BFF;
+            font-size: 20px;
         }
 
         /* Adjustments for smaller screens */
@@ -110,15 +95,37 @@
             .maintenance-container {
                 padding: 30px;
             }
+
+            .maintenance-container h1 {
+                font-size: 28px;
+            }
+
+            .maintenance-container p {
+                font-size: 18px;
+            }
+
+            .progress-bar {
+                height: 10px;
+                border-radius: 5px;
+            }
+
+            .social-links a {
+                font-size: 18px;
+            }
         }
 
+        img.coming-soon{
+            margin-top:-20px;
+        }
     </style>
 </head>
 <body>
 
 <div class="maintenance-container">
-    <img src="{{ asset('front/assets/img/logo.png') }}" style="width:160px; max-height:68px;" />'    <h1>مرحبا بكم في ماما ستور</h1>
+    <img src="{{ asset('front/assets/img/logo.png') }}" style="width:300px; max-height:68px;" />'
+    <h1>مرحبا بكم في ماما ستور</h1>
     <p>الموقع تحت التطوير الآن نأسف على إزعاجكم   سنعود قريبا جدا </p>
+    <img class="coming-soon" src="{{ asset('front/assets/img/coming.png') }}" style=" max-height:100px;" />'
 
     <!-- Progress Bar -->
     <div class="progress-bar"></div>
