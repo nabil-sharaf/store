@@ -132,9 +132,9 @@
 
     <!-- Social Media Links -->
     <div class="social-links">
-        <a href="#"><i class="fab fa-facebook"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="{{\App\Models\Admin\Setting::getValue('facebook')}}"><i class="fab fa-facebook"></i></a>
+        <a href="{{\App\Models\Admin\Setting::getValue('whats-app')}}"><i class="fab fa-whatsapp"></i></a>
+        <a href="{{\App\Models\Admin\Setting::getValue('insta')}}"><i class="fab fa-instagram"></i></a>
     </div>
 </div>
 
