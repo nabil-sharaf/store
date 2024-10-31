@@ -24,7 +24,7 @@ class StatusesTableSeeder extends Seeder
 
         Status::create(['name' => 'جاري المعالجة']);
         Status::create(['name' => 'جاري الشحن']);
-        Status::create(['name' => 'تم الاستلام ']);
+        Status::create(['name' => 'تم التسليم ']);
         Status::create(['name' => 'ملغي']);
     }
 }

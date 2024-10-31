@@ -26,24 +26,24 @@ class OrderController extends Controller
         $states = ShippingRate::all();
         $items = Cart::getContent();
         $totalQuantity = Cart::getTotalQuantity();
-        $totalPrice = floatval( Cart::getTotal());
+        $totalPrice = floatval(Cart::getTotal());
 
-        if(Auth::user() && Auth::user()->isVip()){
-            $discount_percentage = (Auth::user()->discount)/100;
-            $vipDiscount = round($totalPrice * $discount_percentage,2);
-        }else{
+        if (Auth::user() && Auth::user()->isVip()) {
+            $discount_percentage = (Auth::user()->discount) / 100;
+            $vipDiscount = round($totalPrice * $discount_percentage, 2);
+        } else {
             $vipDiscount = 0;
         }
 
 
-        return view('front.checkout' ,compact(['items','totalPrice','totalQuantity','vipDiscount','states']));
+        return view('front.checkout', compact(['items', 'totalPrice', 'totalQuantity', 'vipDiscount', 'states']));
     }
 
     public function indexEdit(Order $order)
     {
 
         // التحقق من أن المستخدم الحالي هو صاحب الطلب
-        if($order->user_id){
+        if ($order->user_id) {
             if ($order->user_id !== auth()->user()?->id) {
 
                 session()->forget('editing_order_id');
@@ -51,7 +51,7 @@ class OrderController extends Controller
                 return redirect()->back()->with('error', 'لا يمكنك تعديل هذا الطلب.');
             }
         }
-        if($order->status->id != 1){
+        if ($order->status->id != 1) {
             session()->forget('editing_order_id');
             return redirect()->route('home.index')->with('error', 'لا يمكنك تعديل الطلب حاليا.');
         }
@@ -59,33 +59,34 @@ class OrderController extends Controller
         $states = ShippingRate::all();
         $items = Cart::getContent();
         $totalQuantity = Cart::getTotalQuantity();
-        $totalPrice = floatval( Cart::getTotal());
+        $totalPrice = floatval(Cart::getTotal());
 
-        if(Auth::user() && Auth::user()->isVip()){
-            $discount_percentage = (Auth::user()->discount)/100;
-            $vipDiscount = round($totalPrice * $discount_percentage,2);
-        }else{
+        if (Auth::user() && Auth::user()->isVip()) {
+            $discount_percentage = (Auth::user()->discount) / 100;
+            $vipDiscount = round($totalPrice * $discount_percentage, 2);
+        } else {
             $vipDiscount = 0;
         }
 
 
-        return view('front.checkout' ,compact(['items','totalPrice','totalQuantity','vipDiscount','order','states']));
+        return view('front.checkout', compact(['items', 'totalPrice', 'totalQuantity', 'vipDiscount', 'order', 'states']));
     }
 
 
-    public function show(Order $order){
+    public function show(Order $order)
+    {
         $id = \auth()->user()?->id ?? '';
 
         // التحقق من أن المستخدم الحالي هو صاحب الطلب
-        if($order->user_id){
+        if ($order->user_id) {
             if ($order->user_id !== $id) {
                 // منع التعديل وإرجاع رسالة
                 return redirect()->route('home.index')->with('error', 'لا يمكنك عرض هذا الطلب.');
             }
         }
 
-        $address = UserAddress::where('user_id',$id)->first();
-        return view('front.show-order',compact('order','address'));
+        $address = UserAddress::where('user_id', $id)->first();
+        return view('front.show-order', compact('order', 'address'));
     }
 
     public function store(CheckoutRequest $request)
@@ -106,29 +107,28 @@ class OrderController extends Controller
                 if ($isGuest) {
                     // حفظ معلومات الزائر في الطلب
                     $guest = new GuestAddress();
-                    $guest->full_name =  $request->full_name;
-                    $guest->phone     =  $request->phone;
-                    $guest->address =  $request->address;
-                    $guest->city    =  $request->city;
-                    $guest->state    =  $request->state;
+                    $guest->full_name = $request->full_name;
+                    $guest->phone = $request->phone;
+                    $guest->address = $request->address;
+                    $guest->city = $request->city;
+                    $guest->state = $request->state;
                     $guest->save();
                     $order->guest_address_id = $guest->id;
                 } else {
                     $order->user_id = $user->id;
                     // انشاء  أو تحديث عنوان المستخدم
-                    $userAddress =  \App\Models\Admin\UserAddress::updateOrCreate(
+                    $userAddress = \App\Models\Admin\UserAddress::updateOrCreate(
 
                         ['user_id' => $user->id],
                         [
                             'full_name' => $request->full_name,
-                            'phone'     => $request->phone,
-                            'address'   => $request->address,
-                            'city'      => $request->city,
-                            'state'     => $request->state,
+                            'phone' => $request->phone,
+                            'address' => $request->address,
+                            'city' => $request->city,
+                            'state' => $request->state,
                         ]
                     );
                     $order->user_address_id = $userAddress->id;
-
 
 
                 }
@@ -152,7 +152,7 @@ class OrderController extends Controller
 
                 $items = Cart::getContent();
 
-                foreach($items as $item) {
+                foreach ($items as $item) {
                     $product = Product::find($item['id']);
                     if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
                         throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
@@ -199,6 +199,15 @@ class OrderController extends Controller
 
                 // التحقق من كود الخصم
                 if ($request->filled('promo_code')) {
+
+                    if (!$user) {
+                        throw new \Exception('كوبونات الخصم للأعضاء المسجلين فقط');
+                    }
+
+                    if ($user->customer_type != 'regular') {
+                        throw new \Exception('كوبونات الخصم للعملاء القطاعي فقط  فقط');
+                    }
+
                     $promoCode = PromoCode::where('code', $request->promo_code)
                         ->where('active', 1)
                         ->where('start_date', '<=', now())
@@ -242,7 +251,7 @@ class OrderController extends Controller
                     }
                 }
 
-                if(($totalPrice - $vip_discount - $promoDiscount) < 1){
+                if (($totalPrice - $vip_discount - $promoDiscount) < 1) {
                     throw new \Exception("تأكد من اجمالي الاوردر قبل عمل اتمام الطلب");
 
                 }
@@ -259,7 +268,7 @@ class OrderController extends Controller
                     DB::table('user_promocode')->insert([
                         'user_id' => $user ? $user->id : null,
                         'promo_code_id' => $promoCode->id,
-                        'order_id'=>$order->id,
+                        'order_id' => $order->id,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -270,7 +279,7 @@ class OrderController extends Controller
                 session()->flash('success', 'تم انشاء طلبك بنجاح');
                 return response()->json([
                     'success' => true,
-                    'route'  => route('home.index'),
+                    'route' => route('home.index'),
                 ]);
             });
         } catch (\Exception $e) {
@@ -281,7 +290,8 @@ class OrderController extends Controller
         }
     }
 
-    public function edit(Order $order){
+    public function edit(Order $order)
+    {
 
         // تفريغ السلة الحالية
         Cart::clear();
@@ -293,14 +303,14 @@ class OrderController extends Controller
 
 
         // التحقق من أن المستخدم الحالي هو صاحب الطلب
-        if($order->user_id){
+        if ($order->user_id) {
             if ($order->user_id !== auth()->user()?->id) {
                 // منع التعديل وإرجاع رسالة
                 return redirect()->back()->with('error', 'لا يمكنك تعديل هذا الطلب.');
             }
         }
 
-        if($order->status->id != 1){
+        if ($order->status->id != 1) {
             session()->forget('editing_order_id');
             return redirect()->route('home.index')->with('error', 'لا يمكنك تعديل الطلب حاليا.');
         }
@@ -324,20 +334,20 @@ class OrderController extends Controller
         session()->put('editing_order_id', $order->id);
 
         // إعادة التوجيه إلى صفحة سلة التسوق مع تخزين الطلب في سلة البيانات
-        return redirect()->route('home.shop-cart',$order->id);
+        return redirect()->route('home.shop-cart', $order->id);
 
     }
 
     public function update(CheckoutRequest $request, Order $order)
     {
         // التحقق من أن المستخدم الحالي هو صاحب الطلب
-        if($order->user_id){
+        if ($order->user_id) {
             if ($order->user_id !== \auth()->user()?->id) {
                 // منع التعديل وإرجاع رسالة
                 return redirect()->route('home.index')->with('error', 'لا يمكنك عرض هذا الطلب.');
             }
         }
-        if($order->status->id != 1){
+        if ($order->status->id != 1) {
             session()->forget('editing_order_id');
             return redirect()->route('home.index')->with('error', 'لا يمكنك تعديل الطلب حاليا.');
         }
@@ -361,10 +371,10 @@ class OrderController extends Controller
                         $guest = new GuestAddress();
                     }
                     $guest->full_name = $request->full_name;
-                    $guest->phone     = $request->phone;
-                    $guest->address   = $request->address;
-                    $guest->city      = $request->city;
-                    $guest->state     = $request->state;
+                    $guest->phone = $request->phone;
+                    $guest->address = $request->address;
+                    $guest->city = $request->city;
+                    $guest->state = $request->state;
                     $guest->save();
                     $order->guest_address_id = $guest->id;
                 } else {
@@ -373,10 +383,10 @@ class OrderController extends Controller
                         ['user_id' => $user->id],
                         [
                             'full_name' => $request->full_name,
-                            'phone'     => $request->phone,
-                            'address'   => $request->address,
-                            'city'      => $request->city,
-                            'state'     => $request->state,
+                            'phone' => $request->phone,
+                            'address' => $request->address,
+                            'city' => $request->city,
+                            'state' => $request->state,
                         ]
                     );
                     $order->user_address_id = $userAddress->id;
@@ -387,7 +397,7 @@ class OrderController extends Controller
                 $all_order_quantity = 0;
 
                 // استرجاع الكميات للمنتج  والكميات الفري اذا وجدت
-                foreach($order->orderDetails as $orderDetail){
+                foreach ($order->orderDetails as $orderDetail) {
                     $product = $orderDetail->product;
                     $product->quantity = $product->quantity + $orderDetail->product_quantity + ($orderDetail->free_quantity ?? 0);
                     $product->save();
@@ -487,7 +497,7 @@ class OrderController extends Controller
                     }
                 }
 
-                if(($totalPrice - $vip_discount - $promoDiscount) < 1){
+                if (($totalPrice - $vip_discount - $promoDiscount) < 1) {
                     throw new \Exception("تأكد من اجمالي الاوردر قبل عمل اتمام الطلب.");
                 }
 
@@ -502,7 +512,7 @@ class OrderController extends Controller
                 $order->vip_discount = $vip_discount;
                 $order->promo_discount = $promoDiscount;
                 $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
-                $order->final_total   =$totalPrice - $vip_discount - $promoDiscount +$shippingCost;
+                $order->final_total = $totalPrice - $vip_discount - $promoDiscount + $shippingCost;
                 $order->save();
 
                 // تحديث كود الخصم إذا كان موجودًا
@@ -517,7 +527,7 @@ class OrderController extends Controller
                     ]);
 
                     $order->update(['promocode_id' => $promoCode->id]);
-                }else{
+                } else {
                     $order->update(['promocode_id' => null]);
 
                 }
@@ -564,7 +574,7 @@ class OrderController extends Controller
         $orderTotal = $request->input('total_order'); // إجمالي الطلب
         $user_id = $request->input('user_id');
 
-        if(!$user_id){
+        if (!$user_id) {
             return response()->json(['error' => 'كوبونات الخصم للأعضاء المسجلين فقط']);
         }
 
@@ -580,17 +590,17 @@ class OrderController extends Controller
             return response()->json(['valid' => false, 'error' => 'كود الخصم غير صحيح أو غير صالح']);
         }
 
-    // تحقق إذا كان المستخدم قد استخدم الكوبون من قبل
+        // تحقق إذا كان المستخدم قد استخدم الكوبون من قبل
         $couponUsed = DB::table('user_promocode')
             ->where('user_id', $user_id)
             ->where('promo_code_id', $coupon->id)
             ->first();
 
-    // إذا كان المستخدم يقوم بتعديل الطلب
-        if(session()->has('editing_order_id')){
+        // إذا كان المستخدم يقوم بتعديل الطلب
+        if (session()->has('editing_order_id')) {
             $editingOrderId = session('editing_order_id');
 
-            if($couponUsed && $couponUsed->order_id != $editingOrderId){
+            if ($couponUsed && $couponUsed->order_id != $editingOrderId) {
                 return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون في طلب آخر من قبل']);
             }
         } else {
@@ -599,7 +609,6 @@ class OrderController extends Controller
                 return response()->json(['valid' => false, 'error' => 'لقد قمت باستخدام هذا الكوبون من قبل']);
             }
         }
-
 
 
         // التحقق من الحد الأدنى لقيمة الطلب
@@ -634,6 +643,6 @@ class OrderController extends Controller
     {
         Cart::clear();
         \session()->forget('editing_order_id');
-        return redirect()-> route('home.index');
+        return redirect()->route('home.index');
     }
 }
