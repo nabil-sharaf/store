@@ -14,6 +14,7 @@ use App\Models\Admin\Setting;
 use App\Models\Admin\ShippingRate;
 use App\Models\Admin\UserAddress;
 use App\Models\User;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -183,7 +184,17 @@ class OrderController extends Controller
                 }
 
                 // التحقق من كود الخصم
+
                 if ($request->filled('promo_code')) {
+
+                    if(!$user){
+                        throw new \Exception('كوبونات الخصم للأعضاء المسجلين فقط');
+                    }
+
+                    if($user->customer_type !='regular'){
+                        throw new \Exception('كوبونات الخصم للعملاء القطاعي فقط  فقط');
+                    }
+
                     $promoCode = PromoCode::where('code', $request->promo_code)
                         ->where('active', 1)
                         ->where('start_date', '<=', now())
@@ -406,6 +417,14 @@ class OrderController extends Controller
 
                 // التحقق من كود الخصم
                 if ($request->filled('promo_code')) {
+                    if(!$user){
+                        throw new \Exception('كوبونات الخصم للأعضاء المسجلين فقط');
+                    }
+
+                    if($user->customer_type !='regular'){
+                        throw new \Exception('كوبونات الخصم للعملاء القطاعي فقط  فقط');
+                    }
+
                     $promoCode = PromoCode::where('code', $order->promocode->code)
                         ->where('active', 1)
                         ->where('start_date', '<=', now())
@@ -526,6 +545,12 @@ class OrderController extends Controller
 
         if (!$user_id) {
             return response()->json(['error' => 'كوبونات الخصم للأعضاء المسجلين فقط'], 400);
+        }
+
+        $type = User::where('id',$user_id)->first()->customer_type;
+
+        if($type !='regular'){
+            return Response()->json(['error'=>'كوبونات الخصم لعملاء القطاعي فقط'],400);
         }
 
         // ابحث عن الكوبون بناءً على الكود المدخل

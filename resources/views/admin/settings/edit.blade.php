@@ -36,13 +36,53 @@
 
                 @if (!$hideInput)
                     <div class="form-group">
-                        <label for="{{ $setting->setting_key }}">{{ $setting->description ?? $setting->setting_key }}</label>
+                        <label
+                            for="{{ $setting->setting_key }}">{{ $setting->description ?? $setting->setting_key }}</label>
 
                         @if($setting->setting_type == 'text')
                             <!-- تطبيق Summernote على حقول textarea -->
-                            <textarea id="summernote-{{ $setting->setting_key }}" name="{{ $setting->setting_key }}" class="form-control">{{ $setting->setting_value }}</textarea>
+                            <textarea id="summernote-{{ $setting->setting_key }}" name="{{ $setting->setting_key }}"
+                                      class="form-control">{{ $setting->setting_value }}</textarea>
+                        @elseif($setting->setting_type =='select')
+                            @if($setting->setting_key == 'Maintenance_mode')
+                                <select class="form-control" name="{{$setting->setting_key}}">
+                                    <option value="0" {{$setting->setting_value == 0 ?'selected' : ''}}>غير مفعل
+                                    </option>
+                                    <option value="1" {{$setting->setting_value == 1 ?'selected' : ''}}> مفعل</option>
+                                </select>
+                            @elseif(in_array($setting->setting_key, ['social_link', 'social_link_2']))
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="social_type_{{ $setting->setting_key }}">
+                                            <option value="">اختر نوع السوشيال ميديا</option>
+                                            <option
+                                                value="youtube" {{ $setting->social_type == 'youtube' ? 'selected' : '' }}>
+                                                YouTube
+                                            </option>
+                                            <option
+                                                value="twitter" {{ $setting->social_type == 'twitter' ? 'selected' : '' }}>
+                                                Twitter
+                                            </option>
+                                            <option
+                                                value="tiktok" {{ $setting->social_type == 'tiktok' ? 'selected' : '' }}>
+                                                TikTok
+                                            </option>
+                                            <option
+                                                value="telegram" {{ $setting->social_type == 'telegram' ? 'selected' : '' }}>
+                                                Telegram
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="url" name="{{ $setting->setting_key }}"
+                                               value="{{ $setting->setting_value }}" class="form-control"
+                                               placeholder="أدخل الرابط">
+                                    </div>
+                                </div>
+                            @endif
                         @else
-                            <input type="{{ $setting->setting_type }}" name="{{ $setting->setting_key }}" value="{{ $setting->setting_value }}" class="form-control">
+                            <input type="{{ $setting->setting_type }}" name="{{ $setting->setting_key }}"
+                                   value="{{ $setting->setting_value }}" class="form-control">
                         @endif
                     </div>
                 @endif
@@ -54,7 +94,7 @@
 @endsection
 @push('styles')
     <style>
-        .form-group{
+        .form-group {
             margin-bottom: 30px;
         }
     </style>
@@ -62,7 +102,7 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // تفعيل محرر Summernote لكل textarea
             @foreach($settings as $setting)
             @if($setting->setting_type == 'text')
@@ -70,7 +110,7 @@
                 placeholder: 'أدخل النص هنا...',
                 tabsize: 2,
                 height: 110, // تعيين ارتفاع المحرر
-                fontSizes: ['12', '14', '16', '18', '20', '22', '24','36' ,'48','72'], // إضافة 16 بكسل
+                fontSizes: ['12', '14', '16', '18', '20', '22', '24', '36', '48', '72'], // إضافة 16 بكسل
 
                 toolbar: [
                     // تقسيم الأدوات إلى مجموعات
@@ -86,7 +126,7 @@
                 lang: 'ar-AR', // دعم اللغة العربية
                 direction: 'rtl', // دعم الكتابة من اليمين لليسار
                 callbacks: {
-                    onInit: function() {
+                    onInit: function () {
                         $('.note-editable p').css('margin-bottom', '12px');
                     }
                 }

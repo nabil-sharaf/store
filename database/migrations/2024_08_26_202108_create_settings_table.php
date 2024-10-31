@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('setting_key')->unique();
-            $table->text('setting_value');
-            $table->string('setting_type')->default('string');
+            $table->text('setting_value')->nullable();
             $table->string('description')->nullable();
+            $table->string('setting_type')->default('string');
+            $table->string('social_type')->nullable();
             $table->timestamps();
         });
     }

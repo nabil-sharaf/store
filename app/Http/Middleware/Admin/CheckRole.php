@@ -13,13 +13,13 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, $roles)
     {
         if(!auth('admin')->check()){
             return redirect()->route('admin.login');
         }else{
-
-        if (!auth('admin')->user()->hasRole($role)) {
+            $rolesArray = is_array($roles) ? $roles : explode('&', $roles);
+            if (!auth('admin')->user()->hasAnyRole($rolesArray)) {
             return redirect()->route('admin.dashboard');
         }
         }

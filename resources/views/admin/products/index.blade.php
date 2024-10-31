@@ -14,6 +14,8 @@
                     <button id="delete-selected" class="btn btn-danger mb-2 mr-2">
                         <i class="fas fa-trash-alt mr-1 ml-2 mt-1 float-right"></i> حذف المنتجات المحددة
                     </button>
+                @endif
+                @if(auth('admin')->user()->hasAnyRole(['superAdmin','supervisor']))
                     <button id="trend-selected" class="btn btn-primary mb-2 mr-2">
                         <i class="fas fa-fire mr-1"></i> المحدد كترند
                     </button>
@@ -79,7 +81,7 @@
                                 <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-info mb-1">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                @if(auth('admin')->user()->hasAnyRole(['superAdmin']))
+                                @if(auth('admin')->user()->hasAnyRole(['superAdmin','supervisor']))
                                     <button type="button" class="btn btn-sm btn-danger delete-product-btn mb-1" data-id="{{ $product->id }}">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>

@@ -17,7 +17,7 @@
     <!--== Bootstrap CSS ==-->
     <link href="{{asset('front/assets')}}/css/bootstrap.min.css" rel="stylesheet"/>
     <!--== Font-awesome Icons CSS ==-->
-    <link href="{{asset('front/assets')}}/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!--== Pe Icon 7 Min Icons CSS ==-->
     <link href="{{asset('front/assets')}}/css/pe-icon-7-stroke.min.css" rel="stylesheet"/>
     <!--== Ionicons CSS ==-->

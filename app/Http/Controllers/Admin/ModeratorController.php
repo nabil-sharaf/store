@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -137,16 +138,26 @@ class ModeratorController extends Controller
 
     public function myAccount($id)
     {
+        if(Auth::guard('admin')->user()->id == $id){
+
         // البحث عن المشرف باستخدام ID
         $admin = Admin::with('roles')->findOrFail($id);
 
         return view('admin.moderators.account', compact('admin'));
+        }else{
+            return redirect()->route('admin.dashboard');
+        }
     }
 
     public function editAccount($id)
     {
-        $moderator = Admin::findOrFail($id); // جلب المشرف باستخدام الـ ID
-        return view('admin.moderators.edit-account', compact('moderator'));
+        if(Auth::guard('admin')->user()->id == $id) {
+            $moderator = Admin::findOrFail($id); // جلب المشرف باستخدام الـ ID
+            return view('admin.moderators.edit-account', compact('moderator'));
+        }else{
+        return redirect()->route('admin.dashboard');
+    }
+
     }
     public function updateAccount(Request $request, $id)
     {

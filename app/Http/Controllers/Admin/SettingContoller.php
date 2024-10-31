@@ -17,13 +17,30 @@ class SettingContoller extends Controller
     {
         $data = $request->except('_token');
 
-        foreach ($data as $key => $value) {
-            Setting::where('setting_key', $key)->update(['setting_value' => $value]);
+        // التعامل مع روابط السوشيال ميديا
+        $socialKeys = ['social_link', 'social_link_2'];
+
+        foreach($socialKeys as $socialKey) {
+            if ($request->has('social_type_' . $socialKey)) {
+                $updateData = [
+                    'setting_value' => $request->$socialKey ?: null,
+                    'social_type' => $request->input('social_type_' . $socialKey) ?: null
+                ];
+
+                Setting::where('setting_key', $socialKey)
+                    ->update($updateData);
+            }
         }
 
-        return redirect()->back()->with('success', 'Settings updated successfully');
-    }
+        // تحديث باقي الإعدادات
+        foreach ($data as $key => $value) {
+            if (!in_array($key, $socialKeys) && !str_starts_with($key, 'social_type_')) {
+                Setting::where('setting_key', $key)->update(['setting_value' => $value]);
+            }
+        }
 
+        return redirect()->back()->with('success', 'تم تحديث الإعدادات بنجاح');
+    }
 
 
 }

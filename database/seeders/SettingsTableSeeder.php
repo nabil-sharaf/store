@@ -76,6 +76,19 @@ class SettingsTableSeeder extends Seeder
                 'description' => 'واتساب'
             ],
             [
+                'setting_key' => 'social_link',
+                'setting_value' => '',
+                'setting_type' => 'select',
+                'description' => 'لينك سوشيال متغير'
+            ],
+            [
+                'setting_key' => 'social_link_2',
+                'setting_value' => '',
+                'setting_type' => 'select',
+                'description' => 'لينك سوشيال متغير 2'
+            ],
+
+            [
                 'setting_key' => 'shipping_title',
                 'setting_value' => 'شحن سريع وإسترجاع مجاني',
                 'setting_type' => 'string',
@@ -163,7 +176,7 @@ class SettingsTableSeeder extends Seeder
             [
                 'setting_key' => 'Maintenance_mode',
                 'setting_value' => 0,
-                'setting_type' => 'integer',
+                'setting_type' => 'select',
                 'description' => 'وضع الصيانة'
             ],
         ]);

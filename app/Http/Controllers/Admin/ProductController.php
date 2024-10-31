@@ -23,7 +23,8 @@ class ProductController extends Controller implements HasMiddleware
     {
         return [
 
-            new Middleware('checkRole:superAdmin', only: ['destroy','deleteAll']),
+            new Middleware('checkRole:superAdmin', only: ['deleteAll']),
+            new Middleware('checkRole:superAdmin&supervisor', only: ['destroy','bestSellerAll','trendAll']),
         ];
     }
     public function index(Request $request)
