@@ -81,7 +81,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="contact-map-area">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5601.418186303435!2d31.31504890000001!3d30.042308900000012!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1458477dd6d40c81%3A0x89b64e0ecf7f6ae4!2sCity%20Stars%20Mall!5e0!3m2!1sen!2seg!4v1607294780661" allowfullscreen="" loading="lazy"></iframe>
+                            <iframe src="{{\App\Models\Admin\Setting::getValue('map')}}" allowfullscreen="" loading="lazy"></iframe>
                         </div>
                     </div>
                 </div>
