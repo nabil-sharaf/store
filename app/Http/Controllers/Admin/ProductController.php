@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
+use App\Models\Admin\Option;
+use App\Models\Admin\Prefix;
 use App\Models\Admin\Product;
 use App\Models\Admin\Image;
 use App\Models\Admin\Category;
@@ -24,9 +26,10 @@ class ProductController extends Controller implements HasMiddleware
         return [
 
             new Middleware('checkRole:superAdmin', only: ['deleteAll']),
-            new Middleware('checkRole:superAdmin&supervisor', only: ['destroy','bestSellerAll','trendAll']),
+            new Middleware('checkRole:superAdmin&supervisor', only: ['destroy', 'bestSellerAll', 'trendAll']),
         ];
     }
+
     public function index(Request $request)
     {
         $query = Product::query();
@@ -46,7 +49,9 @@ class ProductController extends Controller implements HasMiddleware
     public function create()
     {
         $categories = Category::all();
-        return view('admin.products.add', compact('categories'));
+        $prefixes = Prefix::all();
+        $options =Option::all();
+        return view('admin.products.add', compact('categories','prefixes','options'));
     }
 
     public function store(ProductRequest $request)
@@ -59,13 +64,14 @@ class ProductController extends Controller implements HasMiddleware
             $product = Product::create([
                 'name' => $request->name,
                 'description' => $request->description,
-                'info'=>$request->info,
+                'info' => $request->info,
                 'quantity' => $request->quantity,
                 'price' => $request->price,
                 'goomla_price' => $request->goomla_price,
+                'prefix_id'=>$request->prefix_id,
             ]);
 
-            if($request->discount_type && $request->discount > 0){
+            if ($request->discount_type && $request->discount > 0) {
 
                 ProductDiscount::create([
                     'product_id' => $product->id,
@@ -98,10 +104,9 @@ class ProductController extends Controller implements HasMiddleware
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' =>'حدث خطأ أثناء اضافة المنتج تأكد من ملئ جميع الحقول والتواريخ بصورة صحيحة'], 500);
+            return response()->json(['error' => 'حدث خطأ أثناء اضافة المنتج تأكد من ملئ جميع الحقول والتواريخ بصورة صحيحة'], 500);
         }
     }
-
 
     public function show($id)
     {
@@ -110,9 +115,11 @@ class ProductController extends Controller implements HasMiddleware
     }
 
     public function edit(Product $product)
+
     {
         $categories = Category::all();
-        return view('admin.products.edit', compact('product', 'categories'));
+        $prefixes = Prefix::all();
+        return view('admin.products.edit', compact('product', 'categories','prefixes'));
     }
 
     public function update(ProductRequest $request, Product $product)
@@ -122,16 +129,16 @@ class ProductController extends Controller implements HasMiddleware
         try {
             return DB::transaction(function () use ($request, $product) {
                 $product->update([
-                    'name'=>$request->name,
-                    'description'=>$request->description,
-                    'info'=>$request->info,
-                    'price'=> $request->price,
-                    'quantity'=>$request->quantity,
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'info' => $request->info,
+                    'price' => $request->price,
+                    'quantity' => $request->quantity,
                     'goomla_price' => $request->goomla_price,
-
+                    'prefix_id'=>$request->prefix_id,
                 ]);
 
-                if($request->discount_type && $request->discount > 0){
+                if ($request->discount_type && $request->discount > 0) {
 
                     ProductDiscount::updateOrCreate(
                     // الشرط لتحديد إذا كان الريكورد موجودًا
@@ -144,9 +151,8 @@ class ProductController extends Controller implements HasMiddleware
                             'start_date' => $request->start_date,
                             'end_date' => $request->end_date,
 
-                ]);
-                }
-                else{
+                        ]);
+                } else {
                     // البحث عن الريكورد الذي يحتوي على المنتج المحدد
                     $productDiscount = ProductDiscount::where('product_id', $product->id)->first();
 
@@ -191,9 +197,7 @@ class ProductController extends Controller implements HasMiddleware
                 $randomName = uniqid() . '.' . $image->getClientOriginalExtension();
                 // تخزين الصورة في المسار المحدد
                 $path = $image->storeAs('products', $randomName, 'public');
-                Image::create([
-                    'product_id' => $product->id,
-                    'name' => $randomName,
+                $product->images()->create([
                     'path' => $path
                 ]);
             }
@@ -235,12 +239,13 @@ class ProductController extends Controller implements HasMiddleware
         $products = Product::whereIn('id', $ids)->get();
         foreach ($products as $product) {
 
-        $this->deleteProductImages($product);
-        $product->delete();
+            $this->deleteProductImages($product);
+            $product->delete();
         }
 
         return response()->json(['success' => 'تم حذف العناصر المختارة بنجاح']);
     }
+
     public function trendAll(Request $request)
     {
         $ids = $request->ids;
@@ -248,14 +253,15 @@ class ProductController extends Controller implements HasMiddleware
         foreach ($products as $product) {
 
 
-       $product->update([
-           'is_trend'=>true,
-       ]);
+            $product->update([
+                'is_trend' => true,
+            ]);
 
         }
 
         return response()->json(['success' => 'تم جعل المنتجات المختارة ترند بنجاح']);
     }
+
     public function bestSellerAll(Request $request)
     {
         $ids = $request->ids;

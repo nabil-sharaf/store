@@ -64,7 +64,7 @@
                                                 <option value="{{ $product->id }}"
                                                         data-price-retail="{{ $product->price }}"
                                                         data-price-wholesale="{{ $product->goomla_price }}"
-                                                        data-quantity="{{ $product->quantity }}"
+                                                        data-quantity="{{ $product->available_quantity }}"
                                                         data-discount-type="{{ $product->discount->discount_type ?? null }}"
                                                         data-discount-value="{{ $product->discount->discount ?? 0 }}">
                                                     {{ $product->name }}
@@ -233,7 +233,7 @@
                     data-price-wholesale="{{ $product->goomla_price }}"
                     data-discount-type="{{ $product->discount->discount_type ?? '' }}"
                     data-discount-value="{{ $product->discount->discount ?? 0 }}"
-                    data-quantity="{{ $product->quantity }}">{{ $product->name }}</option>
+                    data-quantity="{{ $product->available_quantity }}">{{ $product->name }}</option>
                     @endforeach
                 </select>
             </div>

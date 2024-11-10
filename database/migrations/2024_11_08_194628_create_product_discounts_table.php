@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('product_discounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
+            $table->foreignId('variant_id')->nullable()->constrained('variants')->cascadeOnDelete();
             $table->decimal('discount', 8, 2); // قيمة الخصم
             $table->enum('discount_type', ['percentage', 'fixed']);
             $table->datetime('start_date');

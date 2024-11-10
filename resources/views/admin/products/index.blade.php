@@ -70,7 +70,7 @@
                                 @endif
                             </td>
                             <td>{{ $product->price }} ج</td>
-                            <td>{{ $product->quantity }}</td>
+                            <td>{{ $product->available_quantity }}</td>
                             <td>{{ $product->discount ? $product->discount->discount . ($product->discount->discount_type == 'percentage' ? '%' : ' ج') : 'لا يوجد' }}</td>
                             <td class="d-none d-md-table-cell">{{ $product->discount?->start_date ? $product->discount->start_date->format('Y-m-d') : 'N/A' }}</td>
                             <td class="d-none d-md-table-cell">{{ $product->discount?->end_date ? $product->discount->end_date->format('Y-m-d') : 'N/A' }}</td>

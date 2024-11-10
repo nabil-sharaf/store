@@ -10,10 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('images', function (Blueprint $table) {
+        Schema::create('variants', function (Blueprint $table) {
             $table->id();
-            $table->string('path');
-            $table->morphs('imageable'); // هذا سينشئ العمودين imageable_id و imageable_type تلقائيًا
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+            $table->string('sku_code')->unique();
+            $table->decimal('price', 8, 2);
+            $table->decimal('goomla_price', 8, 2);
+            $table->integer('quantity');
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('images');
+        Schema::dropIfExists('variants');
     }
 };

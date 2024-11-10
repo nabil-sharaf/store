@@ -9,7 +9,7 @@ class ProductDiscount extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'discount', 'discount_type', 'start_date', 'end_date'];
+    protected $fillable = ['product_id','variant_id', 'discount', 'discount_type', 'start_date', 'end_date'];
 
     protected $casts = [
         'start_date' => 'datetime',
@@ -25,5 +25,9 @@ class ProductDiscount extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
     }
 }

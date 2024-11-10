@@ -30,7 +30,8 @@ class ProductRequest extends FormRequest
             'end_date' => 'nullable|required_if:discount_type,fixed,percentage|date|after_or_equal:start_date',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
-            'images.*' => 'image|max:2048'
+            'images.*' => 'image|max:2048',
+            'prefix_id'=>'nullable|exists:prefixes,id'
         ];
     }
 

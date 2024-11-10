@@ -19,7 +19,8 @@
                                     <div class="swiper-wrapper">
                                         @foreach($product->images as $image)
                                             <div class="swiper-slide">
-                                                <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $product->name }}">
+                                                <img src="{{ asset('storage/' . $image->path) }}"
+                                                     alt="{{ $product->name }}">
                                             </div>
                                         @endforeach
                                     </div>
@@ -36,15 +37,15 @@
 
                         <h4 class="text-primary mt-4">التفاصيل</h4>
                         <ul class="list-group">
-                            <li class="list-group-item"><strong>السعر:</strong> {{ $product->price }}  ج</li>
-                            <li class="list-group-item"><strong>الكمية المتاحة:</strong> {{ $product->quantity }}</li>
-                            <li class="list-group-item"><strong>القسم:</strong> {{ $product->categories->pluck('name')->implode(', ') }}</li>
-
-                            <!-- الحقول الجديدة -->
+                            <li class="list-group-item"><strong>سعر القطاعي قبل الخصم:</strong> {{ $product->price }} ج
+                            </li>
+                            <li class="list-group-item"><strong>سعر الجملة قبل
+                                    الخصم:</strong> {{ $product->goomla_price }} ج
+                            </li>
                             <li class="list-group-item"><strong>قيمة الخصم:</strong>
                                 @php
-                                    $discount = $product?->productDiscount?->discount;
-                                    if($discount==0){
+                                    $discount = $product->discount?->discount;
+                                    if(!$discount || $discount == 0){
                                         $text = 'لا يوجد ';
                                     }else{
                                        if($product->discount?->discount_type=='fixed'){
@@ -54,29 +55,39 @@
                                        }
                                     }
                                 @endphp
-                                    {{$product?->productDiscount?->discount ==0 ? $text :$discount . ' '.$text}}
+                                {{($product->discount ?->discount == 0 || ! $product->discount?->discount) ? $text :$discount . ' '.$text}}
                             </li>
-                            <li class="list-group-item"><strong>نوع الخصم:</strong>
-                                @php
-                                    $discountType = $product->discount?->discount_type ?? '';
-                                    $discountText = match($discountType) {
-                                        'fixed' => 'ثابت',
-                                        'percentage' => 'نسبة مئوية',
-                                        default => 'لا يوجد'
-                                    };
-                                @endphp
-                                {{ $discountText }}
-                            </li>
-                            <li class="list-group-item"><strong>تاريخ البدء:</strong> {{ $product->discount?->start_date ? $product->discount->start_date->format('Y-m-d') : 'لا يوجد' }}</li>
-                            <li class="list-group-item"><strong>تاريخ الانتهاء:</strong> {{ $product->discount?->end_date ? $product->discount->end_date->format('Y-m-d') : 'لا يوجد' }}</li>
+                            <li class="list-group-item"><strong>الكمية المتاحة:</strong> {{ $product->available_quantity }}</li>
+                            <li class="list-group-item">
+                                <strong>القسم:</strong> {{ $product->categories->pluck('name')->implode(', ') }}</li>
+
+                            @if($product->discount)
+                                <!-- الحقول الجديدة -->
+                                <li class="list-group-item"><strong>نوع الخصم:</strong>
+                                    @php
+                                        $discountType = $product->discount?->discount_type ?? '';
+                                        $discountText = match($discountType) {
+                                            'fixed' => 'ثابت',
+                                            'percentage' => 'نسبة مئوية',
+                                            default => 'لا يوجد'
+                                        };
+                                    @endphp
+                                    {{ $discountText }}
+                                </li>
+                                <li class="list-group-item"><strong>تاريخ بدأ
+                                        الخصم:</strong> {{ $product->discount?->start_date ? $product->discount->start_date->format('Y-m-d') : 'لا يوجد' }}
+                                </li>
+                                <li class="list-group-item"><strong>تاريخ انتهاء
+                                        الخصم:</strong> {{ $product->discount?->end_date ? $product->discount->end_date->format('Y-m-d') : 'لا يوجد' }}
+                                </li>
                         </ul>
+                        @endif
 
                         <h4 class="text-primary">الوصف</h4>
                         <p>{!! $product->description ?? ' لا يوجد ' !!}</p>
 
                         <h4 class="text-primary text-decoration-underline">معلومات وتفاصيل اضافية:- </h4>
                         <p>{!! $product->info ?? 'لا يوجد' !!}  </p>
-
 
 
                     </div>
@@ -87,7 +98,9 @@
                     <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">حذف</button>
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">حذف
+                        </button>
                     </form>
                     <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">العودة للقائمة</a>
                 </div>
@@ -103,23 +116,26 @@
             border-radius: 8px;
             overflow: hidden;
         }
+
         .swiper-container {
             width: 100%;
             height: 100%;
         }
+
         .swiper-slide {
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .swiper-slide img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
         }
 
-        .swiper-button-prev ,.swiper-button-next{
-            top:200px;
+        .swiper-button-prev, .swiper-button-next {
+            top: 200px;
         }
     </style>
 

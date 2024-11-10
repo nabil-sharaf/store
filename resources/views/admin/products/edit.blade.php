@@ -15,7 +15,7 @@
             @method('PUT')
             @csrf
             <div class="card-body">
-                <!-- الحقول السابقة مثل اسم المنتج، الوصف، السعر، الكمية -->
+
                 <div class="form-group row">
                     <label for="inputName" class="col-sm-2 control-label">اسم المنتج</label>
                     <div class="col-sm-10">
@@ -90,6 +90,21 @@
                             @endforeach
                         </select>
                         @error('categories')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+{{--                البريفيكس--}}
+                <div class="form-group row mt-4">
+                    <label for="prefix" class="col-sm-2 control-label"> البريفكس </label>
+                    <div class="col-sm-10">
+                        <select  class="form-control select2  @error('prefix_id') is-invalid @enderror" id="prefix" name="prefix_id" style="width: 100%">
+                            @foreach($prefixes as $prefix)
+                                <option
+                                    value="{{ $prefix->id }}" {{ old('prefix_id',$prefix->id )== $product->prefix?->id ? 'selected' : '' }}>
+                                    {{ $prefix->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('prefix_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
                 <!-- إضافة الحقول الجديدة للخصم وتواريخه -->

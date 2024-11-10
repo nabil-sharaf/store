@@ -113,6 +113,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
                 Route::put('offers/popup', [PopupController::class, 'update'])->name('popup.update');
 
                 Route::resource('offers', OfferController::class);
+
+                //----------------------------- Prefixes Routes  ------------------------------
+
+                Route::resource('prefixes', Adm\PrefixController::class);
+
             });
 
         });

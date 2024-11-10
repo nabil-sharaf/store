@@ -107,7 +107,7 @@
                         </ul>
                     </li>
                 @endif
-                <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/products*') ? 'menu-open' : '' }}">
+                <li class="nav-item has-treeview {{ (Request::is(app()->getLocale() .'/admin/products*'))||( Route::is('admin.prefixes.*')) ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-chart-pie"></i>
                         <p class='font-weight-bold'>
@@ -130,6 +130,14 @@
                                 <p>إضافة منتج</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.prefixes.index') }}"
+                               class="nav-link {{ Route::is('admin.prefixes.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> اختصارات للبريفكس </p>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
                 @if(auth('admin')->user()->hasAnyRole(['superAdmin','supervisor']))
