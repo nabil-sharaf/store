@@ -10,6 +10,7 @@ use App\Models\Admin\Product;
 use App\Models\Admin\Image;
 use App\Models\Admin\Category;
 use App\Models\Admin\ProductDiscount;
+use App\Models\Admin\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use OwenIt\Auditing\Models\Audit;
 
 class ProductController extends Controller implements HasMiddleware
 {
@@ -34,77 +36,145 @@ class ProductController extends Controller implements HasMiddleware
     {
         $query = Product::query();
 
-        // تحقق من وجود البحث
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+        if ($request->has('search') && $request->search !== null) {
+            $searchTerm = $request->search;
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchTerm) . '%'])
+                    ->orWhereRaw('LOWER(sku_code) LIKE ?', ['%' . strtolower($searchTerm) . '%'])
+                    ->orWhereHas('variants', function ($variantQuery) use ($searchTerm) {
+                        $variantQuery->whereRaw('LOWER(sku_code) LIKE ?', ['%' . strtolower($searchTerm) . '%']);
+                    });
+            });
         }
 
-        // إضافة العلاقات المطلوبة مثل الفئات والخصومات
-        $products = $query->with('categories', 'discount')->paginate(get_pagination_count());
+        $products = $query->with([
+            'categories',
+            'discount',
+            'images',
+            'variants.optionValues.option',
+            'variants.images'
+        ])->paginate(get_pagination_count());
 
         return view('admin.products.index', compact('products'));
     }
-
 
     public function create()
     {
         $categories = Category::all();
         $prefixes = Prefix::all();
-        $options =Option::all();
-        return view('admin.products.add', compact('categories','prefixes','options'));
+        $options = Option::all();
+        return view('admin.products.add', compact('categories', 'prefixes', 'options'));
     }
 
     public function store(ProductRequest $request)
     {
-
         try {
-            // بدء الترانزكشن
             DB::beginTransaction();
-            // إنشاء المنتج
-            $product = Product::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'info' => $request->info,
-                'quantity' => $request->quantity,
-                'price' => $request->price,
-                'goomla_price' => $request->goomla_price,
-                'prefix_id'=>$request->prefix_id,
-            ]);
 
-            if ($request->discount_type && $request->discount > 0) {
-
-                ProductDiscount::create([
-                    'product_id' => $product->id,
-                    'discount' => $request->discount,
-                    'discount_type' => $request->discount_type,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
+            // محاولة إنشاء المنتج
+            try {
+                $product = Product::create([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'info' => $request->info,
+                    'quantity' => $request->quantity,
+                    'price' => $request->price,
+                    'goomla_price' => $request->goomla_price,
+                    'prefix_id' => $request->prefix_id,
                 ]);
+            } catch (\Exception $e) {
+                throw new \Exception('فشل في إنشاء المنتج: ' . $e->getMessage());
             }
 
+            // إضافة الخصم إذا وجد
+            if ($request->discount_type && $request->discount > 0) {
+                try {
+                    ProductDiscount::create([
+                        'product_id' => $product->id,
+                        'discount' => $request->discount,
+                        'discount_type' => $request->discount_type,
+                        'start_date' => $request->start_date,
+                        'end_date' => $request->end_date,
+                    ]);
+                } catch (\Exception $e) {
+                    throw new \Exception('فشل في إضافة الخصم: ' . $e->getMessage());
+                }
+            }
 
-            // ربط الفئات بالمنتج
-            $this->syncCategories($product, $request->categories);
+            // إضافة الفاريانت إذا وجد
+            if ($request->variants) {
+                try {
+                    foreach ($request->variants as $index => $variantInput) {
+                        try {
+                            $productVariant = Variant::create([
+                                'product_id' => $product->id,
+                                'price' => $variantInput['price'],
+                                'goomla_price' => $variantInput['goomla_price'],
+                                'quantity' => $variantInput['quantity'],
+                            ]);
 
-            // التعامل مع الصور
-            $this->handleImages($request, $product);
+                            // ربط قيم الخيارات
+                            $productVariant->optionValues()->attach($variantInput['values']);
 
-            // تأكيد الترانزكشن
+                            // إعادة تحميل البيانات من قاعدة البيانات بعد الحفظ
+                            $productVariant->refresh()->loadMissing(['optionValues', 'optionValues.option']);
+                            $productVariant->update(['sku_code' => $productVariant->generateSku()]);
+
+                            // معالجة الصور
+                            $this->handleVariantImages($variantInput, $productVariant, $product->id);
+                        } catch (\Exception $e) {
+                            throw new \Exception("فشل في إضافة الفاريانت رقم " . ($index + 1) . ": " . $e->getMessage());
+                        }
+                    }
+                } catch (\Exception $e) {
+                    throw new \Exception('فشل في معالجة الفاريانت: ' . $e->getMessage());
+                }
+            }
+
+            // ربط الفئات
+            try {
+                $this->syncCategories($product, $request->categories);
+            } catch (\Exception $e) {
+                throw new \Exception('فشل في ربط الفئات: ' . $e->getMessage());
+            }
+
+            // معالجة الصور
+            try {
+                $this->handleImages($request, $product);
+            } catch (\Exception $e) {
+                throw new \Exception('فشل في معالجة الصور: ' . $e->getMessage());
+            }
+
             DB::commit();
 
             return response()->json([
-                'success' => 'تم إضافة المنتج بنجاح',
+                'success' => 'تم اضافة المنج بنجاح',
+                'message' => 'تم إضافة المنتج بنجاح',
+                'product_id' => $product->id
             ]);
 
         } catch (ValidationException $e) {
-            // إرجاع الأخطاء كـ JSON
+            DB::rollBack();
             return response()->json([
+                'success' => false,
+                'type' => 'validation',
                 'errors' => $e->validator->errors()
-            ], 422); // كود 422 يعني أخطاء في الفاليديشان
+            ], 422);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'حدث خطأ أثناء اضافة المنتج تأكد من ملئ جميع الحقول والتواريخ بصورة صحيحة'], 500);
+
+            // تحليل نص الخطأ للحصول على رسالة مناسبة
+            $errorMessage = $this->getReadableErrorMessage($e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'type' => 'system',
+                'message' => $errorMessage,
+                'debug_message' => config('app.debug') ? $e->getMessage() : null,
+                'errors' => $this->getErrorLocation($e->getMessage())
+            ], 422);
         }
     }
 
@@ -119,98 +189,137 @@ class ProductController extends Controller implements HasMiddleware
     {
         $categories = Category::all();
         $prefixes = Prefix::all();
-        return view('admin.products.edit', compact('product', 'categories','prefixes'));
+        $options = Option::all();
+        return view('admin.products.edit', compact('product', 'categories', 'prefixes', 'options'));
     }
 
-    public function update(ProductRequest $request, Product $product)
+    public function update(ProductRequest $request, $id)
     {
-
-
         try {
-            return DB::transaction(function () use ($request, $product) {
+            DB::beginTransaction();
+
+            // محاولة تحديث المنتج
+            try {
+                $product = Product::findOrFail($id);
                 $product->update([
                     'name' => $request->name,
                     'description' => $request->description,
                     'info' => $request->info,
-                    'price' => $request->price,
                     'quantity' => $request->quantity,
+                    'price' => $request->price,
                     'goomla_price' => $request->goomla_price,
-                    'prefix_id'=>$request->prefix_id,
+                    'prefix_id' => $request->prefix_id,
                 ]);
+            } catch (\Exception $e) {
+                throw new \Exception('فشل في تحديث المنتج: ' . $e->getMessage());
+            }
 
-                if ($request->discount_type && $request->discount > 0) {
-
+            // تحديث الخصم إذا وجد
+            if ($request->discount_type && $request->discount > 0) {
+                try {
                     ProductDiscount::updateOrCreate(
-                    // الشرط لتحديد إذا كان الريكورد موجودًا
                         ['product_id' => $product->id],
-
-                        // البيانات التي سيتم تحديثها أو إنشاؤها
                         [
                             'discount' => $request->discount,
                             'discount_type' => $request->discount_type,
                             'start_date' => $request->start_date,
                             'end_date' => $request->end_date,
-
-                        ]);
-                } else {
-                    // البحث عن الريكورد الذي يحتوي على المنتج المحدد
-                    $productDiscount = ProductDiscount::where('product_id', $product->id)->first();
-
-// التحقق من وجود الريكورد ثم حذفه
-                    if ($productDiscount) {
-                        $productDiscount->delete();
-                    }
+                        ]
+                    );
+                } catch (\Exception $e) {
+                    throw new \Exception('فشل في تحديث الخصم: ' . $e->getMessage());
                 }
+            } else {
+                $productDiscount = ProductDiscount::where('product_id', $product->id)->first();
+                if ($productDiscount) {
+                    $productDiscount->delete();
+                }
+            }
+
+            // معالجة الصور
+            $this->handleImages($request, $product);
+
+            // تحديث ربط الفئات
+            $this->syncCategories($product, $request->categories);
+
+            // تحديث الفاريانت إذا وجد
+            if ($request->variants) {
+                foreach ($request->variants as $index => $variantInput) {
+                    $productVariant = Variant::updateOrCreate(
+                        [
+                            'id' => $variantInput['id'] ?? null,
+                            'product_id' => $product->id
+                        ],
+                        [
+                            'price' => $variantInput['price'],
+                            'goomla_price' => $variantInput['goomla_price'],
+                            'quantity' => $variantInput['quantity'],
+                        ]
+                    );
+
+                    $productVariant->optionValues()->sync($variantInput['values']);
+                    $productVariant->refresh()->loadMissing(['optionValues', 'optionValues.option']);
+                    $productVariant->update(['sku_code' => $productVariant->generateSku()]);
+                    $this->handleVariantImages($variantInput, $productVariant, $product->id);
+                }
+            }
+
+            DB::commit();
+
+            session()->flash('success', 'تم تحديث المنتج بنجاح');
+            return response()->json(['success' => true]);
 
 
-                $this->syncCategories($product, $request->categories);
-                $this->handleImages($request, $product);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'type' => 'validation',
+                'errors' => $e->validator->errors()
+            ], 422);
 
-                return redirect()->route('admin.products.index')->with('success', 'تم تحديث المنتج بنجاح');
-
-
-            });
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', $e->getMessage());
+            DB::rollBack();
+
+            // تحليل نص الخطأ للحصول على رسالة مناسبة
+            $errorMessage = $this->getReadableErrorMessage($e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'type' => 'system',
+                'message' => $errorMessage,
+                'debug_message' => config('app.debug') ? $e->getMessage() : null,
+                'errors' => $this->getErrorLocation($e->getMessage())
+            ], 422);
         }
     }
+
 
     public function destroy(Product $product)
     {
-        $this->deleteProductImages($product);
-        $product->delete();
+        try {
+            DB::beginTransaction();
+            // حذف الصور المرتبطة بالمنتج
+            $this->deleteProductImages($product);
 
-        return response()->json(['success' => 'تم حذف المنتج بنجاح']);
-    }
-
-
-    private function syncCategories(Product $product, array $categories)
-    {
-        $product->categories()->sync($categories);
-    }
-
-    private function handleImages(Request $request, Product $product)
-    {
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-
-                $randomName = uniqid() . '.' . $image->getClientOriginalExtension();
-                // تخزين الصورة في المسار المحدد
-                $path = $image->storeAs('products', $randomName, 'public');
-                $product->images()->create([
-                    'path' => $path
-                ]);
+            // حذف الفاريانتس مع الصور والروابط المرتبطة
+            foreach ($product->variants as $variant) {
+                $this->deleteVariantImages($variant); // حذف الصور المرتبطة بالفاريانت
+                $variant->optionValues()->detach(); // فك الربط مع قيم الخيارات
+                $variant->delete(); // حذف الفاريانت
             }
+
+            // حذف المنتج
+            $product->delete();
+            DB::commit();
+            return redirect()->route('admin.products.index')->with(['success' => 'تم حذف المنتج وجميع التفاصيل الخاصة به بنجاح']);
+//            return response()->json(['success' => 'تم حذف المنتج وجميع التفاصيل المرتبطة به بنجاح']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'حدث خطأ أثناء الحذف: ' . $e->getMessage()], 500);
         }
     }
 
-    private function deleteProductImages(Product $product)
-    {
-        foreach ($product->images as $image) {
-            Storage::disk('public')->delete($image->path);
-            $image->delete();
-        }
-    }
 
     public function removeImage($id)
     {
@@ -229,7 +338,7 @@ class ProductController extends Controller implements HasMiddleware
             return response()->json(['success' => true, 'message' => 'تم حذف الصورة بنجاح']);
         } catch (\Exception $e) {
             Log::error('Error deleting image: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'حدث خطأ أثناء حذف الصورة: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'حدث خطأ أثناء حذف الصورة حاول مرة أخرى: ' . $e->getMessage()], 500);
         }
     }
 
@@ -288,6 +397,127 @@ class ProductController extends Controller implements HasMiddleware
         }
     }
 
+    public function getOptionValues(Request $request)
+    {
+//        $currentLang = app()->getLocale(); // الحصول على اللغة الحالية
+        $currentLang = 'ar';
+        $optionId = $request->input('option_id');
+        $optionValues = Option::where('id', $optionId)->first()->optionValues;
+
+        return response()->json($optionValues->map(function ($value) use ($currentLang) {
+            return [
+                'id' => $value->id,
+                'value' => $value->getTranslation('value', $currentLang), // ترجمة بناءً على اللغة الحالية
+            ];
+        }));
+    }
+
+    //------------------------ private Functions ---------------------
+
+    private function syncCategories(Product $product, array $categories)
+    {
+        $product->categories()->sync($categories);
+    }
+
+    private function handleImages(Request $request, Product $product)
+    {
+        // معالجة صور المنتج إذا كانت موجودة
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $randomName = uniqid() . '.' . $image->getClientOriginalExtension();
+                $productFolder = 'products/' . $product->id;
+                $path = $image->storeAs($productFolder, $randomName, 'public');
+                $product->images()->create([
+                    'path' => $path,
+                ]);
+            }
+        }
+    }
+
+    private function handleVariantImages($variantInput, $productVariant, $productId)
+    {
+        // التحقق من وجود صور لهذا الفاريانت
+        if (isset($variantInput['images'])) {
+            // معالجة الصور للفاريانت
+            foreach ($variantInput['images'] as $image) {
+                $randomName = uniqid() . '.' . $image->getClientOriginalExtension();
+                $variantFolder = 'products/' . $productId . '/' . $productVariant->id;
+                $path = $image->storeAs($variantFolder, $randomName, 'public');
+                $productVariant->images()->create([
+                    'path' => $path,
+                ]);
+            }
+        }
+
+    }
+
+    private function deleteProductImages(Product $product)
+    {
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
+    }
+
+    private function deleteVariantImages(Variant $variant)
+    {
+        // فرضاً لديك علاقة images في موديل Variant
+        foreach ($variant->images as $image) {
+
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
+    }
+
+
+    /**
+     * تحويل رسالة الخطأ إلى رسالة مفهومة للمستخدم
+     */
+    private function getReadableErrorMessage($error)
+    {
+        // التحقق من أنواع محددة من الأخطاء وإرجاع رسائل مناسبة
+        if (str_contains($error, 'Duplicate entry')) {
+            return 'هذا العنصر موجود مسبقاً';
+        }
+
+        if (str_contains($error, 'foreign key constraint fails')) {
+            return 'فشل في الربط مع عنصر غير موجود';
+        }
+
+        if (str_contains($error, 'Data too long')) {
+            return 'البيانات المدخلة أطول من الحد المسموح';
+        }
+
+        // إرجاع الرسالة الأصلية إذا كانت تبدأ بنص عربي (رسائلنا المخصصة)
+        if (preg_match('/[\x{0600}-\x{06FF}]/u', $error)) {
+            return $error;
+        }
+
+        // رسالة افتراضية
+        return 'حدث خطأ أثناء معالجة طلبك. الرجاء المحاولة مرة أخرى';
+    }
+
+    /**
+     * تحديد موقع الخطأ في النظام
+     */
+    private function getErrorLocation($error)
+    {
+        $locations = [
+            'فشل في إنشاء المنتج' => 'product_creation',
+            'فشل في إضافة الخصم' => 'discount_creation',
+            'فشل في إضافة الفاريانت' => 'variant_creation',
+            'فشل في ربط الفئات' => 'categories_sync',
+            'فشل في معالجة الصور' => 'images_handling'
+        ];
+
+        foreach ($locations as $errorText => $location) {
+            if (str_contains($error, $errorText)) {
+                return $location;
+            }
+        }
+
+        return 'unknown';
+    }
 
 }
 

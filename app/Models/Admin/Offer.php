@@ -14,11 +14,15 @@ class Offer extends Model
             'end_date'=>'datetime',
         ];
     }
-    protected $fillable = ['offer_name', 'offer_quantity', 'free_quantity','start_date','end_date', 'customer_type', 'product_id'];
+    protected $fillable = ['offer_name', 'offer_quantity', 'free_quantity','start_date','end_date', 'customer_type', 'product_id','variant_id'];
 
 
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
     }
 }

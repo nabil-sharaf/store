@@ -25,7 +25,7 @@ class OfferController extends Controller
     public function store(OfferRequest $request)
     {
         try{
-            Offer::create($request->all());
+            Offer::create($request->validated());
             return redirect()->route('admin.offers.index')->with('success', 'Offer created successfully.');
         }
         catch (\Exception $e) {

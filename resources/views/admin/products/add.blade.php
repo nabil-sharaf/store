@@ -111,7 +111,7 @@
                             @foreach($prefixes as $prefix)
                                 <option
                                     value="{{ $prefix->id }}" {{ old('prefix_id' )}}>
-                                    {{ $prefix->description }}
+                                    {{ $prefix->getTranslation('name','ar') }}
                                 </option>
                             @endforeach
                         </select>
@@ -172,7 +172,7 @@
                 </div>
 
                 <!-- الصور -->
-                <div class="form-group row mt-4">
+                <div class="form-group row mt-4 product-images-div">
                     <label for="inputImages" class="col-sm-2 control-label">صور المنتج</label>
                     <div class="col-sm-10">
                         <input type="file" class="form-control-file @error('images') is-invalid @enderror"
@@ -183,13 +183,27 @@
                 </div>
 
                 <!-- قسم لمعاينة الصور -->
-                <div class="form-group row mt-4">
+                <div class="form-group row  product-image-preview">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-10">
                         <div id="imagePreviewContainer" class="d-flex flex-wrap"></div>
                     </div>
                 </div>
 
+                <div class="container mt-4">
+
+                    <!-- الحاوية التي سيتم إضافة الفاريانتات إليها -->
+                    <div id="variantContainer">
+                        <!-- سيتم إضافة الفاريانتات هنا بواسطة الجافاسكريبت -->
+
+
+                    </div>
+
+                    <!-- زر إضافة فاريانت جديد -->
+                    <button type="button" id="addVariantButton" class="btn btn-primary mb-4"><i
+                            class="fa fa-plus"></i><span> اضافة تنوع للمنتج</span>
+                    </button>
+                </div>
 
             </div>
             <!-- /.card-body -->
@@ -218,7 +232,7 @@
                         var img = document.createElement('img');
                         img.src = e.target.result;
                         img.className = 'img-thumbnail';
-                        img.style = 'height: 100px; width: 100px; object-fit: cover;';
+                        img.style = 'height: 60px; width: 60px; object-fit: cover;';
 
                         imgWrapper.appendChild(img);
                         previewContainer.appendChild(imgWrapper);
@@ -306,6 +320,7 @@
                 $('#product-form')[0].reset();
                 $('.select2').val(null).trigger('change');
                 $('#imagePreviewContainer').empty();
+                $('#variantContainer').empty();
 
                 $('html, body').animate({
                     scrollTop: $("#product-form").offset().top
@@ -313,7 +328,376 @@
             }
         });
 
+        // كود الفاريانت
+        $(document).ready(function () {
+            const maxOptions = {{$options->count()}};
 
+            // عند الضغط على زر إضافة فاريانت جديد
+            $('#addVariantButton').on('click', function () {
+                let variantIndex = $('#variantContainer .variant-group').length;
+                // جلب قيم سعر القطاعي والجملة من حقول المنتج
+                const productPrice = $('#inputPrice').val() || '';
+                const productGoomlaPrice = $('#inputGoomlaPrice').val() || '';
+
+                const variantHtml = `
+            <div class="variant-group" data-index="${variantIndex}">
+                <span class="delete-variant text-danger">
+                    <i class="fa fa-trash"></i>
+                </span>
+
+                <div class="option-group">
+                    <select name="variants[${variantIndex}][options][0]" class="form-control option-select select2">
+                        <option value="" selected disabled>اختر الاوبشن</option>
+                        @foreach($options as $option)
+                <option value="{{$option->id}}">{{$option->getTranslation('name', 'ar')}}</option>
+                        @endforeach
+                </select>
+
+                <select name="variants[${variantIndex}][values][0]" class="form-control value-select select2">
+                        <option value="">اختر القيمة</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-secondary add-option mt-3">
+                    <i class="fa fa-plus"></i> إضافة اوبشن
+                </button>
+
+                <div class="form-group row mt-3">
+                    <label  class="col-sm-2 form-label-sm">الكمية </label>
+                    <div class="col-sm-10">
+                        <input type="number" name="variants[${variantIndex}][quantity]" placeholder="ادخل الكمية " class="form-control" >
+                         @error('variants[${variantIndex}][quantity]')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label  class="col-sm-2 form-label-sm">سعر القطاعي </label>
+                <div class="col-sm-10">
+                    <input type="number" name="variants[${variantIndex}][price]" placeholder=" سعر المنتج " class="form-control"  value="${productPrice}" >
+                         @error('variants[${variantIndex}][price]')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label  class="col-sm-2 form-label-sm control-label">سعر الجملة </label>
+                <div class="col-sm-10">
+                    <input type="number" name="variants[${variantIndex}][goomla_price]" placeholder=" سعر الجملة " class="form-control" value="${productGoomlaPrice}" >
+                         @error('variants[${variantIndex}][goomla_price]')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label  class="col-sm-2 form-label-sm"> الصور </label>
+                <div class="col-sm-10">
+                    <input type="file" name="variants[${variantIndex}][images][]" multiple class="form-control variant-images" >
+                         @error('variants[${variantIndex}][images]')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="image-preview-container d-flex flex-wrap mt-2 gap-2"></div>
+           </div>
+       </div>
+
+   </div>
+`;
+
+                $('#variantContainer').append(variantHtml);
+            });
+
+            // عند الضغط على أيقونة حذف الفاريانت
+            $('#variantContainer').on('click', '.delete-variant', function () {
+                $(this).closest('.variant-group').remove();
+                updateVariantIndexes();
+            });
+
+            // إعادة ترتيب الفهارس بعد الحذف
+            function updateVariantIndexes() {
+                $('#variantContainer .variant-group').each(function (index) {
+                    $(this).attr('data-index', index);
+                    $(this).find('select, input, button').each(function () {
+                        const nameAttr = $(this).attr('name');
+                        if (nameAttr) {
+                            const updatedName = nameAttr.replace(/variants\[\d+\]/, `variants[${index}]`);
+                            $(this).attr('name', updatedName);
+                        }
+                    });
+                });
+            }
+
+            // عند تغيير الخيار في القائمة المنسدلة
+            $('#variantContainer').on('change', '.option-select', function () {
+                const valueSelect = $(this).closest('.option-group').find('.value-select');
+                const selectedOption = $(this).val();
+
+                valueSelect.empty().append('<option value="" selected disabled>اختر القيمة</option>');
+
+                $.ajax({
+                    url: "{{route('admin.products.getOptionValues')}}",
+                    method: 'GET',
+                    data: {
+                        option_id: selectedOption,
+                    },
+                    success: function (response) {
+                        $(response).each(function (key, optionValue) {
+                            valueSelect.append(`<option value="${optionValue.id}">${optionValue.value}</option>`);
+                        });
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    }
+                });
+            });
+
+            // إضافة خيار آخر للفاريانت
+            $('#variantContainer').on('click', '.add-option', function () {
+                const variantGroup = $(this).closest('.variant-group');
+                const currentIndex = variantGroup.data('index');
+                const optionIndex = variantGroup.find('.option-group').length;
+
+                if (optionIndex < maxOptions) {
+                    // جمع الأوبشنات المختارة حالياً في نفس الفاريانت
+                    const selectedOptions = variantGroup.find('.option-select').map(function () {
+                        return $(this).val();
+                    }).get();
+
+                    // إنشاء خيارات الأوبشنات مع استبعاد المختار منها
+                    let optionsHtml = '<option value="" selected disabled>اختر الاوبشن</option>';
+                    @foreach($options as $option)
+                    if (!selectedOptions.includes("{{$option->id}}")) {
+                        optionsHtml += `<option value="{{$option->id}}">{{$option->getTranslation('name', 'ar') }}</option>`;
+                    }
+                    @endforeach
+
+                    const newOptionHtml = `
+            <div class="option-group">
+                <select name="variants[${currentIndex}][options][${optionIndex}]" class="form-control option-select select2">
+                    ${optionsHtml}
+                </select>
+
+                <select name="variants[${currentIndex}][values][${optionIndex}]" class="form-control value-select select2">
+                    <option value="" selected disabled>اختر القيمة</option>
+                </select>
+
+                <span class="text-danger remove-option">
+                    <i class="fa fa-trash"></i>
+                </span>
+            </div>
+        `;
+
+                    // إضافة الأوبشن الجديد فقط إذا كان هناك خيارات متاحة
+                    if (selectedOptions.length < maxOptions) {
+                        $(this).before(newOptionHtml);
+
+                        // تهيئة السيلكت2 للسيلكت الجديد
+                        // variantGroup.find('.option-select').last().select2();
+                        // variantGroup.find('.value-select').last().select2();
+                    }
+                }
+
+                // تعطيل زر إضافة أوبشن جديد إذا تم اختيار كل الأوبشنات
+                if (variantGroup.find('.option-group').length >= maxOptions) {
+                    $(this).prop('disabled', true);
+                }
+            });
+// تحديث الأوبشنات المتاحة عند حذف أوبشن
+            $('#variantContainer').on('click', '.remove-option', function () {
+                const variantGroup = $(this).closest('.variant-group');
+                const removedOption = $(this).closest('.option-group').find('.option-select').val();
+                $(this).closest('.option-group').remove();
+
+                // إعادة تمكين زر الإضافة
+                variantGroup.find('.add-option').prop('disabled', false);
+
+                // تحديث الأوبشنات المتاحة في باقي السيلكت
+                const remainingSelects = variantGroup.find('.option-select');
+                const selectedOptions = remainingSelects.map(function () {
+                    return $(this).val();
+                }).get();
+
+                // إضافة الأوبشن المحذوف لباقي السيلكت
+                if (removedOption) {
+                    @foreach($options as $option)
+                    if ("{{$option->id}}" === removedOption) {
+                        remainingSelects.each(function () {
+                            if (!$(this).find(`option[value="${removedOption}"]`).length) {
+                                $(this).append(`<option value="{{$option->id}}">{{$option->getTranslation('name', 'ar')}}</option>`);
+                            }
+                        });
+                    }
+                    @endforeach
+                }
+            });
+            // إضافة معالج حدث تغيير الصور
+            $('#variantContainer').on('change', '.variant-images', function (e) {
+                const previewContainer = $(this).siblings('.image-preview-container');
+                previewContainer.empty(); // مسح البريفيو السابق
+
+                const files = e.target.files;
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (file && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            const preview = $(`
+                        <div class="position-relative">
+                            <img src="${e.target.result}"
+                                 style="width: 50px; height: 50px; object-fit: cover;"
+                                 class="border rounded">
+                        </div>
+                    `);
+
+                            previewContainer.append(preview);
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+
+        });
 
     </script>
 @endpush
+@push('styles')
+    <style>
+        /* تنسيق صندوق الفاريانت */
+        .variant-group {
+            border: 3px solid #ddd;
+            padding: 22px 15px 27px 15px;
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #eeeeee40;
+        }
+
+        /* أيقونة حذف الفاريانت */
+        .delete-variant {
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 14px;
+        }
+
+        /* تنسيق مجموعة الأوبشن */
+        .option-group {
+            border: 1px solid #e3e6f0;
+            padding: 10px 10px 10px 20px;
+            border-radius: 6px;
+            margin-top: 10px;
+            background-color: #fdfdfd;
+            display: flex;
+            align-items: center;
+            gap: 10px; /* مسافة بين العناصر */
+            position: relative;
+        }
+
+        .option-group select {
+            font-size: 16px;
+            font-weight: bold;
+            padding-left: 0;
+            padding-right: 5px;
+        }
+
+        .option-group select option {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* اوبشن سلكت الكي */
+        .option-select, .value-select {
+            flex: 1; /* يجعلهم بنفس الحجم */
+            margin-bottom: 0; /* إزالة المسافة السفلية */
+        }
+
+        /* أيقونة حذف الأوبشن */
+        .remove-option {
+            cursor: pointer;
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #dc3545;
+            font-size: 13px;
+            z-index: 999;
+        }
+
+        .remove-option:hover {
+            color: #a71d2a;
+        }
+
+        /* زر إضافة أوبشن */
+        .btn.add-option {
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .btn.add-option:hover {
+            background-color: #0056b3;
+        }
+
+        /* زر إضافة فاريانت */
+        #addVariantButton {
+            display: block;
+            margin: 20px auto;
+        }
+
+        #addVariantButton i {
+            padding-left: 8px;
+        }
+
+        /* تنسيق زر إضافة أوبشن مع الأيقونة */
+        .btn.add-option {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* مسافة بين الأيقونة والنص */
+        }
+
+        .btn.add-option i {
+            font-size: 1.1em;
+        }
+
+        .btn.add-option:hover {
+            background-color: #0056b3;
+        }
+
+        /* تنسيق الصور المصغرة */
+        .image-preview-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preview-image {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image-preview {
+            margin-bottom: 5px;
+        }
+
+        .product-images-div {
+            margin-bottom: 2px;
+        }
+
+        .form-label-sm {
+            font-size: 15px !important;
+        }
+
+
+    </style>
+@endpush
+

@@ -17,8 +17,8 @@ class PrefixRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|max:255|required_without:description',
-            'description' => 'nullable|string|required_without:name',
+            'name_ar' => 'nullable|string|max:255|required_without:name_en',
+            'name_en' => 'nullable|string|max:255|required_without:name_ar',
             'prefix_code' => 'required|string|unique:prefixes,prefix_code,' . $this->prefix?->id,
         ];
     }
@@ -26,16 +26,15 @@ class PrefixRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required_without' => 'يجب ادخال الوصف بالعربية او الانجليزية على الأقل.',
-            'description.required_without' => 'يجب ادخال الوصف بالعربية او الانجليزية على الأقل.',
-            'name.string' => 'يجب أن يكون الاسم نصاً.',
-            'description.string' => 'يجب أن يكون الوصف نصاً.',
-            'name.max' => 'يجب ألا يتجاوز الوصف 255 حرفًا.',
-            'prefix_code.required' => 'حقل الكود  مطلوب.',
-            'prefix_code.unique' => 'الكود  مستخدم بالفعل.',
+            'name_ar.required_without' => 'يجب إدخال الاسم بالعربية أو الإنجليزية على الأقل.',
+            'name_en.required_without' => 'يجب إدخال الاسم بالعربية أو الإنجليزية على الأقل.',
+            'name_ar.string' => 'يجب أن يكون الاسم بالعربية نصًا.',
+            'name_en.string' => 'يجب أن يكون الاسم بالإنجليزية نصًا.',
+            'name_ar.max' => 'يجب ألا يتجاوز الاسم بالعربية 255 حرفًا.',
+            'name_en.max' => 'يجب ألا يتجاوز الاسم بالإنجليزية 255 حرفًا.',
+            'prefix_code.required' => 'حقل الكود مطلوب.',
+            'prefix_code.unique' => 'الكود مستخدم بالفعل.',
         ];
     }
-
 }
-
 

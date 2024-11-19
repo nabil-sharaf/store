@@ -5,10 +5,13 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Product extends Model
+class Product extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory ;
+    use \OwenIt\Auditing\Auditable;
+
 
     protected $fillable = [
         'name',
@@ -68,6 +71,75 @@ class Product extends Model
     }
 
 
+    public function offers()
+    {
+        return $this->hasMany(Offer::class);
+    }
+
+    public function prefix()
+    {
+        return $this->belongsTo(Prefix::class);
+    }
+
+    public function variants(): HasMany
+    {
+        return $this->hasMany(Variant::class);
+    }
+
+    // للتحقق إذا كان المنتج يحتوي على فاريانتات
+    public function hasVariants()
+    {
+        return $this->variants()->exists();
+    }
+
+
+    public function getOfferDetails($customerType = 'regular')
+    {
+        return $this->offers()
+            ->where(function ($query) use ($customerType) {
+                $query->where('customer_type', $customerType)
+                    ->orWhere('customer_type', 'all'); // جلب العروض للجميع
+            })
+            ->where(function ($query) {
+                $query->where('start_date', '<=', now()->endOfDay()) // تأكد أن العرض بدأ في السابق أو في اليوم
+                ->where('end_date', '>=', now()->startOfDay()); // تأكد أن العرض لم ينتهي بعد أو في اليوم
+            })
+            ->first();
+    }
+
+//    ---------------- Accessors Attributes --------------------
+    public function getCustomerOfferAttribute()
+    {
+        $user = auth()->user();
+        if ($user) {
+            $customerType = $user->customer_type;
+        } else {
+            $customerType = 'regular';
+        }
+        $offers = $this->offers()
+            ->where(function ($query) use ($customerType) {
+                $query->where('customer_type', $customerType)
+                    ->orWhere('customer_type', 'all'); // جلب العروض للجميع
+            })
+            ->where(function ($query) {
+                $query->where('start_date', '<=', now()->endOfDay()) // تأكد أن العرض بدأ في السابق أو في اليوم
+                ->where('end_date', '>=', now()->startOfDay()); // تأكد أن العرض لم ينتهي بعد أو في اليوم
+            })
+            ->first();
+        if ($offers) {
+
+            return $offers->offer_name;
+        } else {
+            return null;
+        }
+    }
+
+    // للحصول على المخزون المتاح (إما من جدول `products` أو من `variants`)
+    public function getAvailableQuantityAttribute()
+    {
+        return $this->hasVariants() ? $this->variants()->sum('quantity') : $this->quantity;
+    }
+
     public function getDiscountedPriceAttribute()
     {
         // إذا كان المنتج يحتوي على فاريانتات، لا يتم حساب سعر الخصم من هنا
@@ -98,79 +170,12 @@ class Product extends Model
         return $price;
     }
 
-    public function offers()
-    {
-        return $this->hasMany(Offer::class);
-    }
-
-    public function getOfferDetails($customerType = 'regular')
-    {
-        return $this->offers()
-            ->where(function ($query) use ($customerType) {
-                $query->where('customer_type', $customerType)
-                    ->orWhere('customer_type', 'all'); // جلب العروض للجميع
-            })
-            ->where(function ($query) {
-                $query->where('start_date', '<=', now()->endOfDay()) // تأكد أن العرض بدأ في السابق أو في اليوم
-                ->where('end_date', '>=', now()->startOfDay()); // تأكد أن العرض لم ينتهي بعد أو في اليوم
-            })
-            ->first();
-    }
-
-    public function getCustomerOfferAttribute()
-    {
-        $user = auth()->user();
-        if ($user) {
-            $customerType = $user->customer_type;
-        } else {
-            $customerType = 'regular';
-        }
-        $offers = $this->offers()
-            ->where(function ($query) use ($customerType) {
-                $query->where('customer_type', $customerType)
-                    ->orWhere('customer_type', 'all'); // جلب العروض للجميع
-            })
-            ->where(function ($query) {
-                $query->where('start_date', '<=', now()->endOfDay()) // تأكد أن العرض بدأ في السابق أو في اليوم
-                ->where('end_date', '>=', now()->startOfDay()); // تأكد أن العرض لم ينتهي بعد أو في اليوم
-            })
-            ->first();
-        if ($offers) {
-
-            return $offers->offer_name;
-        } else {
-            return null;
-        }
-    }
-
-    public function variants(): HasMany
-    {
-        return $this->hasMany(Variant::class);
-    }
-
-    // للتحقق إذا كان المنتج يحتوي على فاريانتات
-    public function hasVariants()
-    {
-        return $this->variants()->exists();
-    }
-
-    // للحصول على المخزون المتاح (إما من جدول `products` أو من `variants`)
-    public function getAvailableQuantityAttribute()
-    {
-        return $this->hasVariants() ? $this->variants()->sum('quantity') : $this->quantity;
-    }
-
-    public function prefix()
-    {
-        return $this->belongsTo(Prefix::class);
-    }
-
+// ------------------------- Sku code Generator --------------------------
     private function generateSku()
     {
-        $prefixCode = strtoupper($this->prefix->prefix_code) ?? 'MAMA-'; // استخدم البريفكس المختار أو "mama-" إذا لم يكن موجودًا
+        $prefixCode = strtoupper($this->prefix?->prefix_code ?? 'MAMA') ; // استخدم البريفكس المختار أو "mama-" إذا لم يكن موجودًا
         $sku = $prefixCode . str_pad($this->id, 3, '0', STR_PAD_LEFT); // تكوين SKU
         return $sku;
     }
 
 }
-

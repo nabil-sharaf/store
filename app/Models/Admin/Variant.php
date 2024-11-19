@@ -6,32 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Variant extends Model
+class Variant extends Model implements Auditable
 {
     use HasFactory;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['product_id', 'sku_code', 'price', 'goomla_price', 'quantity'];
 
-// داخل موديل Variant
-    protected static function boot()
-    {
-        parent::boot();
-        // عند إنشاء الـ Variant بعد حفظ السجل في قاعدة البيانات
-        static::created(function ($variant) {
-            // توليد SKU بعد حفظ الـ Variant
-            $variant->sku_code = $variant->generateSku();
-            // حفظ الـ SKU بعد التعيين
-            $variant->save();
-        });
-
-        // بعد تحديث الـ Variant
-        static::updated(function ($variant) {
-            $variant->sku_code = $variant->generateSku();
-            $variant->save();
-        });
-    }
-
+//    protected $auditExclude = [
+//        'id',
+//        'product_id'
+//    ];
 
     public function product(): BelongsTo
     {
@@ -55,6 +42,18 @@ class Variant extends Model
         });
     }
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
+
+
+
     public function getDiscountedPriceAttribute()
     {
         $userType = auth()->user()?->customer_type;
@@ -72,30 +71,32 @@ class Variant extends Model
         return $price;
     }
 
-    public function images()
-    {
-        return $this->morphMany(Image::class, 'imageable');
-    }
-
     public function generateSku()
     {
-        $prefixCode = $this->product->prefix->prefix_code ?? 'mama-'; // استخدم البريفكس المنتج أو "mama-" إذا لم يكن موجودًا
-        $optionValues = $this->optionValues;
-        $sku = $prefixCode . str_pad($this->id, 3, '0', STR_PAD_LEFT); // تكوين SKU
+        // جلب البريفكس
+        $prefixCode = $this->product?->prefix?->prefix_code ?? 'MAMA';
+        $sku = $prefixCode . str_pad($this->id, 3, '0', STR_PAD_LEFT);
 
-        // حلقة لجلب كل القيم المرتبطة بالـ variant من الجدول الوسيط
-        foreach ($optionValues as $optionValue) {
-            // جلب اسم الخيار نفسه (من جدول options)
-            $optionName = $optionValue->option->name;  // assuming لديك علاقة بين option_values و options
-            $firstOptionNameLetter = substr($optionName, 0, 1);
+        // تأكد من وجود قيم الخيارات
+        if ($this->optionValues->isNotEmpty()) {
+            // فرز القيم حسب اسم الخيار باللغة الإنجليزية
+            $sortedOptionValues = $this->optionValues->sortBy(function ($optionValue) {
+                return $optionValue->option->getTranslation('name', 'en');
+            });
 
-            // جلب قيمة الـ option_value
-            $optionValueText = substr($optionValue->value, 0, 3); // استخراج أول 3 حروف
-            // إضافة اسم الخيار وقيمته إلى الـ SKU
-            $sku .= '-' . $firstOptionNameLetter . '-' . $optionValueText;
+            // بناء SKU
+            foreach ($sortedOptionValues as $optionValue) {
+                $optionName = $optionValue->option->getTranslation('name', 'en');
+                $firstTowOptionNameLetter = substr($optionName, 0, 1);
+
+                $optionValueText = substr($optionValue->getTranslation('value', 'en'), 0, 2);
+
+                $sku .= '-' . strtoupper($firstTowOptionNameLetter) . '-' . strtoupper($optionValueText);
+            }
         }
 
         return $sku;
     }
+
 
 }

@@ -24,8 +24,8 @@
                 @forelse($prefixes as $prefix)
                     <tr>
                         <td>{{ $prefix->prefix_code  }}</td>
-                        <td>{{ $prefix->name ??'--' }}</td>
-                        <td>{{ Str::limit($prefix->description, 50, '...') ??"--"}}</td>
+                        <td>{{ $prefix->getTranslation('name','en') ??'--' }}</td>
+                        <td>{{ $prefix->getTranslation('name','ar') ??'--' }}</td>
                         <td>
                             <div class="btn-group" role="group">
                                 <a href="{{ route('admin.prefixes.edit', $prefix->id) }}" class="btn btn-sm btn-info mr-1" title="تعديل">

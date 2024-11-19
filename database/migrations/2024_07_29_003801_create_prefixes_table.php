@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('prefixes', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->json('name');
             $table->string('prefix_code');
-            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

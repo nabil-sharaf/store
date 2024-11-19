@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin as Adm;
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\OfferController;
+use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\PopupController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ShippingRateController;
@@ -23,14 +25,24 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
 
 //--------------------- Products Routes -----------------------------
 
+            Route::resource('/products', Adm\ProductController::class)->except('update');
+            Route::post('/products/{product}/update', [Adm\ProductController::class, 'update'])->name('products.update.ajax');
             Route::delete('/products/delete-all', [Adm\ProductController::class, 'deleteAll'])->name('products.deleteAll');
             Route::PUT('/products/trend-all', [Adm\ProductController::class, 'trendAll'])->name('products.trendAll');
             Route::PUT('/products/best-all', [Adm\ProductController::class, 'bestSellerAll'])->name('products.bestSellerAll');
-            Route::resource('/products', Adm\ProductController::class);
             Route::delete('/products/remove-image/{id}', [ProductController::class, 'removeImage'])->name('products.remove-image');
 
-//------------------------ Orders Routes -----------------------------
+            // Products Variants
+            Route::get('options/get-value', [ProductController::class, 'getOptionValues'])->name('products.getOptionValues');
 
+            Route::middleware([CheckRole::class . ":superAdmin"])->group(function () {
+//          --------------------------------------- Logs Routes-----------
+                Route::get('products/{product}/logs', [AuditLogController::class, 'showProductLogs'])->name('products.logs');
+                Route::get('variants/{variant}/logs', [AuditLogController::class, 'showVariantLogs'])->name('variants.logs');
+                Route::get('/audits', [AuditLogController::class, 'index'])->name('audits.index');
+            });
+
+//       ------------------------ Orders Routes -----------------------------
             Route::get('/get-user-discount/{user}', [Adm\OrderController::class, 'getUserDiscount'])->name('get-user-discount');
             Route::PUT('orders/{order}/updatestatus', [Adm\OrderController::class, 'updateStatus'])->name('orders.updatestatus');
             Route::get('orders/product-field', [Adm\OrderController::class, 'getProductField'])->name('orders.product-field');
@@ -39,7 +51,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
             Route::post('/orders/update-coupon', [Adm\OrderController::class, 'updateCopoun'])->name('update-promo-code');
             Route::get('/get-shipping-cost/{state}', [Adm\OrderController::class, 'getShippingCost'])->name('checkout.getShippingCost');
             Route::get('/get-free-quantity', [Adm\OrderController::class, 'getFreeQuantity'])->name('orders.free-quantity');
-
+            Route::get('get/product-variants/{product}',[Adm\OrderController::class,'getVariants'])->name('orders.get-variants');
 
             Route::middleware("checkRole:superAdmin&supervisor")->group(function () {
 
@@ -117,6 +129,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
                 //----------------------------- Prefixes Routes  ------------------------------
 
                 Route::resource('prefixes', Adm\PrefixController::class);
+                Route::resource('options', OptionController::class);
+                Route::delete('options/destory/value/{value}', [OptionController::class, 'destroyOptionVAlue'])->name('option-values.destroy');
+                Route::put('options/update/value/{value}', [OptionController::class, 'updateOptionVAlue'])->name('option-values.update');
 
             });
 

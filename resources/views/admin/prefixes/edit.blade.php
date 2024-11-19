@@ -20,20 +20,21 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="inputName" class="col-sm-2 control-label">الوصف بالانجليزية </label>
+                    <label for="inputNameAr" class="col-sm-2 control-label">الوصف بالعربية </label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="inputName" placeholder="  ادخل الوصف " name="name" value="{{ old('name',$prefix->name) }}" >
-                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <input type="text" class="form-control @error('name_ar') is-invalid @enderror" id="inputNameAr" placeholder="  ادخل الوصف بالعربية " name="name_ar" value="{{ old('name',$prefix->getTranslation('name','ar')) }}" >
+                        @error('name_ar')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputNameEn" class="col-sm-2 control-label">الوصف بالانجليزية </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control @error('name_en') is-invalid @enderror" id="inputNameEn" placeholder="  ادخل الوصف بالانجليزية " name="name_en" value="{{ old('name',$prefix->getTranslation('name','en')) }}" >
+                        @error('name_en')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
-                <div class="form-group row mt-4">
-                    <label for="description" class="col-sm-2 control-label">الوصف بالعربية</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control @error('description') is-invalid @enderror" id="description" placeholder="أدخل وصف باللغة العربية او اتركه فارغا" name="description" value="{{ old('description',$prefix->description) }}">
-                        @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                </div>
+
             </div>
             <!-- /.card-body -->
             <div class="card-footer">

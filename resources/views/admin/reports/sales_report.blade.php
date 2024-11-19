@@ -109,5 +109,38 @@
         .bg-light {
             background-color: #f8f9fa !important;
         }
+        /* جعل الجداول قابلة للتمرير في حالة الشاشات الصغيرة */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table th, .table td {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        /* التمرير العمودي على الشاشات الصغيرة */
+        body {
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        /* تحسين عرض الجداول */
+        .table {
+            width: 100%;
+        }
+
+        /* تحسين مظهر العناوين */
+        .block-title {
+            font-size: 1.5rem;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+
+
     </style>
 @endpush

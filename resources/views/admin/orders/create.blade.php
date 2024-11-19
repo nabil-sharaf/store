@@ -16,7 +16,7 @@
         <div class="card-header">
             <h3 class="card-title " style="float:none">إضافة طلب جديد</h3>
         </div>
-        <form id="orderForm" novalidate  enctype="multipart/form-data" dir="rtl">
+        <form id="orderForm" novalidate enctype="multipart/form-data" dir="rtl">
             @csrf
             <div class="card-body">
 
@@ -64,12 +64,21 @@
                                                 <option value="{{ $product->id }}"
                                                         data-price-retail="{{ $product->price }}"
                                                         data-price-wholesale="{{ $product->goomla_price }}"
-                                                        data-quantity="{{ $product->available_quantity }}"
+                                                        data-quantity="{{ $product->quantity }}"
                                                         data-discount-type="{{ $product->discount->discount_type ?? null }}"
-                                                        data-discount-value="{{ $product->discount->discount ?? 0 }}">
+                                                        data-discount-value="{{ $product->discount->discount ?? 0 }}"
+                                                        data-has-variants="{{ $product->variants->isNotEmpty() ? 'true' : 'false' }}"
+                                                >
                                                     {{ $product->name }}
                                                 </option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="variant-select-0">اختر الفاريانت</label>
+                                        <select id="variant-select-0" class="form-control select2 product-variant"
+                                                name="products[0][variant_id]" disabled>
+                                            <option value="" selected disabled>اختر الفاريانت</option>
                                         </select>
                                     </div>
                                     <div class="row">
@@ -108,39 +117,40 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-secondary mt-2" id="addProductButton">إضافة منتج آخر
-                        </button>
                     </div>
+                    <button type="button" class="btn btn-secondary mt-2" id="addProductButton">إضافة منتج آخر
+                    </button>
+                </div>
 
-                    <div class="form-group" id = "coupon-group-id" style="display: none" >
-                        <label for="promo_code">كوبون الخصم</label>
-                        <div class="input-group coupon-input-group">
-                            <input type="text" id="promo_code" name="promo_code" class="form-control"
-                                   placeholder="أدخل كود الخصم إذا وجد" readonly>
-                            <div class="input-group-append">
-                                <button type="button" id="applyCouponButton" class="btn btn-primary ms-2" disabled>تطبيق
-                                    الكوبون
-                                </button>
-                            </div>
+                <div class="form-group" id="coupon-group-id" style="display: none">
+                    <label for="promo_code">كوبون الخصم</label>
+                    <div class="input-group coupon-input-group">
+                        <input type="text" id="promo_code" name="promo_code" class="form-control"
+                               placeholder="أدخل كود الخصم إذا وجد" readonly>
+                        <div class="input-group-append">
+                            <button type="button" id="applyCouponButton" class="btn btn-primary ms-2" disabled>تطبيق
+                                الكوبون
+                            </button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="totalBeforeDiscount">إجمالي الأوردر</label>
-                        <input type="text" class="form-control" id="totalBeforeDiscount" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputDiscountPercentage">نسبة خصم VIP</label>
-                        <input type="text" class="form-control" id="inputDiscountPercentage" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputDiscountAmount">قيمة خصم VIP</label>
-                        <input type="text" class="form-control" id="inputDiscountAmount" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="copounDiscountAmount">قيمة خصم الكوبون</label>
-                        <input type="text" class="form-control" id="copounDiscountAmount" readonly>
-                    </div>
                 </div>
+                <div class="form-group">
+                    <label for="totalBeforeDiscount">إجمالي الأوردر</label>
+                    <input type="text" class="form-control" id="totalBeforeDiscount" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="inputDiscountPercentage">نسبة خصم VIP</label>
+                    <input type="text" class="form-control" id="inputDiscountPercentage" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="inputDiscountAmount">قيمة خصم VIP</label>
+                    <input type="text" class="form-control" id="inputDiscountAmount" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="copounDiscountAmount">قيمة خصم الكوبون</label>
+                    <input type="text" class="form-control" id="copounDiscountAmount" readonly>
+                </div>
+
                 <div id="addressSection" style="display: none;">
                     <div class="form-group">
                         <label for="full_name">الاسم بالكامل</label>
@@ -167,13 +177,14 @@
                     </div>
                     <div class="form-group">
                         <label for="state">المحافظة</label>
-                            <select class="form-control" name="state" data-user-state="{{ $user->address?->state ?? '' }}">
-                                <option value="" disabled selected>اختر اسم محافظتك</option>
-                                @foreach($states as $state)
-                                    <option value="{{$state->state}}" {{ old('state', $user->address->state ?? '') == $state->state ? 'selected' : '' }}>{{$state->state}}</option>
-                                @endforeach
-                            </select>
-                     </div>
+                        <select class="form-control" name="state" data-user-state="{{ $user->address?->state ?? '' }}">
+                            <option value="" disabled selected>اختر اسم محافظتك</option>
+                            @foreach($states as $state)
+                                <option
+                                    value="{{$state->state}}" {{ old('state', $user->address->state ?? '') == $state->state ? 'selected' : '' }}>{{$state->state}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -181,21 +192,21 @@
                     <input type="text" class="form-control" id="inputTotalOrder" readonly>
                 </div>
 
-                <div class="form-group " id= 'shipping-cost-div' style = 'display: none;'>
+                <div class="form-group " id='shipping-cost-div' style='display: none;'>
                     <label for="shipping_cost">تكلفة الشحن</label>
                     <input type="text" class="form-control" id="shipping_cost" readonly>
                 </div>
 
-            </div>
-            <div class="card-footer">
-                <button type="button" id="showAddressButton" class="btn btn-info btn-block">أكمل الطلب</button>
-                <button type="button" id="goBackButton" class="btn btn-secondary btn-block" style="display: none;">
-                    رجوع
-                </button>
-                <button type="submit" id="submitOrderButton" class="btn btn-success btn-block" style="display: none;">
-                    تأكيد الطلب
-                </button>
-
+                <div class="card-footer">
+                    <button type="button" id="showAddressButton" class="btn btn-info btn-block">أكمل الطلب</button>
+                    <button type="button" id="goBackButton" class="btn btn-secondary btn-block" style="display: none;">
+                        رجوع
+                    </button>
+                    <button type="submit" id="submitOrderButton" class="btn btn-success btn-block"
+                            style="display: none;">
+                        تأكيد الطلب
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -233,10 +244,19 @@
                     data-price-wholesale="{{ $product->goomla_price }}"
                     data-discount-type="{{ $product->discount->discount_type ?? '' }}"
                     data-discount-value="{{ $product->discount->discount ?? 0 }}"
-                    data-quantity="{{ $product->available_quantity }}">{{ $product->name }}</option>
+                    data-has-variants="{{ $product->variants->isNotEmpty() ? 'true' : 'false' }}"
+                    data-quantity="{{ $product->available_quantity }}">{{ $product->name }}
+                </option>
                     @endforeach
                 </select>
             </div>
+                                              <div class="form-group">
+                                        <label for="variant-select-${productCount}">اختر الفاريانت</label>
+                                        <select id="variant-select-${productCount}" class="form-control select2 product-variant"
+                                                name="products[${productCount}][variant_id]" disabled>
+                                            <option value="" selected disabled>اختر الفاريانت</option>
+                                        </select>
+                                    </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -288,7 +308,11 @@
             function updateProductNumbers() {
                 $('.product-field').each(function (index) {
                     $(this).find('.product-number').text('المنتج ' + (index + 1));
-                    $(this).find('select').attr('name', `products[${index}][id]`);
+                    // تحديث name للمنتج فقط (باستخدام class محددة)
+                    $(this).find('.product-select').attr('name', `products[${index}][id]`);
+
+                    // تحديث name للفاريانت بشكل صحيح
+                    $(this).find('.product-variant').attr('name', `products[${index}][variant_id]`);
                     $(this).find('.product-quantity').attr('name', `products[${index}][quantity]`);
                 });
             }
@@ -296,7 +320,7 @@
             $('#product-fields').on('click', '.remove-product', function () {
                 $(this).closest('.product-field').remove();
 
-                updateTotal($(this).closest('.card-body'));
+                updateProductTotal($(this).closest('.card-body'));
                 $('#promo_code').removeAttr('readonly');
                 $('#applyCouponButton').removeAttr('disabled');
                 $('#copounDiscountAmount').val('0');
@@ -307,26 +331,87 @@
 
             $('#product-fields').on('change', '.product-select', function () {
                 var selectedProduct = $(this).find(':selected');
-                var priceRetail = selectedProduct.data('price-retail');
-                var priceWholesale = selectedProduct.data('price-wholesale');
-                var discountType = selectedProduct.data('discount-type');  // نوع الخصم
-                var discountValue = selectedProduct.data('discount-value');  // قيمة الخصم
-
-                var quantity = selectedProduct.data('quantity');
+                var productId = selectedProduct.val();
                 var productBody = $(this).closest('.card-body');
-                var userType = $('#inputUser').find(':selected').data('user-type'); // الحصول على نوع العميل من البيانات المخزنة
 
-                var price = userType === 'goomla' ? priceWholesale : priceRetail;
+                // إعداد قائمة الفاريانتس
+                var variantSelect = productBody.find('.product-variant');
+                variantSelect.prop('disabled', true).html('<option value="">اختر الفاريانت</option>');
 
-                // حساب الخصم
+                if (productId) {
+                    $.ajax({
+                        url: "{{route('admin.orders.get-variants',':id')}}".replace(':id', productId),
+                        method: 'GET',
+                        success: function (response) {
+                            if (response.variants.length > 0) {
+                                variantSelect.prop('disabled', false);
+                                response.variants.forEach(function (variant) {
+                                    var optionValuesText = variant.option_values.map(function (optionValue) {
+                                        return optionValue.value.ar;
+                                    }).join(', ');
+
+                                    variantSelect.append(
+                                        `<option value="${variant.id}"
+                                data-price-retail="${variant.price}"
+                                data-price-wholesale="${variant.goomla_price}"
+                                data-discount-type="${variant.discount_type}"
+                                data-discount-value="${variant.discount_value}"
+                                data-quantity="${variant.quantity}">
+                                ${optionValuesText}
+                            </option>`
+                                    );
+                                });
+
+                                // تفريغ الحقول إذا كان المنتج يحتوي على فاريانتس
+                                clearProductFields(productBody);
+                            } else {
+                                // إذا لم يكن هناك فاريانت، استخدم قيم المنتج
+                                setProductFieldsFromProduct(productBody, selectedProduct);
+                            }
+                        }
+                    });
+                } else {
+                    clearProductFields(productBody);
+                }
+
+                initializeSelect2();
+            });
+
+            $('#product-fields').on('change', '.product-variant', function () {
+                var selectedVariant = $(this).find(':selected');
+                var productBody = $(this).closest('.card-body');
+                var selectedOption = $(this).find('option[value=""]');
+
+                // تعطيل وتفعيل اول اوبشن في اختيار الفاريانتس (وهو اختر الفاريانت)
+                if (this.value !== "") {
+                    selectedOption.prop('disabled', true); // تعطيل خيار "اختر الفاريانت"
+                } else {
+                    selectedOption.prop('disabled', false); // تمكين الخيار إذا لم يتم اختيار أي شيء
+                }
+
+                if (selectedVariant.val()) {
+                    var priceRetail = selectedVariant.data('price-retail');
+                    var priceWholesale = selectedVariant.data('price-wholesale');
+                    var discountType = selectedVariant.data('discount-type');
+                    var discountValue = selectedVariant.data('discount-value');
+                    var quantity = selectedVariant.data('quantity');
+                    var userType = $('#inputUser').find(':selected').data('user-type'); // نوع العميل
+
+                    var price = userType === 'goomla' ? priceWholesale : priceRetail;
+
+                    updateProductPricing(productBody, price, discountType, discountValue, quantity);
+                }
+            });
+
+            function updateProductPricing(productBody, price, discountType, discountValue, quantity) {
                 var discountAmount = 0;
+
                 if (discountType === 'percentage') {
                     discountAmount = (price * discountValue) / 100;
                 } else if (discountType === 'fixed') {
                     discountAmount = discountValue;
                 }
 
-                // حساب السعر النهائي بعد الخصم
                 var finalPrice = price - discountAmount;
 
                 productBody.find('.product-current-quantity').val(quantity);
@@ -334,21 +419,29 @@
                 productBody.find('.product-discount').val(discountAmount);
                 productBody.find('.product-discountPrice').val(finalPrice);
 
-                $('#promo_code').removeAttr('readonly');
-                $('#applyCouponButton').removeAttr('disabled');
-                $('#copounDiscountAmount').val('0');
+                updateProductTotal(productBody);
+            }
 
-                updateTotal(productBody);
-                initializeSelect2();
+            function clearProductFields(productBody) {
+                productBody.find('.product-current-quantity').val('');
+                productBody.find('.product-price').val('');
+                productBody.find('.product-discount').val('');
+                productBody.find('.product-discountPrice').val('');
+                productBody.find('.product-total').val('');
+            }
 
-                var $productField = $(this).closest('.product-field');
-                getFreeQuantity($productField,function(freeQuantity) {
-                    // هنا تستطيع استخدام الكمية المجانية كما تريد
-                    $productField.find('.free-quantity').html(
-                        freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
-                    );
-                });
-            });
+            function setProductFieldsFromProduct(productBody, selectedProduct) {
+                var priceRetail = selectedProduct.data('price-retail');
+                var priceWholesale = selectedProduct.data('price-wholesale');
+                var discountType = selectedProduct.data('discount-type');
+                var discountValue = selectedProduct.data('discount-value');
+                var quantity = selectedProduct.data('quantity');
+                var userType = $('#inputUser').find(':selected').data('user-type'); // نوع العميل
+
+                var price = userType === 'goomla' ? priceWholesale : priceRetail;
+
+                updateProductPricing(productBody, price, discountType, discountValue, quantity);
+            }
 
             $('#product-fields').on('input', '.product-quantity', function () {
                 $('#promo_code').removeAttr('readonly');
@@ -356,11 +449,11 @@
                 $('#copounDiscountAmount').val('0');
 
 
-                updateTotal($(this).closest('.card-body'));
+                updateProductTotal($(this).closest('.card-body'));
 
                 var $productField = $(this).closest('.product-field');
 
-                getFreeQuantity($productField,function(freeQuantity) {
+                getFreeQuantity($productField, function (freeQuantity) {
                     // هنا تستطيع استخدام الكمية المجانية كما تريد
                     $productField.find('.free-quantity').html(
                         freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
@@ -370,7 +463,7 @@
 
             });
 
-            function updateTotal(productBody) {
+            function updateProductTotal(productBody) {
                 var price = parseFloat(productBody.find('.product-discountPrice').val()) || 0;
                 var quantity = parseInt(productBody.find('.product-quantity').val()) || 0;
                 var total = price * quantity;
@@ -391,7 +484,6 @@
             }
 
 
-
             // تحديث الخصم عند تغيير المستخدم
             $('#inputUser').change(function () {
 
@@ -408,18 +500,18 @@
                 // الحصول على الـ user_id المختار
                 const userId = $(this).val();
                 // أظهار كود كوبون الخصم للاعضاء فقط
-                if(userId){
+                if (userId) {
                     $('#coupon-group-id').show();
                     $('#promo_code').removeAttr('readonly');
                     $('#applyCouponButton').removeAttr('disabled');
-                }else{
+                } else {
                     $('#coupon-group-id').hide();
-                 }
+                }
 
                 // إرسال طلب AJAX لجلب العناوين الخاصة بالمستخدم
                 if (userId) {
                     $.ajax({
-                        url: "{{route('admin.get-customer-address',':userId')}}".replace(':userId',userId), // رابط الـ API لجلب العناوين
+                        url: "{{route('admin.get-customer-address',':userId')}}".replace(':userId', userId), // رابط الـ API لجلب العناوين
                         method: 'GET',
                         success: function (response) {
                             // تأكد من أن الاستجابة تحتوي على بيانات العنوان
@@ -432,15 +524,14 @@
                                 $('#inputCity').val(address.city);
                                 $('#state').val(address.state);
                                 $('#full_name').val(address.full_name);
-                            }
-                            else {
+                            } else {
                                 // في حالة عدم وجود عنوان، افراغ الحقول
                                 $('#inputAddress').val('');
                                 $('#inputPhone').val('');
                                 $('#inputCity').val('');
                                 $('#state').val('');
                                 $('#full_name').val('');
-                             }
+                            }
                         },
                         error: function () {
                             alert('حدث خطأ أثناء جلب العنوان');
@@ -465,44 +556,55 @@
 
             function updateUserTypeAndPrices() {
                 var userType = $('#inputUser').find(':selected').data('user-type'); // جلب نوع العميل
+
                 $('.product-select').each(function () {
                     var selectedProduct = $(this).find(':selected');
-                    var priceRetail = selectedProduct.data('price-retail');
-                    var priceWholesale = selectedProduct.data('price-wholesale');
-                    var discountType = selectedProduct.data('discount-type');  // نوع الخصم
-                    var discountValue = selectedProduct.data('discount-value');  // قيمة الخصم
-
                     var productBody = $(this).closest('.card-body');
+
+                    var priceRetail, priceWholesale, discountType, discountValue, quantity;
+
+                    if (selectedProduct.data('has-variants') === true) {
+                        var variantSelect = productBody.find('.product-variant');
+                        var selectedVariant = variantSelect.find(':selected');
+
+                        if (selectedVariant.val() !== '') {
+                            priceRetail = selectedVariant.data('price-retail');
+                            priceWholesale = selectedVariant.data('price-wholesale');
+                            discountType = selectedVariant.data('discount-type');
+                            discountValue = selectedVariant.data('discount-value');
+                            quantity = selectedVariant.data('quantity');
+                        } else {
+                            // وضع القيم الافتراضية في حالة عدم اختيار الفاريانت
+                            priceRetail = '';
+                            priceWholesale = '';
+                            discountType = '';
+                            discountValue = '';
+                            quantity = '';
+                        }
+                    } else {
+                        priceRetail = selectedProduct.data('price-retail');
+                        priceWholesale = selectedProduct.data('price-wholesale');
+                        discountType = selectedProduct.data('discount-type');
+                        discountValue = selectedProduct.data('discount-value');
+                        quantity = selectedProduct.data('quantity');
+                    }
 
                     // تحديد السعر بناءً على نوع المستخدم
                     var price = userType === 'goomla' ? priceWholesale : priceRetail;
 
-                    // حساب الخصم
-                    var discountAmount = 0;
-                    if (discountType === 'percentage') {
-                        discountAmount = (price * discountValue) / 100;
-                    } else if (discountType === 'fixed') {
-                        discountAmount = discountValue;
-                    }
+                    // تحديث الأسعار والخصومات في المنتج
+                    updateProductPricing(productBody, price, discountType, discountValue, quantity);
 
-                    // حساب السعر النهائي بعد الخصم
-                    var finalPrice = price - discountAmount;
-
-                    // تحديث الحقول الخاصة بالسعر والخصم
-                    productBody.find('.product-price').val(price);  // السعر الأصلي
-                    productBody.find('.product-discountPrice').val(finalPrice);  // السعر النهائي بعد الخصم
-
-                    // تحديث إجمالي السعر
-                    updateTotal(productBody);
-
-                    getFreeQuantity(productBody,function(freeQuantity) {
-                        // هنا تستطيع استخدام الكمية المجانية كما تريد
+                    // تحديث الكمية المجانية
+                    getFreeQuantity(productBody, function (freeQuantity) {
                         productBody.find('.free-quantity').html(
                             freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
                         );
                     });
-
                 });
+
+                // إعادة تهيئة Select2 بعد التحديث
+                initializeSelect2();
             }
 
 
@@ -557,59 +659,59 @@
                     toastr.error(errorMessage);
                 } else {
 
-                let formData = new FormData(this);  // جمع البيانات من الفورم
+                    let formData = new FormData(this);  // جمع البيانات من الفورم
 
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route('admin.orders.store') }}',  // نفس المسار القديم لتخزين البيانات
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    beforeSend: function () {
-                        // عرض حالة التحميل (يمكن استخدام أي عنصر لتحميل الرسوم)
-                        $('#submitButton').attr('disabled', true);  // تعطيل الزر أثناء الإرسال
-                    },
-                    success: function (response) {
-                        // إذا تم الحفظ بنجاح
-                        if (response.success) {
-                            toastr.success(response.message);  // عرض رسالة النجاح
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('admin.orders.store') }}',  // نفس المسار القديم لتخزين البيانات
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: function () {
+                            // عرض حالة التحميل (يمكن استخدام أي عنصر لتحميل الرسوم)
+                            $('#submitButton').attr('disabled', true);  // تعطيل الزر أثناء الإرسال
+                        },
+                        success: function (response) {
+                            // إذا تم الحفظ بنجاح
+                            if (response.success) {
+                                toastr.success(response.message);  // عرض رسالة النجاح
 
-                            // إعادة توجيه المستخدم إلى صفحة الـ index بعد نجاح الحفظ
-                            window.location.href = '{{ route('admin.orders.index') }}';
+                                // إعادة توجيه المستخدم إلى صفحة الـ index بعد نجاح الحفظ
+                                window.location.href = '{{ route('admin.orders.index') }}';
+                            }
+                        },
+                        error: function (xhr) {
+                            // إذا حدث خطأ في التحقق
+                            if (xhr.status === 422) {
+                                let errors = xhr.responseJSON.errors;
+
+                                // حذف جميع رسائل الأخطاء السابقة
+                                $('.invalid-feedback').remove();
+                                $('.is-invalid').removeClass('is-invalid');
+
+                                // عرض الأخطاء الجديدة
+                                $.each(errors, function (key, value) {
+                                    let inputElement = $('[name="' + key + '"]');
+                                    inputElement.addClass('is-invalid');
+
+                                    // إذا لم يكن هناك عنصر لعرض رسالة الخطأ، نضيفه بعد عنصر الإدخال
+                                    if (!inputElement.next('.invalid-feedback').length) {
+                                        inputElement.after('<div class="invalid-feedback">' + value[0] + '</div>');
+                                    }
+                                });
+
+
+                                // عرض رسالة الخطأ العامة المستلمة من الـ Controller
+                                toastr.error(xhr.responseJSON.message || 'هناك بعض الأخطاء في البيانات.');
+                            } else {
+                                toastr.error('حدث خطأ غير متوقع.');  // عرض رسالة الخطأ غير المتوقعة
+                            }
+                        },
+                        complete: function () {
+                            // إزالة حالة التحميل بعد انتهاء الطلب (سواء نجاح أو فشل)
+                            $('#submitButton').attr('disabled', false);
                         }
-                    },
-                    error: function (xhr) {
-                        // إذا حدث خطأ في التحقق
-                        if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
-
-                            // حذف جميع رسائل الأخطاء السابقة
-                            $('.invalid-feedback').remove();
-                            $('.is-invalid').removeClass('is-invalid');
-
-                            // عرض الأخطاء الجديدة
-                            $.each(errors, function (key, value) {
-                                let inputElement = $('[name="' + key + '"]');
-                                inputElement.addClass('is-invalid');
-
-                                // إذا لم يكن هناك عنصر لعرض رسالة الخطأ، نضيفه بعد عنصر الإدخال
-                                if (!inputElement.next('.invalid-feedback').length) {
-                                    inputElement.after('<div class="invalid-feedback">' + value[0] + '</div>');
-                                }
-                            });
-
-
-                            // عرض رسالة الخطأ العامة المستلمة من الـ Controller
-                            toastr.error(xhr.responseJSON.message || 'هناك بعض الأخطاء في البيانات.');
-                        } else {
-                            toastr.error('حدث خطأ غير متوقع.');  // عرض رسالة الخطأ غير المتوقعة
-                        }
-                    },
-                    complete: function () {
-                        // إزالة حالة التحميل بعد انتهاء الطلب (سواء نجاح أو فشل)
-                        $('#submitButton').attr('disabled', false);
-                    }
-                });
+                    });
                 }
 
             });
@@ -652,7 +754,6 @@
             });
 
 
-
             // -------------------  حساب تكلفة الشحن --------------------
 
             const stateSelect = $('select[name="state"]');
@@ -666,20 +767,19 @@
                 }
 
                 $.ajax({
-                    url: "{{route('admin.checkout.getShippingCost',':state')}}".replace(':state',state),
+                    url: "{{route('admin.checkout.getShippingCost',':state')}}".replace(':state', state),
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         const shippingCost = response.shipping_cost;
                         if (shippingCost == 0 || !shippingCost) {
                             $('#shipping_cost').val(' شحن مجاني');
                             alert('0000')
-                        }
-                        else {
+                        } else {
                             $('#shipping_cost').val(shippingCost + ' جنيه  ');
-                         }
-                   },
+                        }
+                    },
 
-                    error: function() {
+                    error: function () {
                         $('#shipping_cost').val('خطأ في جلب تكلفة الشحن');
                     }
                 });
@@ -693,7 +793,7 @@
             }
 
             // حدث عند تغيير المحافظة
-            stateSelect.change(function() {
+            stateSelect.change(function () {
                 const state = $(this).val();
                 calculateShippingCost(state);
 
@@ -702,7 +802,7 @@
 
 
             // الحصول على الكمية المجانية من المنتج اذا كان عليه عرض واستخدام الكولباك
-            function getFreeQuantity($productField,callback){
+            function getFreeQuantity($productField, callback) {
 
                 var userType = $('#inputUser').find(':selected').data('user-type'); // الحصول على نوع العميل من البيانات المخزنة
                 var productId = $productField.find('.product-select').val(); // ID المنتج
@@ -712,7 +812,7 @@
                     $.ajax({
                         url: "{{route('admin.orders.free-quantity')}}",
                         method: 'GET',
-                        data : {
+                        data: {
                             productId: productId,
                             quantity: quantity,
                             customer_type: userType,
