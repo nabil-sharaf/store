@@ -403,7 +403,7 @@
 
         $('.quick-product-action button')
             .prop('disabled', false)
-            .text('أضف إلى السلة')
+            .html(`أضف للسلة &nbsp; <i class="fa fa-shopping-cart"></i>`)
             .attr('onclick', onClickFunction);
     }
 
