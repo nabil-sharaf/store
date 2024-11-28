@@ -55,9 +55,9 @@
                 <div class="col-lg-12">
                     <div class="checkout-coupon-wrap mb-65 mb-md-40">
                         @if(auth()->user()?->customer_type == 'regular')
-                        <p class="cart-page-title"><i
-                                class="ion-ios-pricetag-outline"></i> {{ __('checkout.have_coupon') }} <a
-                                class="checkout-coupon-active" href="#/">{{ __('checkout.apply_coupon') }}</a></p>
+                            <p class="cart-page-title"><i
+                                    class="ion-ios-pricetag-outline"></i> {{ __('checkout.have_coupon') }} <a
+                                    class="checkout-coupon-active" href="#/">{{ __('checkout.apply_coupon') }}</a></p>
                             <div class="checkout-coupon-content">
                                 <form id="applyCouponForm" method="POST">
                                     @csrf
@@ -151,14 +151,33 @@
                                 <div class="your-order-product">
                                     <ul>
                                         @foreach($items as $item)
+
+                                            @php
+                                                if(isset($item->attributes['variant_details'])){
+
+                                                    $variantDetails = $item->attributes['variant_details'];
+                                                    $formattedVariantDetails = collect($variantDetails)
+                                                        ->map(function($detail, $key) {
+                                                            return " {$detail['value']}";
+                                                        })
+                                                        ->implode(' ، ');
+                                                }else{
+                                                    $formattedVariantDetails=null;
+                                                }
+                                            @endphp
+
                                             @if($item->attributes['free_quantity'] > 0 )
-                                                <li> {{ $item->quantity }} × {{ $item->name }} &nbsp; + <span
-                                                        class="free-quantity-number"> {{$item->attributes['free_quantity']}} <span
-                                                            class="free-quantity">  قطعة مجانا </span></span>
+                                                <li>
+                                                    {{ $item->quantity }} × {{ $item->name }}
+                                                    {{ $formattedVariantDetails? '('.$formattedVariantDetails.')':'' }}
+                                                    <span class="free-quantity-number"> + {{$item->attributes['free_quantity']}}
+                                                    <span class="free-quantity">  قطعة مجانا </span>
+                                                    </span>
                                                     <span>{{ $item->price * $item->quantity }} {{ __('checkout.currency') }}</span>
                                                 </li>
                                             @else
                                                 <li>{{ $item->quantity }} × {{ $item->name }}
+                                                    {{ $formattedVariantDetails? '('.$formattedVariantDetails.')':'' }}
                                                     <span>{{ $item->price * $item->quantity }} {{ __('checkout.currency') }}</span>
                                                 </li>
                                             @endif
@@ -223,6 +242,7 @@
     <!--== End Checkout Area Wrapper ==-->
 
 @endsection
+
 @push('styles')
     <style>
         .select-style .select-active {

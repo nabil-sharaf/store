@@ -46,4 +46,5 @@ class WishlistController extends Controller
 
         return response()->json(['message' => 'تم إزالة المنتج من قائمة الأمنيات']);
     }
+
 }

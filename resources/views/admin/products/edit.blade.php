@@ -730,12 +730,12 @@
     <style>
         /* تنسيق صندوق الفاريانت */
         .variant-group {
-            border: 3px solid #ddd;
+            border: 2px solid #ddd !important;
             padding: 22px 15px 27px 15px;
-            margin-bottom: 20px;
+            margin-bottom: 20px !important;
             position: relative;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             background-color: #eeeeee40;
         }
 

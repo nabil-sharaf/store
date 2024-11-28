@@ -4,10 +4,13 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class PromoCode extends Model
+class PromoCode extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory ;
+    use \OwenIt\Auditing\Auditable;
+
 
     protected $fillable = ['code', 'discount', 'discount_type','start_date', 'end_date', 'active','min_amount'];
 

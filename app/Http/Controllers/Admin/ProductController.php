@@ -59,6 +59,24 @@ class ProductController extends Controller implements HasMiddleware
         return view('admin.products.index', compact('products'));
     }
 
+    public function show(Product $product)
+    {
+        // تحميل العلاقات المطلوبة
+        $product->load([
+            'images',
+            'categories',
+            'discount',
+            'variants.optionValues.option',
+        ]);
+
+
+        // ترتيب المتغيرات حسب السعر أو أي معيار آخر إذا كان مطلوباً
+        $product->variants = $product->variants->sortBy('price');
+
+        return view('admin.products.show', compact('product'));
+    }
+
+
     public function create()
     {
         $categories = Category::all();
@@ -178,10 +196,13 @@ class ProductController extends Controller implements HasMiddleware
         }
     }
 
-    public function show($id)
+    public function showProduct(Product $product)
     {
-        $product = Product::with(['images', 'categories'])->findOrFail($id);
-        return view('admin.products.show', compact('product'));
+        $product->load('variants.optionValues.option'); // تحميل كل التفاصيل المرتبطة
+        return view('front.product-show', [
+            'product' => $product,
+            'locale' => app()->getLocale(),
+        ]);
     }
 
     public function edit(Product $product)
@@ -198,43 +219,21 @@ class ProductController extends Controller implements HasMiddleware
         try {
             DB::beginTransaction();
 
-            // محاولة تحديث المنتج
-            try {
-                $product = Product::findOrFail($id);
-                $product->update([
-                    'name' => $request->name,
-                    'description' => $request->description,
-                    'info' => $request->info,
-                    'quantity' => $request->quantity,
-                    'price' => $request->price,
-                    'goomla_price' => $request->goomla_price,
-                    'prefix_id' => $request->prefix_id,
-                ]);
-            } catch (\Exception $e) {
-                throw new \Exception('فشل في تحديث المنتج: ' . $e->getMessage());
-            }
+            $product = Product::findOrFail($id);
 
-            // تحديث الخصم إذا وجد
-            if ($request->discount_type && $request->discount > 0) {
-                try {
-                    ProductDiscount::updateOrCreate(
-                        ['product_id' => $product->id],
-                        [
-                            'discount' => $request->discount,
-                            'discount_type' => $request->discount_type,
-                            'start_date' => $request->start_date,
-                            'end_date' => $request->end_date,
-                        ]
-                    );
-                } catch (\Exception $e) {
-                    throw new \Exception('فشل في تحديث الخصم: ' . $e->getMessage());
-                }
-            } else {
-                $productDiscount = ProductDiscount::where('product_id', $product->id)->first();
-                if ($productDiscount) {
-                    $productDiscount->delete();
-                }
-            }
+            // تحديث المنتج الأساسي
+            $product->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'info' => $request->info,
+                'quantity' => $request->quantity,
+                'price' => $request->price,
+                'goomla_price' => $request->goomla_price,
+                'prefix_id' => $request->prefix_id,
+            ]);
+
+            // تحديث الخصم
+            $this->handleDiscount($product, $request);
 
             // معالجة الصور
             $this->handleImages($request, $product);
@@ -242,9 +241,33 @@ class ProductController extends Controller implements HasMiddleware
             // تحديث ربط الفئات
             $this->syncCategories($product, $request->categories);
 
-            // تحديث الفاريانت إذا وجد
-            if ($request->variants) {
-                foreach ($request->variants as $index => $variantInput) {
+            // تحديث الفاريانت
+            if ($request->has('variants')) {
+                // احصل على معرفات الفاريانت الحالية في الطلب
+                $currentVariantIds = collect($request->variants)
+                    ->pluck('id')
+                    ->filter()
+                    ->toArray();
+
+                // احصل على الفاريانت التي سيتم حذفها
+                $variantsToDelete = Variant::where('product_id', $product->id)
+                    ->whereNotIn('id', $currentVariantIds)
+                    ->get();
+
+                // احذف العلاقات والفاريانت
+                foreach ($variantsToDelete as $variant) {
+                    // حذف العلاقات في جدول option_value_variant
+                    $variant->optionValues()->detach();
+
+                    // حذف الصور المرتبطة بالفاريانت إذا كان لديك جدول للصور
+                    $this->deleteVariantImages($variant);
+
+                    // حذف الفاريانت نفسه
+                    $variant->delete();
+                }
+
+                // تحديث أو إنشاء الفاريانت الجديدة
+                foreach ($request->variants as $variantInput) {
                     $productVariant = Variant::updateOrCreate(
                         [
                             'id' => $variantInput['id'] ?? null,
@@ -262,6 +285,16 @@ class ProductController extends Controller implements HasMiddleware
                     $productVariant->update(['sku_code' => $productVariant->generateSku()]);
                     $this->handleVariantImages($variantInput, $productVariant, $product->id);
                 }
+            } else {
+                // إذا لم يتم إرسال أي فاريانت، احذف جميع الفاريانت الموجودة
+                $variants = Variant::where('product_id', $product->id)->get();
+                foreach ($variants as $variant) {
+                    $variant->optionValues()->detach();
+                    if (method_exists($variant, 'images')) {
+                        $variant->images()->delete();
+                    }
+                    $variant->delete();
+                }
             }
 
             DB::commit();
@@ -269,31 +302,47 @@ class ProductController extends Controller implements HasMiddleware
             session()->flash('success', 'تم تحديث المنتج بنجاح');
             return response()->json(['success' => true]);
 
-
-        } catch (ValidationException $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
+            return $this->handleException($e);
+        }
+    }
+    protected function handleDiscount($product, $request)
+    {
+        if ($request->discount_type && $request->discount > 0) {
+            ProductDiscount::updateOrCreate(
+                ['product_id' => $product->id],
+                [
+                    'discount' => $request->discount,
+                    'discount_type' => $request->discount_type,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                ]
+            );
+        } else {
+            ProductDiscount::where('product_id', $product->id)->delete();
+        }
+    }
+
+    protected function handleException($e)
+    {
+        if ($e instanceof ValidationException) {
             return response()->json([
                 'success' => false,
                 'type' => 'validation',
                 'errors' => $e->validator->errors()
             ], 422);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            // تحليل نص الخطأ للحصول على رسالة مناسبة
-            $errorMessage = $this->getReadableErrorMessage($e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'type' => 'system',
-                'message' => $errorMessage,
-                'debug_message' => config('app.debug') ? $e->getMessage() : null,
-                'errors' => $this->getErrorLocation($e->getMessage())
-            ], 422);
         }
-    }
 
+        $errorMessage = $this->getReadableErrorMessage($e->getMessage());
+        return response()->json([
+            'success' => false,
+            'type' => 'system',
+            'message' => $errorMessage,
+            'debug_message' => config('app.debug') ? $e->getMessage() : null,
+            'errors' => $this->getErrorLocation($e->getMessage())
+        ], 422);
+    }
 
     public function destroy(Product $product)
     {
@@ -319,7 +368,6 @@ class ProductController extends Controller implements HasMiddleware
             return response()->json(['error' => 'حدث خطأ أثناء الحذف: ' . $e->getMessage()], 500);
         }
     }
-
 
     public function removeImage($id)
     {
@@ -461,11 +509,12 @@ class ProductController extends Controller implements HasMiddleware
 
     private function deleteVariantImages(Variant $variant)
     {
-        // فرضاً لديك علاقة images في موديل Variant
-        foreach ($variant->images as $image) {
-
-            Storage::disk('public')->delete($image->path);
-            $image->delete();
+        // التحقق من وجود صور مرتبطة بالمنتج المتغير
+        if ($variant->images && $variant->images->count() > 0) {
+            foreach ($variant->images as $image) {
+                Storage::disk('public')->delete($image->path);
+                $image->delete();
+            }
         }
     }
 
@@ -517,6 +566,40 @@ class ProductController extends Controller implements HasMiddleware
         }
 
         return 'unknown';
+    }
+
+    public function deleteVariant(Product $product, Variant $variant)
+    {
+        try {
+            DB::beginTransaction();
+
+            // التأكد من أن المتغير ينتمي للمنتج المحدد
+            if ($variant->product_id !== $product->id) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'هذا المتغير لا ينتمي للمنتج المحدد');
+            }
+
+            $variant->optionValues()->detach();
+
+            $this->deleteVariantImages($variant);
+
+            // حذف المتغير
+            $variant->delete();
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.products.show', $product->id)
+                ->with('success', 'تم حذف المتغير بنجاح');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->with('error', 'حدث خطأ أثناء حذف المتغير. برجاء المحاولة مرة أخرى.');
+        }
     }
 
 }

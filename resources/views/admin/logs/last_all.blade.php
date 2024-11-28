@@ -2,8 +2,12 @@
 
 @section('content')
     <div class="container-fluid">
-        <h1 class="mb-4">سجلات النظام</h1>
-
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">سجلات النظام</h1>
+            <button id="delete-all-logs" class="btn btn-danger">
+                <i class="fas fa-trash-alt me-2"></i> حذف جميع السجلات
+            </button>
+        </div>
         <div class="row">
             @foreach($logs as $log)
                 <div class="col-12 col-lg-6 mb-4">
@@ -174,4 +178,32 @@
             box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
         }
     </style>
+@endpush
+@push('scripts')
+    <script>
+        document.getElementById('delete-all-logs').addEventListener('click', function () {
+            if (confirm('هل أنت متأكد من حذف جميع السجلات؟')) {
+                fetch('{{ route("admin.logs.deleteAll") }}', {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('تم حذف جميع السجلات بنجاح.');
+                            location.reload();
+                        } else {
+                            alert('حدث خطأ أثناء عملية الحذف.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('حدث خطأ غير متوقع.');
+                    });
+            }
+        });
+    </script>
 @endpush

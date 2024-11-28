@@ -36,5 +36,7 @@ return [
     'total' => 'Total',
     'proceed_checkout' => 'Proceed to checkout',
     'egypt' =>'Egypt',
+    'free_item'=>'Free Item',
+    'empty_cart'=>'Your Cart Is Empty',
 
 ];

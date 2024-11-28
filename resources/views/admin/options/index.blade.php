@@ -43,16 +43,17 @@
                                        class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.options.destroy', $option) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="btn btn-danger btn-sm mr-1"
-                                                onclick="return confirm('هل أنت متأكد من حذف هذا الخيار وجميع قيمه؟')">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                                    @if(!in_array(strtolower($option->getTranslation('name', 'en')), ['color', 'dimension']))
+                                        <form action="{{ route('admin.options.destroy', $option) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm mr-1"
+                                                    onclick="return confirm('هل أنت متأكد من حذف هذا الخيار وجميع قيمه؟')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    @endif                                </div>
                             </div>
                         </div>
                         <div class="card-body">

@@ -71,6 +71,14 @@ class Variant extends Model implements Auditable
         return $price;
     }
 
+    public function getVariantPriceAttribute()
+    {
+        $userType = auth()->user()?->customer_type;
+        $price = $userType == 'goomla' ? $this->goomla_price : $this->price;
+
+        return $price;
+    }
+
     public function generateSku()
     {
         // جلب البريفكس

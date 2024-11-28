@@ -14,9 +14,16 @@
                 <div class="col-lg-6 col-md-6 col-12">
                     <div class="single-product-info">
                         <h4 class="title product-name">{{ __('aside_menu.product_title') }}</h4>
-                        <div class="prices">
 
+                        <!-- إضافة قسم الفاريانت هنا -->
+                        <div class="variant-section mb-3">
+                            <!-- سيتم ملء هذا القسم ديناميكياً -->
                         </div>
+
+                        <div class="prices">
+                            <!-- سيتم ملء الأسعار ديناميكياً -->
+                        </div>
+
                         <div class="product-rating">
                             <div class="rating">
                                 <span class="fa fa-star"></span>
@@ -26,20 +33,14 @@
                                 <span class="fa fa-star"></span>
                             </div>
                         </div>
-{{--                        <div class="single-product-featured">--}}
-{{--                            <ul>--}}
-{{--                                <li><i class="fa fa-check"></i> {{ __('aside_menu.money_return') }}</li>--}}
-{{--                            </ul>--}}
-{{--                        </div>--}}
                         <p class="product-desc">{{ __('aside_menu.product_description') }}</p>
                         <div class="quick-product-action">
                             <div class="action-top">
                                 <div class="pro-qty">
                                     <input type="text" id="quantity" title="{{ __('aside_menu.quantity') }}" value="01" />
                                 </div>
-                                <button class="btn btn-theme font-weight-bold">{{ __('aside_menu.add_to_cart') }}</button>
-                                <a class="btn-wishlist"
-                                   href="" onclick="wishListAdd(event,this)">{{ __('aside_menu.add_to_wishlist') }}</a>
+                                <button class="btn btn-theme font-weight-bold" disabled>{{ __('aside_menu.add_to_cart') }}</button>
+                                <a class="btn-wishlist" href="" onclick="wishListAdd(event,this)">{{ __('aside_menu.add_to_wishlist') }}</a>
                             </div>
                         </div>
                     </div>
@@ -48,8 +49,7 @@
         </div>
     </div>
     <div class="canvas-overlay"></div>
-</aside>
-<!--== End Product Quick View ==-->
+</aside><!--== End Product Quick View ==-->
 
 <!--== Start Aside Search Menu ==-->
 <div class="search-box-wrapper">
@@ -134,3 +134,4 @@
     </div>
 </aside>
 <!--== End Side Menu ==-->
+

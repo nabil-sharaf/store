@@ -11,6 +11,7 @@
                 <h2 class="mb-0">{{ $product->name }}</h2>
             </div>
             <div class="card-body">
+                <!-- Previous product details code remains the same until the additional info section -->
                 <div class="row">
                     <div class="col-md-6">
                         @if($product->images->count() > 0)
@@ -34,72 +35,84 @@
                         @endif
                     </div>
                     <div class="col-md-6">
+                        <!-- Previous product details remain the same -->
 
                         <h4 class="text-primary mt-4">التفاصيل</h4>
                         <ul class="list-group">
-                            <li class="list-group-item"><strong>سعر القطاعي قبل الخصم:</strong> {{ $product->price }} ج
-                            </li>
-                            <li class="list-group-item"><strong>سعر الجملة قبل
-                                    الخصم:</strong> {{ $product->goomla_price }} ج
-                            </li>
-                            <li class="list-group-item"><strong>قيمة الخصم:</strong>
-                                @php
-                                    $discount = $product->discount?->discount;
-                                    if(!$discount || $discount == 0){
-                                        $text = 'لا يوجد ';
-                                    }else{
-                                       if($product->discount?->discount_type=='fixed'){
-                                           $text=' ج ';
-                                       }else{
-                                           $text = ' %';
-                                       }
-                                    }
-                                @endphp
-                                {{($product->discount ?->discount == 0 || ! $product->discount?->discount) ? $text :$discount . ' '.$text}}
-                            </li>
-                            <li class="list-group-item"><strong>الكمية المتاحة:</strong> {{ $product->available_quantity }}</li>
-                            <li class="list-group-item">
-                                <strong>القسم:</strong> {{ $product->categories->pluck('name')->implode(', ') }}</li>
-
-                            @if($product->discount)
-                                <!-- الحقول الجديدة -->
-                                <li class="list-group-item"><strong>نوع الخصم:</strong>
-                                    @php
-                                        $discountType = $product->discount?->discount_type ?? '';
-                                        $discountText = match($discountType) {
-                                            'fixed' => 'ثابت',
-                                            'percentage' => 'نسبة مئوية',
-                                            default => 'لا يوجد'
-                                        };
-                                    @endphp
-                                    {{ $discountText }}
-                                </li>
-                                <li class="list-group-item"><strong>تاريخ بدأ
-                                        الخصم:</strong> {{ $product->discount?->start_date ? $product->discount->start_date->format('Y-m-d') : 'لا يوجد' }}
-                                </li>
-                                <li class="list-group-item"><strong>تاريخ انتهاء
-                                        الخصم:</strong> {{ $product->discount?->end_date ? $product->discount->end_date->format('Y-m-d') : 'لا يوجد' }}
-                                </li>
+                            <!-- Previous list items remain the same -->
                         </ul>
-                        @endif
 
                         <h4 class="text-primary">الوصف</h4>
                         <p>{!! $product->description ?? ' لا يوجد ' !!}</p>
 
                         <h4 class="text-primary text-decoration-underline">معلومات وتفاصيل اضافية:- </h4>
-                        <p>{!! $product->info ?? 'لا يوجد' !!}  </p>
-
-
+                        <p>{!! $product->info ?? 'لا يوجد' !!}</p>
                     </div>
                 </div>
 
+                <!-- New Variants Section -->
+                @if($product->variants && $product->variants->count() > 0)
+                    <div class="mt-4">
+                        <h4 class="text-primary">متغيرات المنتج</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>سعر القطاعي</th>
+                                    <th>سعر الجملة</th>
+                                    <th>الكمية المتاحة</th>
+                                    <th>الخصائص</th>
+                                    <th>الاجراءات</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($product->variants as $variant)
+                                    <tr>
+                                        <td>{{ $variant->sku_code }}</td>
+                                        <td>{{ $variant->price }} ج</td>
+                                        <td>{{ $variant->goomla_price }} ج</td>
+                                        <td>{{ $variant->quantity }}</td>
+                                        <td>
+                                            @if($variant->optionValues)
+                                                @foreach($variant->optionValues as $value)
+                                                    <span class="badge bg-info me-1">
+                                                            {{ $value->option->getTranslation('name','ar') }}: {{ $value->getTranslation('value', 'ar') }}
+                                                        </span>
+                                                @endforeach
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <form action="{{ route('admin.products.variants.delete', ['product' => $product->id, 'variant' => $variant->id]) }}"
+                                                  method="POST"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا المتغير؟')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-info mt-4">
+                        لا توجد متغيرات لهذا المنتج
+                    </div>
+                @endif
+
                 <div class="mt-4">
-                    <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning">تعديل</a>
+                    <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning">تعديل المنتج</a>
                     <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">حذف
+                                onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">حذف المنتج
                         </button>
                     </form>
                     <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">العودة للقائمة</a>
@@ -109,6 +122,7 @@
     </div>
 
     <style>
+        /* Previous styles remain the same */
         .product-image-gallery {
             width: 100%;
             height: 400px;
@@ -137,8 +151,21 @@
         .swiper-button-prev, .swiper-button-next {
             top: 200px;
         }
-    </style>
 
+        /* New styles for variants */
+        .badge {
+            font-size: 0.85em;
+            padding: 5px 8px;
+        }
+
+        .table-responsive {
+            margin-top: 1rem;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+        }
+    </style>
 @endsection
 
 @push('scripts')

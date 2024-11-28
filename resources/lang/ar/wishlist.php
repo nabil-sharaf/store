@@ -15,4 +15,5 @@ return [
     'currency' => 'ج',
     'image_alt' => 'صورة',
     'add_to_cart' => 'أضف للسلة',
+    'show_product'=>'عرض المنتج'
 ];

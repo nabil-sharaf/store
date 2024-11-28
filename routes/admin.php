@@ -40,6 +40,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
                 Route::get('products/{product}/logs', [AuditLogController::class, 'showProductLogs'])->name('products.logs');
                 Route::get('variants/{variant}/logs', [AuditLogController::class, 'showVariantLogs'])->name('variants.logs');
                 Route::get('/audits', [AuditLogController::class, 'index'])->name('audits.index');
+                Route::delete('/logs/delete-all', [AuditLogController::class, 'deleteAll'])->name('logs.deleteAll');
+
             });
 
 //       ------------------------ Orders Routes -----------------------------
@@ -52,6 +54,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
             Route::get('/get-shipping-cost/{state}', [Adm\OrderController::class, 'getShippingCost'])->name('checkout.getShippingCost');
             Route::get('/get-free-quantity', [Adm\OrderController::class, 'getFreeQuantity'])->name('orders.free-quantity');
             Route::get('get/product-variants/{product}',[Adm\OrderController::class,'getVariants'])->name('orders.get-variants');
+            // روت حذف المتغير
+            Route::delete('/products/{product}/variants/{variant}/delete', [ProductController::class, 'deleteVariant'])
+                ->name('products.variants.delete');
 
             Route::middleware("checkRole:superAdmin&supervisor")->group(function () {
 

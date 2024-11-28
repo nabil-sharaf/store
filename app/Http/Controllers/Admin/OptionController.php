@@ -78,8 +78,17 @@ class OptionController extends Controller
 
     public function destroy(Option $option)
     {
+        // Check if option has associated values
+        if ($option->optionValues()->count() > 0) {
+            return redirect()
+                ->route('admin.options.index')
+                ->with('error', 'لا يمكن حذف الأوبشن لأنه يحتوي على قيم. برجاء حذف القيم أولاً.');
+        }
+
         $option->delete();
-        return redirect()->route('admin.options.index')->with('success', 'تم حذف الخيار بنجاح.');
+        return redirect()
+            ->route('admin.options.index')
+            ->with('success', 'تم حذف الأوبشن بنجاح.');
     }
     public function destroyOptionVAlue(OptionValue $value)
     {

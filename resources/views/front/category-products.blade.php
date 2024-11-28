@@ -77,34 +77,7 @@
                                 @forelse($products as $product)
                                 <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                                     <!-- Start Product Item -->
-                                    <div class="product-item">
-                                        <div class="product-thumb">
-                                            <img src="{{asset('storage/'.$product->images?->first()?->path)}}" alt="Image">
-                                            <!-- عرض البادج -->
-                                            @if($product->customer_offer)
-                                                <span class="badge badge-offer">{{ $product->customer_offer}}</span>
-                                            @endif
-                                            <div class="product-action">
-                                                <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-
-                                                <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <div class="rating">
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                            </div>
-                                            <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
-                                            <div class="prices">
-                                                <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <x-product-item :product="$product"/>
                                     <!-- End Product Item -->
                                 </div>
                                 @empty
@@ -125,34 +98,7 @@
                                 @forelse($products as $product)
                                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                                         <!-- Start Product Item -->
-                                        <div class="product-item">
-                                            <div class="product-thumb">
-                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-                                                <!-- عرض البادج -->
-                                                @if($product->customer_offer)
-                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
-                                                @endif
-                                                <div class="product-action">
-                                                    <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-
-                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <div class="rating">
-                                                    <span class="fa fa-star"></span>
-                                                    <span class="fa fa-star"></span>
-                                                    <span class="fa fa-star"></span>
-                                                    <span class="fa fa-star"></span>
-                                                    <span class="fa fa-star"></span>
-                                                </div>
-                                                <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
-                                                <div class="prices">
-                                                    <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <x-product-item :product="$product"/>
                                         <!-- End Product Item -->
                                     </div>
                                 @empty
@@ -165,34 +111,8 @@
                                 @forelse($products as $product)
                                 <div class="col-sm-6 col-6">
                                     <!-- Start Product Item -->
-                                    <div class="product-item">
-                                        <div class="product-thumb">
-                                            <img src="{{asset('storage/'.$product->images?->first()?->path)}}" alt="Image">
-                                            <!-- عرض البادج -->
-                                            @if($product->customer_offer)
-                                                <span class="badge badge-offer">{{ $product->customer_offer}}</span>
-                                            @endif
-                                            <div class="product-action">
-                                                <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-
-                                                <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <div class="rating">
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span>
-                                            </div>
-                                            <h4 class="title"><a href="{{route('product.show',$product->id)}}">{{$product->name}}</a></h4>
-                                            <div class="prices">
-                                                <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
-                                            </div>
-                                        </div>
-                                    </div>                                    <!-- End Product Item -->
+                                    <x-product-item :product="$product"/>
+                                   <!-- End Product Item -->
                                 </div>
                                 @empty
                                     <div> هذا القسم لا يحتوي على منتجات حاليا</div>

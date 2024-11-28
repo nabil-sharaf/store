@@ -11,6 +11,7 @@ use App\Models\Admin\Product;
 use App\Models\Admin\PromoCode;
 use App\Models\Admin\Setting;
 use App\Models\Admin\ShippingRate;
+use App\Models\Admin\Variant;
 use App\Models\Front\UserAddress;
 use App\Models\User;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
@@ -153,7 +154,14 @@ class OrderController extends Controller
             $items = Cart::getContent();
 
             foreach ($items as $item) {
-                $product = Product::find($item['id']);
+                $productModel = Product::find($item->attributes['product_id']);
+                $variantModel = Variant::find($item->attributes['variant_id'])?? null;
+                if ($variantModel) {
+                    $product = $variantModel;
+                } else {
+                    $product = $productModel;
+                }
+
                 if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
                     throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
 
@@ -176,7 +184,7 @@ class OrderController extends Controller
                 $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
 
                 // الحصول على العرض المناسب من الـ Accessor
-                $offer = $product->getOfferDetails($customerOfferType);
+                $offer = $productModel->getOfferDetails($customerOfferType);
 
                 // التأكد إذا كان المنتج يحتوي على عرض
                 if ($offer && $quantity >= $offer->offer_quantity) {
@@ -186,7 +194,8 @@ class OrderController extends Controller
 
                 $orderDetail = new OrderDetail();
                 $orderDetail->order_id = $order->id;
-                $orderDetail->product_id = $item['id'];
+                $orderDetail->product_id = $item->attributes['product_id'];
+                $orderDetail->variant_id = $item->attributes['variant_id'] ?? null;
                 $orderDetail->Product_quantity = $item['quantity'];
                 $orderDetail->free_quantity = $freeProducts;
                 $orderDetail->price = $priceAfterDiscount;
@@ -261,7 +270,7 @@ class OrderController extends Controller
             $order->promo_discount = $promoDiscount;
             $order->shipping_cost = $shippingCost;
             $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
-            $order->final_total = $order->total_after_discount + $shippingCost;
+            $order->final_total = $totalPrice - $vip_discount - $promoDiscount + $shippingCost;
             $order->save();
 
             if ($promoDiscount) {
@@ -318,16 +327,22 @@ class OrderController extends Controller
 
         // إضافة المنتجات من الطلب إلى السلة
         foreach ($order->orderDetails as $detail) {
+            $variant = $detail->variant_id ?? null;
             Cart::add([
-                'id' => $detail->product->id,
+                'id' => $variant ?
+                    $detail->product->id . '-' . $detail->variant->id
+                    : $detail->product->id,
                 'name' => $detail->product->name,
                 'price' => $detail->price,
                 'quantity' => $detail->product_quantity,
                 'attributes' => [
                     'url' => route('product.show', $detail->product->id),
-                    'image' => $detail->product?->images?->first()?->path,
+                    'image' => $variant ?
+                        $detail->variant?->images?->first()?->path
+                        : $detail->product?->images?->first()?->path,
                 ]
             ]);
+
         }
 
         // حفظ معرّف الطلب الجاري تعديله في الجلسة
@@ -398,7 +413,12 @@ class OrderController extends Controller
 
             // استرجاع الكميات للمنتج  والكميات الفري اذا وجدت
             foreach ($order->orderDetails as $orderDetail) {
-                $product = $orderDetail->product;
+                $variantId = $orderDetail->variant_id;
+                if($variantId){
+                    $product = $orderDetail->variant;
+                }else{
+                    $product = $orderDetail->product;
+                }
                 $product->quantity = $product->quantity + $orderDetail->product_quantity + ($orderDetail->free_quantity ?? 0);
                 $product->save();
             }
@@ -407,7 +427,9 @@ class OrderController extends Controller
             $order->orderDetails()->delete();
 
             foreach ($items as $item) {
-                $product = Product::find($item['id']);
+                $productModel = Product::find($item->attributes['product_id']);
+                $variantModel = Variant::find($item->attributes['variant_id']) ?? null;
+                $product = $variantModel ?: $productModel;
                 if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
                     throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
                 }
@@ -429,7 +451,7 @@ class OrderController extends Controller
                 $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
 
                 // الحصول على العرض المناسب من الـ Accessor
-                $offer = $product->getOfferDetails($customerOfferType);
+                $offer = $productModel->getOfferDetails($customerOfferType);
 
                 // التأكد إذا كان المنتج يحتوي على عرض
                 if ($offer && $quantity >= $offer->offer_quantity) {
@@ -440,7 +462,8 @@ class OrderController extends Controller
                 // إضافة تفاصيل جديدة للطلب
                 $orderDetail = new OrderDetail();
                 $orderDetail->order_id = $order->id;
-                $orderDetail->product_id = $item['id'];
+                $orderDetail->product_id = $item->attributes['product_id'];
+                $orderDetail->variant_id = $item->attributes['variant_id'] ?? null;
                 $orderDetail->Product_quantity = $item['quantity'];
                 $orderDetail->free_quantity = $freeProducts;
                 $orderDetail->price = $priceAfterDiscount;

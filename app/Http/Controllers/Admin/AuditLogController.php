@@ -16,6 +16,7 @@ class AuditLogController extends Controller
 
         return view('admin.logs.last_all', compact('logs'));
     }
+
     public function showProductLogs($productId)
     {
         // جلب سجلات التعديلات الخاصة بالمنتج
@@ -33,7 +34,7 @@ class AuditLogController extends Controller
         // دمج السجلات من أجل عرضها في صفحة واحدة
         $logsAll = $productLogs->merge($variantLogs)->sortByDesc('created_at');
 
-        $logs= paginateProducts($logsAll,'25');
+        $logs = paginateProducts($logsAll, '25');
         return view('admin.logs.products', compact('logs'));
     }
 
@@ -46,4 +47,15 @@ class AuditLogController extends Controller
 
         return view('admin.logs.variants', compact('logs'));
     }
+
+    public function deleteAll()
+    {
+        try {
+            Audit::truncate(); // حذف جميع السجلات
+            return response()->json(['success' => true], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
 }

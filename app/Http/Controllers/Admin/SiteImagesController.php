@@ -24,6 +24,7 @@ class SiteImagesController extends Controller
             'logo' => 'nullable|image|max:2048',
             'slider_image' => 'nullable|image|max:2048',
             'car_icon'=>'nullable|image|max:2048',
+            'default_image'=>'nullable|image|max:2048',
             'offer_one' => 'nullable|image|max:2048',
             'offer_two' => 'nullable|image|max:2048',
             'footer_image' => 'nullable|image|max:2048',
@@ -41,6 +42,8 @@ class SiteImagesController extends Controller
             'footer_image' => 'footer',
             'about_us_image' => 'about',
             'payment_image' => 'payment',
+            'default_image'=>'Default Image'
+
 
         ];
 

@@ -1,7 +1,4 @@
-@php
-    $siteImages = \App\Models\Admin\SiteImage::first() ?? null;
-@endphp
-    <!--== Start Footer Area Wrapper ==-->
+<!--== Start Footer Area Wrapper ==-->
 <footer class="footer-area default-style">
     <div class="footer-main">
         <div class="container">
@@ -10,7 +7,7 @@
                     <div class="widget-item item-style3">
                         <div class="about-widget">
                             <a class="footer-logo" href="">
-                                <img src="{{asset('storage').'/'.$siteImages?->footer_image ?? ''}}"
+                                <img src="{{asset('storage').'/'.($siteImages?->footer_image ?: $siteImages?->default_image)}}"
                                      alt="{{ __('footer.logo_alt') }}">
                             </a>
                             @php $footer_desc=\App\Models\Admin\Setting::getValue('footer_message') ?? false @endphp

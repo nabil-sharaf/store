@@ -26,27 +26,27 @@ class ProductController extends Controller
 
     public function showProduct(Product $product)
     {
-        $product->load('categories','images');
-        return view('front.product-show',compact('product'));
+        $product->load('variants', 'variants.optionValues', 'variants.optionValues.option');
+        return view('front.product-show', [
+            'product' => $product,
+            'locale' => app()->getLocale(),
+        ]);
     }
-
 
     public function search(Request $request)
     {
-        // احفظ القيم في الجلسة
-        session([
-            'search' => $request->input('search'), // حفظ قيمة البحث في الجلسة
-        ]);
-
         $query = $request->input('search');
 
-        // البحث في المنتجات
-        $products = Product::where('name', 'LIKE', "%{$query}%")
-            ->orWhere('description', 'LIKE', "%{$query}%")
+        $products = Product::whereHas('variants', function($variantQuery) use ($query) {
+            $variantQuery->where('name', 'LIKE', "%{$query}%")
+                ->orWhere('sku_code', 'LIKE', "%{$query}%");
+        })
+            ->with(['variants' => function($variant) use ($query) {
+                $variant->where('sku_code', 'LIKE', "%{$query}%");
+            }])
             ->paginate(get_pagination_count())
-            ->appends(['search' => $query]);;
+            ->appends(['search' => $query]);
 
-        // عرض النتائج في عرض مخصص
         return view('front.search-results', compact('products', 'query'));
     }
     public function filterProducts(Request $request, $category_id = null)
@@ -71,12 +71,18 @@ class ProductController extends Controller
             });
         }
         // تحقق من وجود قيمة في حقل البحث
+// تحقق من وجود قيمة في حقل البحث
         if (session()->has('search') &&  session('search') !== '') {
-            $query->where('name', 'like', '%' . session('search') . '%')
-                  ->orWhere('description', 'LIKE', "%".session('search')."%")
-            ;
+            $query->where(function($q) {
+                $search = session('search');
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+                    // إضافة البحث في SKU للمنتجات والفاريانتس
+                    ->orWhereHas('variants', function($variantQuery) use ($search) {
+                        $variantQuery->where('sku_code', 'LIKE', "%{$search}%");
+                    });
+            });
         }
-
 
         // استرجاع المنتجات
         $products = $query->get();

@@ -25,6 +25,7 @@
             <td>{{ $product?->discount?->start_date ? $product?->discount->start_date->format('Y-m-d') : '---' }}</td>
             <td>{{ $product?->discount?->end_date ? $product?->discount->end_date->format('Y-m-d') : '---' }}</td>
             <td class="align-middle">
+
                 <a href="{{ route('admin.products.show', $product?->id) }}" class="btn btn-sm btn-warning mb-1">
                     <i class="fas fa-eye"></i>
                 </a>
@@ -41,12 +42,12 @@
 
         {{-- Variant rows --}}
         @foreach($product?->variants as $variant)
-            <tr>
-                <td><input type="checkbox" class="product-checkbox" value="{{ $product?->id }}"></td>
-                <td>{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
+            <tr class="variant-row">
+                <td></td>
+                <td>{{ $loop->iteration }}.{{$loop->parent->iteration}}</td>
                 <td>
                     <small class="text-muted">
-                        كود المنتج: {{ $variant->sku_code }}
+                       الكود: {{ $variant->sku_code }}
                         <br>
                         @foreach($variant->optionValues as $optionValue)
                             {{ $optionValue->option->name }}: {{ $optionValue->value }}
@@ -70,17 +71,17 @@
                 <td>{{ $product?->discount?->start_date ? $product?->discount->start_date->format('Y-m-d') : '---' }}</td>
                 <td>{{ $product?->discount?->end_date ? $product?->discount->end_date->format('Y-m-d') : '---' }}</td>
                 <td class="align-middle">
-                    <a href="{{ route('admin.products.show', $product->id) }}" class="btn btn-sm btn-warning mb-1">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-info mb-1">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    @if(auth('admin')->user()->hasAnyRole(['superAdmin','supervisor']))
-                        <button type="button" class="btn btn-sm btn-danger delete-product-btn mb-1" data-id="{{ $product->id }}">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    @endif
+{{--                    <a href="{{ route('admin.products.show', $product->id) }}" class="btn btn-sm btn-warning mb-1">--}}
+{{--                        <i class="fas fa-eye"></i>--}}
+{{--                    </a>--}}
+{{--                    <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-info mb-1">--}}
+{{--                        <i class="fas fa-edit"></i>--}}
+{{--                    </a>--}}
+{{--                    @if(auth('admin')->user()->hasAnyRole(['superAdmin','supervisor']))--}}
+{{--                        <button type="button" class="btn btn-sm btn-danger delete-product-btn mb-1" data-id="{{ $product->id }}">--}}
+{{--                            <i class="fas fa-trash-alt"></i>--}}
+{{--                        </button>--}}
+{{--                    @endif--}}
                 </td>
             </tr>
         @endforeach
@@ -138,3 +139,10 @@
         <td colspan="10">لا يوجد منتجات حاليا</td>
     </tr>
 @endforelse
+@push('styles')
+    <style>
+        .variant-row{
+            background-color: #efefef59;
+        }
+    </style>
+@endpush

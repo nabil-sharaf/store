@@ -52,6 +52,7 @@
                 <thead>
                 <tr>
                     <th>المنتج</th>
+                    <th>كود المنتج</th>
                     <th>الكمية</th>
                     <th>السعر</th>
                     <th>الإجمالي</th>
@@ -59,12 +60,32 @@
                 </thead>
                 <tbody>
                 @foreach($order->orderDetails as $detail)
+
+                    @php
+                       $options =  $detail->variant?->optionValues->map(function($value){
+                           return $value->value;
+                       })->implode(',') ??null;
+                        @endphp
+
                     <tr>
-                        <td>{{ $detail->product->name }}</td>
+                        <td>
+                            {{
+                            $detail->variant
+                            ?$detail->product->name.($options? ': ('.$options.' )' :'')
+                            :$detail->product->name
+                             }}
+                        </td>
+                        <td>
+                            {{
+                            $detail->variant
+                                ?$detail->variant->sku_code
+                                :$detail->product->sku_code
+                             }}
+                        </td>
                         @if($detail->free_quantity > 0)
-                        <td>{{ $detail->product_quantity }} + {{$detail->free_quantity .' هدية '}}</td>
+                            <td>{{ $detail->product_quantity }} + {{$detail->free_quantity .' هدية '}}</td>
                         @else
-                        <td>{{ $detail->product_quantity }}</td>
+                            <td>{{ $detail->product_quantity }}</td>
                         @endif
                         <td>{{ $detail->price }} ج</td>
                         <td>{{ $detail->product_quantity * $detail->price }} ج</td>
@@ -74,7 +95,7 @@
                 @if($order->user_id)
                     @if(($order->vip_discount + $order->promo_discount) > 0)
                         <tr class="">
-                            <td colspan="3" class="text-left font-weight-bold">اجمالي سعر المنتجات</td>
+                            <td colspan="4" class="text-left font-weight-bold">اجمالي سعر المنتجات</td>
                             <td class="table-active">{{ $order->total_price }} ج</td>
                         </tr>
                         <tr>
@@ -88,13 +109,13 @@
                     @endif
                 @endif
                 <tr>
-                    <td colspan="3" class="text-left font-weight-bold">
-                     تكاليف الشحن
+                    <td colspan="4" class="text-left font-weight-bold">
+                        تكاليف الشحن
                     </td>
                     <td class="font-weight-bold">{{$order->shipping_cost }} ج</td>
                 </tr>
                 <tr class="table-info">
-                    <td colspan="3" class="text-left font-weight-bold">
+                    <td colspan="4" class="text-left font-weight-bold">
                         {{ ($order->vip_discount > 0 || $order->promo_discount > 0) ? 'السعر الإجمالي للاوردر' : 'إجمالي الطلب' }}
                     </td>
                     <td class="font-weight-bold">{{ $order->final_total }} ج</td>

@@ -36,5 +36,9 @@ return [
     'total' => 'الإجمالي',
     'proceed_checkout' => 'اتمام الطلب ',
     'egypt' =>'مصر',
-    'editing_order_message'=> 'انت تقوم حاليا بتعديل الاوردر رقم'
+    'editing_order_message'=> 'انت تقوم حاليا بتعديل الاوردر رقم',
+    'free_item'=>'قطعة مجاني',
+    'empty_cart'=>' لا يوجد  لديك منتجات في السلة حاليا',
+
 ];
+

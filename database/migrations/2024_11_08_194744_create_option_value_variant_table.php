@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('option_value_variant', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('variant_id')->constrained('variants');
+            $table->foreignId('variant_id')->constrained('variants')->onDelete('cascade');
             $table->foreignId('option_value_id')->constrained('option_values');
             $table->timestamps();
         });

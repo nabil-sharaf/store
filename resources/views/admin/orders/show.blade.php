@@ -105,11 +105,11 @@
                 @if($order->user_id)
                     @if(($order->vip_discount + $order->promo_discount) > 0)
                         <tr class="">
-                            <td colspan="3" class="text-left font-weight-bold">اجمالي سعر المنتجات</td>
+                            <td colspan="4" class="text-left font-weight-bold">اجمالي سعر المنتجات</td>
                             <td class="table-active">{{ $order->total_price }} ج</td>
                         </tr>
                         <tr>
-                            <td colspan="1" class="text-left font-weight-bold">قيمة الخصم</td>
+                            <td colspan="2" class="text-left font-weight-bold">قيمة الخصم</td>
                             <td colspan="1">خصم
                                 كوبون: {{$order->promo_discount > 0 ? $order->promo_discount.'  ج ' : ' --- '}}</td>
                             <td colspan="1">

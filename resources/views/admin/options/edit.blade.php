@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 py-3">
                     <h1 class="h3 mb-0 text-primary fw-bold">
-                        <i class="fas fa-edit me-2"></i>تعديل الخيار
+                        <i class="fas fa-edit me-2"></i>تعديل الأوبشن
                     </h1>
                     <a href="{{ route('admin.options.index') }}" class="btn btn-secondary px-4">
                         <i class="fas fa-arrow-right me-2"></i>عودة للخيارات
@@ -36,7 +36,7 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h5 class="card-title mb-3 text-primary">
-                                        <i class="fas fa-font me-2"></i>معلومات الخيار
+                                        <i class="fas fa-font me-2"></i>معلومات الأوبشن
                                     </h5>
                                 </div>
                                 <div class="col-md-6 mb-3 mb-md-0">
@@ -55,7 +55,9 @@
                                            id="name_en"
                                            name="name[en]"
                                            value="{{ $option->getTranslation('name', 'en') }}"
-                                           required>
+                                           required
+                                        {{ in_array(strtolower($option->getTranslation('name', 'en')), ['color', 'dimension']) ? 'readonly' : '' }}
+                                    >
                                 </div>
                             </div>
 
@@ -63,7 +65,7 @@
                             <div class="values-section">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5 class="card-title mb-0 text-primary">
-                                        <i class="fas fa-list me-2"></i>قيم الخيار
+                                        <i class="fas fa-list me-2"></i>قيم الأوبشن
                                     </h5>
                                     <button type="button"
                                             id="addValue"

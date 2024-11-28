@@ -14,5 +14,17 @@ return [
     'end_date' => 'تاريخ النهاية',
     'sku_code' => 'كود SKU',
     'id'=>' الـ ID ',
-    'product_id'=>'اي دي المنتج'
+    'product_id'=>'اي دي المنتج',
+    'total_price' => 'إجمالي السعر',
+    'vip_discount' => 'خصم VIP',
+    'promo_discount' => 'خصم الكوبون',
+    'total_after_discount' => 'الإجمالي بعد الخصم',
+    'final_total' => 'الإجمالي النهائي',
+    'status_id'=>'حالة الاوردر ',
+    'user_id'=>'اي دي المستخدم',
+    'user_address_id'=>'Address Id',
+    'shipping_cost'=>'تكلفة الشحن',
+     'is_best_seller'=>'Best Seller ',
+    'is_trend'=>'Is Trend',
+    'code'=>'الكود',
 ];

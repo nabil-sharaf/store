@@ -21,16 +21,17 @@ Route::group([
 Route::get('/', [HomeController::class,'index'])->name('home.index');
 Route::get('/contact', [HomeController::class,'contact'])->name('home.contact');
 Route::get('/about', [HomeController::class,'aboutUs'])->name('home.about');
-Route::get('/product/details/{id}', [HomeController::class, 'productDetails'])->name('product.details');
-
+Route::get('product/details/{id}', [HomeController::class, 'productDetails'])->name('product.details');
+Route::get('/variant/details/{id}', [HomeController::class, 'getVariantDetails'])->name('home.variant.details');
 
 
 //--------------------------- Cart Shopping Routes -----------------------------
 
 
-Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update'); // راوت تحديث الكمية في صفحة السلة
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/remove-item', [CartController::class, 'removeShopingItemCart'])->name('cart.remove-item');
 Route::get('/cart/details', [CartController::class, 'getCartDetails'])->name('cart.details');  // تفاصيل السلة في السايد مينيو
 
 Route::get('/cart/shop-cart/{order?}',[CartController::class,'shoppingCartDetails'])->name('home.shop-cart'); //جلب المحتويات والتفاصيل  في صفحة السلة

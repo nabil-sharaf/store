@@ -142,10 +142,6 @@ class Product extends Model implements Auditable
 
     public function getDiscountedPriceAttribute()
     {
-        // إذا كان المنتج يحتوي على فاريانتات، لا يتم حساب سعر الخصم من هنا
-        if ($this->hasVariants()) {
-            return null; // ستعتمد عملية الحساب على الفاريانتات الفردية
-        }
         $userType = auth()->user()?->customer_type;
 
         $price = $userType == 'goomla' ? $this->goomla_price : $this->price;
