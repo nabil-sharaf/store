@@ -58,34 +58,85 @@
                                         @foreach($wishlists as $item)
                                             <tr id="wishlist-item-{{ $item->id }}">
                                                 <td class="product-remove">
-                                                    <a href="#" onclick="removeFromWishlist(event, {{ $item->id }})">×</a>
+                                                    <a href="#"
+                                                       onclick="removeFromWishlist(event, {{ $item->id }})">×</a>
                                                 </td>
                                                 <td class="product-thumbnail">
-                                                    <img src="{{ asset('storage').'/'. $item->product->images()->first()?->path }}" alt="{{ __('wishlist.image_alt') }}" style="max-width: 75px">
+                                                    @if($item->product->available_quantity > 0)
+                                                        <a href="{{route('product.show',$item->product->id)}})">
+                                                            <img
+                                                                src="{{ asset('storage').'/'. ($item->product->images()->first()?->path ?? $siteImages->default_image) }}"
+                                                                alt="{{ __('wishlist.image_alt') }}"
+                                                                style="max-width: 75px">
+                                                        </a>
+                                                    @else
+                                                        <img
+                                                            src="{{ asset('storage').'/'. ($item->product->images()->first()?->path ?? $siteImages->default_image) }}"
+                                                            alt="{{ __('wishlist.image_alt') }}"
+                                                            style="max-width: 75px">
+                                                    @endif
                                                 </td>
                                                 <td class="product-name">
                                                     <h5>
-                                                        <a href="">{{ $item->product->name }}</a>
+                                                        @if($item->product->hasVariants())
+                                                            @if($item->product->available_quantity >0)
+                                                                <a href="{{route('product.show',$item->product->id)}}">{{ $item->product->name }}
+                                                                    <small class="text-muted"> &nbsp;
+                                                                        (متنوع) </small></a>
+                                                            @else
+                                                                <a href="javascript:void(0)">{{ $item->product->name }}
+                                                                    <small class="text-muted"> &nbsp;
+                                                                        (متنوع) </small></a>
+                                                            @endif
+                                                        @else
+
+                                                            <a href="{{$item->product->available_quantity > 0 ? route('product.show',$item->product->id) : "javascript:void(0)"}}">
+                                                                {{ $item->product->name }}
+                                                            </a>
+                                                        @endif
                                                     </h5>
                                                 </td>
                                                 <td class="product-price">
-                                                    <span class="amount">{{ $item->product->price }} {{ __('wishlist.currency') }}</span>
+                                                    <span
+                                                        class="amount">{{ $item->product->discounted_price }} {{ __('wishlist.currency') }}</span>
                                                 </td>
                                                 <td class="stock-status">
-                                                    @if($item->product->quantity >0)
+                                                    @if($item->product->available_quantity >0)
                                                         <span><i class="fa fa-check"></i> {{ __('wishlist.in_stock') }}</span>
                                                     @else
                                                         <span style="color: red"><i class="fa fa-times"></i> {{ __('wishlist.out_of_stock') }}</span>
                                                     @endif
                                                 </td>
                                                 <td class="wishlist-cart">
-                                                    @if($item->product->quantity > 0)
-                                                    <a href="" class="btn btn-lg" onclick="addToCart(event,{{$item->product->id}})"><strong>{{ __('wishlist.add_to_cart') }} &nbsp;<i class="ion-ios-cart"></i></strong></a>
-                                                    @else
-                                                        <a href="#" class="btn btn-lg disabled" onclick="return false;"><strong>{{ __('wishlist.add_to_cart') }} &nbsp;<i class="ion-ios-cart"></i></strong></a>
-                                                    @endif
+                                                    @php
+                                                        $buttonConfig = [
+                                                            'text' => $item->product->hasVariants()
+                                                                ? __('wishlist.show_product')
+                                                                : __('wishlist.add_to_cart'),
+                                                            'href' => $item->product->hasVariants()
+                                                                ? route('product.show', $item->product->id)
+                                                                : '#',
+                                                            'onClick' => !$item->product->hasVariants()
+                                                                ? "addToCart(event,{$item->product->id})"
+                                                                : null
+                                                        ];
+
+                                                        $isAvailable = $item->product->available_quantity > 0;
+                                                    @endphp
+
+                                                    <a href="{{ $isAvailable ? $buttonConfig['href'] : '#' }}"
+                                                       class="btn btn-theme d-inline-flex align-items-center justify-content-center gap-2 {{ !$isAvailable ? 'disabled' : '' }}"
+                                                       style="min-width: 160px; height: 45px;"
+                                                       @if(!$isAvailable)
+                                                           onclick="return false;"
+                                                       @elseif($buttonConfig['onClick'])
+                                                           onclick="{{ $buttonConfig['onClick'] }}"
+                                                        @endif
+                                                    >
+                                                        <span>{{ $buttonConfig['text'] }}</span>
+                                                        <i class="ion-ios-cart"></i>
+                                                    </a>
                                                 </td>
-                                            </tr>
                                         @endforeach
                                     @endif
                                     </tbody>

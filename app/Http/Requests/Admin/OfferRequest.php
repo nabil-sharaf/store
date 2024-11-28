@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Admin\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OfferRequest extends FormRequest
@@ -21,6 +22,15 @@ class OfferRequest extends FormRequest
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
             'product_id' => 'required|exists:products,id',
+//            'variant_ids' => [
+//                'nullable',
+//                function ($attribute, $value, $fail) {
+//                    $product = Product::with('variants')->find(request('product_id'));
+//                    if ($product && $product->variants->count() > 0 && empty($value)) {
+//                        $fail('يجب اختيار الفاريانتات التي سيطبق عليها العرض.');
+//                    }
+//                },
+//            ],
         ];
     }
 

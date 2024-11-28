@@ -11,6 +11,7 @@ use App\Models\Admin\Product;
 use App\Models\Admin\PromoCode;
 use App\Models\Admin\Setting;
 use App\Models\Admin\ShippingRate;
+use App\Models\Admin\Variant;
 use App\Models\Front\UserAddress;
 use App\Models\User;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
@@ -92,205 +93,213 @@ class OrderController extends Controller
     public function store(CheckoutRequest $request)
     {
         try {
-            return DB::transaction(function () use ($request) {
-                $user = null;
-                $isGuest = false;
+            DB::beginTransaction();
+            $user = null;
+            $isGuest = false;
 
-                if (auth()->check()) {
-                    $user = auth()->user();
+            if (auth()->check()) {
+                $user = auth()->user();
+            } else {
+                $isGuest = true;
+            }
+
+            $order = new Order();
+
+            if ($isGuest) {
+                // حفظ معلومات الزائر في الطلب
+                $guest = new GuestAddress();
+                $guest->full_name = $request->full_name;
+                $guest->phone = $request->phone;
+                $guest->address = $request->address;
+                $guest->city = $request->city;
+                $guest->state = $request->state;
+                $guest->save();
+                $order->guest_address_id = $guest->id;
+            } else {
+                $order->user_id = $user->id;
+                // انشاء  أو تحديث عنوان المستخدم
+                $userAddress = \App\Models\Admin\UserAddress::updateOrCreate(
+
+                    ['user_id' => $user->id],
+                    [
+                        'full_name' => $request->full_name,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'city' => $request->city,
+                        'state' => $request->state,
+                    ]
+                );
+                $order->user_address_id = $userAddress->id;
+
+
+            }
+
+
+            // إضافة تكلفة الشحن
+            $shippingCost = ShippingRate::where('state', $request->state)->first()->shipping_cost;
+
+            $order->shipping_cost = $shippingCost;
+
+
+            $order->total_price = 0;
+            $order->vip_discount = 0;
+            $order->promo_discount = 0;
+            $order->total_after_discount = 0;
+            $order->final_total = 0;
+            $order->save();
+
+            $totalPrice = 0;
+            $all_order_quantity = 0;
+
+            $items = Cart::getContent();
+
+            foreach ($items as $item) {
+                $productModel = Product::find($item->attributes['product_id']);
+                $variantModel = Variant::find($item->attributes['variant_id'])?? null;
+                if ($variantModel) {
+                    $product = $variantModel;
                 } else {
-                    $isGuest = true;
+                    $product = $productModel;
                 }
 
-                $order = new Order();
-
-                if ($isGuest) {
-                    // حفظ معلومات الزائر في الطلب
-                    $guest = new GuestAddress();
-                    $guest->full_name = $request->full_name;
-                    $guest->phone = $request->phone;
-                    $guest->address = $request->address;
-                    $guest->city = $request->city;
-                    $guest->state = $request->state;
-                    $guest->save();
-                    $order->guest_address_id = $guest->id;
-                } else {
-                    $order->user_id = $user->id;
-                    // انشاء  أو تحديث عنوان المستخدم
-                    $userAddress = \App\Models\Admin\UserAddress::updateOrCreate(
-
-                        ['user_id' => $user->id],
-                        [
-                            'full_name' => $request->full_name,
-                            'phone' => $request->phone,
-                            'address' => $request->address,
-                            'city' => $request->city,
-                            'state' => $request->state,
-                        ]
-                    );
-                    $order->user_address_id = $userAddress->id;
-
+                if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
+                    throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
 
                 }
 
-
-                // إضافة تكلفة الشحن
-                $shippingCost = ShippingRate::where('state', $request->state)->first()->shipping_cost;
-
-                $order->shipping_cost = $shippingCost;
-
-
-                $order->total_price = 0;
-                $order->vip_discount = 0;
-                $order->promo_discount = 0;
-                $order->total_after_discount = 0;
-                $order->final_total = 0;
-                $order->save();
-
-                $totalPrice = 0;
-                $all_order_quantity = 0;
-
-                $items = Cart::getContent();
-
-                foreach ($items as $item) {
-                    $product = Product::find($item['id']);
-                    if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
-                        throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
-
-                    }
-
-                    if ($item['quantity'] < 1) {
-                        throw new \Exception('الكمية لابد ان تكون واحد على الأقل.');
-                    }
-
-                    $all_order_quantity += $item['quantity'];
-
-                    $priceAfterDiscount = $product->discounted_price;
-                    $priceForProduct = $priceAfterDiscount * $item['quantity'];
-
-                    // حساب كمية المنتجات المجانية اذا وجدت
-                    $quantity = $item['quantity'];
-                    $freeProducts = 0;
-
-                    // جلب نوع العميل
-                    $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
-
-                    // الحصول على العرض المناسب من الـ Accessor
-                    $offer = $product->getOfferDetails($customerOfferType);
-
-                    // التأكد إذا كان المنتج يحتوي على عرض
-                    if ($offer && $quantity >= $offer->offer_quantity) {
-                        // حساب عدد المنتجات المجانية التي يستحقها العميل
-                        $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
-                    }
-
-                    $orderDetail = new OrderDetail();
-                    $orderDetail->order_id = $order->id;
-                    $orderDetail->product_id = $item['id'];
-                    $orderDetail->Product_quantity = $item['quantity'];
-                    $orderDetail->free_quantity = $freeProducts;
-                    $orderDetail->price = $priceAfterDiscount;
-                    $orderDetail->save();
-
-                    $totalPrice += $priceForProduct;
-                    $product->quantity -= ($item['quantity'] + $freeProducts);
-                    $product->save();
+                if ($item['quantity'] < 1) {
+                    throw new \Exception('الكمية لابد ان تكون واحد على الأقل.');
                 }
 
-                // التحقق من كود الخصم
-                if ($request->filled('promo_code')) {
+                $all_order_quantity += $item['quantity'];
 
-                    if (!$user) {
-                        throw new \Exception('كوبونات الخصم للأعضاء المسجلين فقط');
-                    }
+                $priceAfterDiscount = $product->discounted_price;
+                $priceForProduct = $priceAfterDiscount * $item['quantity'];
 
-                    if ($user->customer_type != 'regular') {
-                        throw new \Exception('كوبونات الخصم للعملاء القطاعي فقط  فقط');
-                    }
+                // حساب كمية المنتجات المجانية اذا وجدت
+                $quantity = $item['quantity'];
+                $freeProducts = 0;
 
-                    $promoCode = PromoCode::where('code', $request->promo_code)
-                        ->where('active', 1)
-                        ->where('start_date', '<=', now())
-                        ->where('end_date', '>=', now())
-                        ->first();
+                // جلب نوع العميل
+                $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
 
-                    if (!$promoCode) {
-                        throw new \Exception('كود الخصم غير صالح أو منتهي الصلاحية.');
-                    }
+                // الحصول على العرض المناسب من الـ Accessor
+                $offer = $productModel->getOfferDetails($customerOfferType);
 
-                    $promoCodeUsed = DB::table('user_promocode')
-                        ->where('user_id', $user ? $user->id : null)
-                        ->where('promo_code_id', $promoCode->id)
-                        ->exists();
-
-                    if ($promoCodeUsed) {
-                        throw new \Exception('لقد استخدمت هذا الكود من قبل.');
-                    }
-
-                    if ($totalPrice < $promoCode->min_amount) {
-                        throw new \Exception('يجب أن يكون إجمالي الطلب أكبر من ' . $promoCode->min_amount . ' لاستخدام هذا الكوبون.');
-                    }
-
-                    $promoDiscount = $promoCode->discount_type === 'percentage'
-                        ? ($totalPrice * $promoCode->discount) / 100
-                        : $promoCode->discount;
-                } else {
-                    $promoDiscount = 0;
+                // التأكد إذا كان المنتج يحتوي على عرض
+                if ($offer && $quantity >= $offer->offer_quantity) {
+                    // حساب عدد المنتجات المجانية التي يستحقها العميل
+                    $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
                 }
 
-                // حساب خصم vip إذا كان المستخدم مسجلاً
-                $vip_discount = $user ? $this->calculateDiscount($user, $totalPrice) : 0;
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order->id;
+                $orderDetail->product_id = $item->attributes['product_id'];
+                $orderDetail->variant_id = $item->attributes['variant_id'] ?? null;
+                $orderDetail->Product_quantity = $item['quantity'];
+                $orderDetail->free_quantity = $freeProducts;
+                $orderDetail->price = $priceAfterDiscount;
+                $orderDetail->save();
 
-                // شرط الحد الأدنى للطلب في حالة عميل الجملة
-                if ($user && $user->customer_type == 'goomla') {
-                    $minProductsPrice = Setting::getValue('goomla_min_prices');
-                    $minQuantity = Setting::getValue('goomla_min_number');
+                $totalPrice += $priceForProduct;
+                $product->quantity -= ($item['quantity'] + $freeProducts);
+                $product->save();
+            }
 
-                    if ($all_order_quantity < $minQuantity && $totalPrice < $minProductsPrice) {
-                        throw new \Exception("يجب أن يكون عدد القطع على الأقل " . $minQuantity . " أو يكون إجمالي السعر على الأقل " . $minProductsPrice . " لعميل الجملة.");
-                    }
+            // التحقق من كود الخصم
+            if ($request->filled('promo_code')) {
+
+                if (!$user) {
+                    throw new \Exception('كوبونات الخصم للأعضاء المسجلين فقط');
                 }
 
-                if (($totalPrice - $vip_discount - $promoDiscount) < 1) {
-                    throw new \Exception("تأكد من اجمالي الاوردر قبل عمل اتمام الطلب");
-
+                if ($user->customer_type != 'regular') {
+                    throw new \Exception('كوبونات الخصم للعملاء القطاعي فقط  فقط');
                 }
 
-                $order->total_price = $totalPrice;
-                $order->vip_discount = $vip_discount;
-                $order->promo_discount = $promoDiscount;
-                $order->shipping_cost = $shippingCost;
-                $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
-                $order->final_total = $order->total_after_discount + $shippingCost;
-                $order->save();
+                $promoCode = PromoCode::where('code', $request->promo_code)
+                    ->where('active', 1)
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now())
+                    ->first();
 
-                if ($promoDiscount) {
-                    DB::table('user_promocode')->insert([
-                        'user_id' => $user ? $user->id : null,
-                        'promo_code_id' => $promoCode->id,
-                        'order_id' => $order->id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                    $order->update(['promocode_id' => $promoCode->id]);
+                if (!$promoCode) {
+                    throw new \Exception('كود الخصم غير صالح أو منتهي الصلاحية.');
                 }
 
-                Cart::clear();
-                session()->flash('success', 'تم انشاء طلبك بنجاح');
-                return response()->json([
-                    'success' => true,
-                    'route' => route('home.index'),
+                $promoCodeUsed = DB::table('user_promocode')
+                    ->where('user_id', $user ? $user->id : null)
+                    ->where('promo_code_id', $promoCode->id)
+                    ->exists();
+
+                if ($promoCodeUsed) {
+                    throw new \Exception('لقد استخدمت هذا الكود من قبل.');
+                }
+
+                if ($totalPrice < $promoCode->min_amount) {
+                    throw new \Exception('يجب أن يكون إجمالي الطلب أكبر من ' . $promoCode->min_amount . ' لاستخدام هذا الكوبون.');
+                }
+
+                $promoDiscount = $promoCode->discount_type === 'percentage'
+                    ? ($totalPrice * $promoCode->discount) / 100
+                    : $promoCode->discount;
+            } else {
+                $promoDiscount = 0;
+            }
+
+            // حساب خصم vip إذا كان المستخدم مسجلاً
+            $vip_discount = $user ? $this->calculateDiscount($user, $totalPrice) : 0;
+
+            // شرط الحد الأدنى للطلب في حالة عميل الجملة
+            if ($user && $user->customer_type == 'goomla') {
+                $minProductsPrice = Setting::getValue('goomla_min_prices');
+                $minQuantity = Setting::getValue('goomla_min_number');
+
+                if ($all_order_quantity < $minQuantity && $totalPrice < $minProductsPrice) {
+                    throw new \Exception("يجب أن يكون عدد القطع على الأقل " . $minQuantity . " أو يكون إجمالي السعر على الأقل " . $minProductsPrice . " لعميل الجملة.");
+                }
+            }
+
+            if (($totalPrice - $vip_discount - $promoDiscount) < 1) {
+                throw new \Exception("تأكد من اجمالي الاوردر قبل عمل اتمام الطلب");
+
+            }
+
+            $order->total_price = $totalPrice;
+            $order->vip_discount = $vip_discount;
+            $order->promo_discount = $promoDiscount;
+            $order->shipping_cost = $shippingCost;
+            $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
+            $order->final_total = $totalPrice - $vip_discount - $promoDiscount + $shippingCost;
+            $order->save();
+
+            if ($promoDiscount) {
+                DB::table('user_promocode')->insert([
+                    'user_id' => $user ? $user->id : null,
+                    'promo_code_id' => $promoCode->id,
+                    'order_id' => $order->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
-            });
-        } catch (\Exception $e) {
+                $order->update(['promocode_id' => $promoCode->id]);
+            }
+
+            DB::commit();
+            Cart::clear();
+            session()->flash('success', 'تم انشاء طلبك بنجاح');
             return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 422);
+                'success' => true,
+                'route' => route('home.index'),
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false,
+                'message' => $e->getMessage()], 422);
         }
     }
 
-    public function edit(Order $order)
+    public
+    function edit(Order $order)
     {
 
         // تفريغ السلة الحالية
@@ -318,16 +327,22 @@ class OrderController extends Controller
 
         // إضافة المنتجات من الطلب إلى السلة
         foreach ($order->orderDetails as $detail) {
+            $variant = $detail->variant_id ?? null;
             Cart::add([
-                'id' => $detail->product->id,
+                'id' => $variant ?
+                    $detail->product->id . '-' . $detail->variant->id
+                    : $detail->product->id,
                 'name' => $detail->product->name,
                 'price' => $detail->price,
                 'quantity' => $detail->product_quantity,
                 'attributes' => [
                     'url' => route('product.show', $detail->product->id),
-                    'image' => $detail->product?->images?->first()?->path,
+                    'image' => $variant ?
+                        $detail->variant?->images?->first()?->path
+                        : $detail->product?->images?->first()?->path,
                 ]
             ]);
+
         }
 
         // حفظ معرّف الطلب الجاري تعديله في الجلسة
@@ -354,196 +369,205 @@ class OrderController extends Controller
 
 
         try {
-            return DB::transaction(function () use ($request, $order) {
-                $user = null;
-                $isGuest = false;
+            DB::beginTransaction();
+            $user = null;
+            $isGuest = false;
 
-                if (auth()->check()) {
-                    $user = auth()->user();
-                } else {
-                    $isGuest = true;
+            if (auth()->check()) {
+                $user = auth()->user();
+            } else {
+                $isGuest = true;
+            }
+
+            // تحديث معلومات الزائر أو المستخدم
+            if ($isGuest) {
+                $guest = GuestAddress::find($order->guest_address_id);
+                if (!$guest) {
+                    $guest = new GuestAddress();
                 }
+                $guest->full_name = $request->full_name;
+                $guest->phone = $request->phone;
+                $guest->address = $request->address;
+                $guest->city = $request->city;
+                $guest->state = $request->state;
+                $guest->save();
+                $order->guest_address_id = $guest->id;
+            } else {
+                $order->user_id = $user->id;
+                $userAddress = \App\Models\Admin\UserAddress::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'full_name' => $request->full_name,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'city' => $request->city,
+                        'state' => $request->state,
+                    ]
+                );
+                $order->user_address_id = $userAddress->id;
+            }
 
-                // تحديث معلومات الزائر أو المستخدم
-                if ($isGuest) {
-                    $guest = GuestAddress::find($order->guest_address_id);
-                    if (!$guest) {
-                        $guest = new GuestAddress();
-                    }
-                    $guest->full_name = $request->full_name;
-                    $guest->phone = $request->phone;
-                    $guest->address = $request->address;
-                    $guest->city = $request->city;
-                    $guest->state = $request->state;
-                    $guest->save();
-                    $order->guest_address_id = $guest->id;
-                } else {
-                    $order->user_id = $user->id;
-                    $userAddress = \App\Models\Admin\UserAddress::updateOrCreate(
-                        ['user_id' => $user->id],
-                        [
-                            'full_name' => $request->full_name,
-                            'phone' => $request->phone,
-                            'address' => $request->address,
-                            'city' => $request->city,
-                            'state' => $request->state,
-                        ]
-                    );
-                    $order->user_address_id = $userAddress->id;
-                }
+            // إعادة حساب الكميات والأسعار للطلب الحالي
+            $totalPrice = 0;
+            $all_order_quantity = 0;
 
-                // إعادة حساب الكميات والأسعار للطلب الحالي
-                $totalPrice = 0;
-                $all_order_quantity = 0;
-
-                // استرجاع الكميات للمنتج  والكميات الفري اذا وجدت
-                foreach ($order->orderDetails as $orderDetail) {
+            // استرجاع الكميات للمنتج  والكميات الفري اذا وجدت
+            foreach ($order->orderDetails as $orderDetail) {
+                $variantId = $orderDetail->variant_id;
+                if($variantId){
+                    $product = $orderDetail->variant;
+                }else{
                     $product = $orderDetail->product;
-                    $product->quantity = $product->quantity + $orderDetail->product_quantity + ($orderDetail->free_quantity ?? 0);
-                    $product->save();
                 }
-                $items = Cart::getContent();
+                $product->quantity = $product->quantity + $orderDetail->product_quantity + ($orderDetail->free_quantity ?? 0);
+                $product->save();
+            }
+            $items = Cart::getContent();
 
-                $order->orderDetails()->delete();
+            $order->orderDetails()->delete();
 
-                foreach ($items as $item) {
-                    $product = Product::find($item['id']);
-                    if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
-                        throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
-                    }
-
-                    if ($item['quantity'] < 1) {
-                        throw new \Exception('الكمية لابد أن تكون واحد على الأقل.');
-                    }
-
-                    $all_order_quantity += $item['quantity'];
-
-                    $priceAfterDiscount = $product->discounted_price;
-                    $priceForProduct = $priceAfterDiscount * $item['quantity'];
-
-                    // حساب كمية المنتجات المجانية اذا وجدت
-                    $quantity = $item['quantity'];
-                    $freeProducts = 0;
-
-                    // جلب نوع العميل
-                    $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
-
-                    // الحصول على العرض المناسب من الـ Accessor
-                    $offer = $product->getOfferDetails($customerOfferType);
-
-                    // التأكد إذا كان المنتج يحتوي على عرض
-                    if ($offer && $quantity >= $offer->offer_quantity) {
-                        // حساب عدد المنتجات المجانية التي يستحقها العميل
-                        $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
-                    }
-
-                    // إضافة تفاصيل جديدة للطلب
-                    $orderDetail = new OrderDetail();
-                    $orderDetail->order_id = $order->id;
-                    $orderDetail->product_id = $item['id'];
-                    $orderDetail->Product_quantity = $item['quantity'];
-                    $orderDetail->free_quantity = $freeProducts;
-                    $orderDetail->price = $priceAfterDiscount;
-                    $orderDetail->save();
-
-                    $totalPrice += $priceForProduct;
-                    $product->quantity -= ($item['quantity'] + $freeProducts);
-                    $product->save();
+            foreach ($items as $item) {
+                $productModel = Product::find($item->attributes['product_id']);
+                $variantModel = Variant::find($item->attributes['variant_id']) ?? null;
+                $product = $variantModel ?: $productModel;
+                if ($product->quantity < ($item['quantity'] + $item->attributes['free_quantity'])) {
+                    throw new \Exception('الكمية المطلوبة غير متوفرة في مخزون: ' . $product->name);
                 }
 
-                // حذف كود الخصم المرتبط بهذا الاوردر اذا وجد
-                DB::table('user_promocode')
-                    ->where('order_id', $order->id)
-                    ->delete();
-
-                // التحقق من كود الخصم
-                if ($request->filled('promo_code')) {
-                    $promoCode = PromoCode::where('code', $request->promo_code)
-                        ->where('active', 1)
-                        ->where('start_date', '<=', now())
-                        ->where('end_date', '>=', now())
-                        ->first();
-
-                    if (!$promoCode) {
-                        throw new \Exception('كود الخصم غير صالح أو منتهي الصلاحية.');
-                    }
-
-                    $promoCodeUsed = DB::table('user_promocode')
-                        ->where('user_id', $user ? $user->id : null)
-                        ->where('promo_code_id', $promoCode->id)
-                        ->exists();
-
-                    if ($promoCodeUsed) {
-                        throw new \Exception('لقد استخدمت هذا الكود من قبل.');
-                    }
-
-                    $promoDiscount = $promoCode->discount_type === 'percentage'
-                        ? ($totalPrice * $promoCode->discount) / 100
-                        : $promoCode->discount;
-                } else {
-                    $promoDiscount = 0;
+                if ($item['quantity'] < 1) {
+                    throw new \Exception('الكمية لابد أن تكون واحد على الأقل.');
                 }
 
-                // حساب خصم VIP
-                $vip_discount = $user ? $this->calculateDiscount($user, $totalPrice) : 0;
+                $all_order_quantity += $item['quantity'];
 
-                // شرط الحد الأدنى لعميل الجملة
-                if ($user && $user->customer_type == 'goomla') {
-                    $minProductsPrice = Setting::getValue('goomla_min_prices');
-                    $minQuantity = Setting::getValue('goomla_min_number');
+                $priceAfterDiscount = $product->discounted_price;
+                $priceForProduct = $priceAfterDiscount * $item['quantity'];
 
-                    if ($all_order_quantity < $minQuantity && $totalPrice < $minProductsPrice) {
-                        throw new \Exception("يجب أن يكون عدد القطع على الأقل " . $minQuantity . " أو يكون إجمالي السعر على الأقل " . $minProductsPrice . " لعميل الجملة.");
-                    }
+                // حساب كمية المنتجات المجانية اذا وجدت
+                $quantity = $item['quantity'];
+                $freeProducts = 0;
+
+                // جلب نوع العميل
+                $customerOfferType = auth()->check() ? auth()->user()->customer_type : 'regular'; // نوع العميل الافتراضي هو "reqular"
+
+                // الحصول على العرض المناسب من الـ Accessor
+                $offer = $productModel->getOfferDetails($customerOfferType);
+
+                // التأكد إذا كان المنتج يحتوي على عرض
+                if ($offer && $quantity >= $offer->offer_quantity) {
+                    // حساب عدد المنتجات المجانية التي يستحقها العميل
+                    $freeProducts = floor($quantity / $offer->offer_quantity) * $offer->free_quantity;
                 }
 
-                if (($totalPrice - $vip_discount - $promoDiscount) < 1) {
-                    throw new \Exception("تأكد من اجمالي الاوردر قبل عمل اتمام الطلب.");
+                // إضافة تفاصيل جديدة للطلب
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order->id;
+                $orderDetail->product_id = $item->attributes['product_id'];
+                $orderDetail->variant_id = $item->attributes['variant_id'] ?? null;
+                $orderDetail->Product_quantity = $item['quantity'];
+                $orderDetail->free_quantity = $freeProducts;
+                $orderDetail->price = $priceAfterDiscount;
+                $orderDetail->save();
+
+                $totalPrice += $priceForProduct;
+                $product->quantity -= ($item['quantity'] + $freeProducts);
+                $product->save();
+            }
+
+            // حذف كود الخصم المرتبط بهذا الاوردر اذا وجد
+            DB::table('user_promocode')
+                ->where('order_id', $order->id)
+                ->delete();
+
+            // التحقق من كود الخصم
+            if ($request->filled('promo_code')) {
+                $promoCode = PromoCode::where('code', $request->promo_code)
+                    ->where('active', 1)
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now())
+                    ->first();
+
+                if (!$promoCode) {
+                    throw new \Exception('كود الخصم غير صالح أو منتهي الصلاحية.');
                 }
 
+                $promoCodeUsed = DB::table('user_promocode')
+                    ->where('user_id', $user ? $user->id : null)
+                    ->where('promo_code_id', $promoCode->id)
+                    ->exists();
 
-                // إضافة تكلفة الشحن
-                $shippingCost = ShippingRate::where('state', $request->state)->first()->shipping_cost;
-
-                $order->shipping_cost = $shippingCost;
-
-                // تحديث إجمالي الطلب والخصومات
-                $order->total_price = $totalPrice;
-                $order->vip_discount = $vip_discount;
-                $order->promo_discount = $promoDiscount;
-                $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
-                $order->final_total = $totalPrice - $vip_discount - $promoDiscount + $shippingCost;
-                $order->save();
-
-                // تحديث كود الخصم إذا كان موجودًا
-                if ($promoDiscount) {
-
-                    DB::table('user_promocode')->insert([
-                        'user_id' => $user ? $user->id : null,
-                        'promo_code_id' => $promoCode->id,
-                        'order_id' => $order->id,
-                        'created_at' => now(), // لا تنسى إضافة timestamps إذا كانت مطلوبة
-                        'updated_at' => now(),
-                    ]);
-
-                    $order->update(['promocode_id' => $promoCode->id]);
-                } else {
-                    $order->update(['promocode_id' => null]);
-
+                if ($promoCodeUsed) {
+                    throw new \Exception('لقد استخدمت هذا الكود من قبل.');
                 }
 
-                Cart::clear();
+                $promoDiscount = $promoCode->discount_type === 'percentage'
+                    ? ($totalPrice * $promoCode->discount) / 100
+                    : $promoCode->discount;
+            } else {
+                $promoDiscount = 0;
+            }
 
-                // اكتمال الطلب
-                session()->forget('editing_order_id');
+            // حساب خصم VIP
+            $vip_discount = $user ? $this->calculateDiscount($user, $totalPrice) : 0;
 
-                session()->flash('success', 'تم تحديث طلبك بنجاح');
-                return response()->json([
-                    'success' => true,
-                    'route' => route('home.index'),
+            // شرط الحد الأدنى لعميل الجملة
+            if ($user && $user->customer_type == 'goomla') {
+                $minProductsPrice = Setting::getValue('goomla_min_prices');
+                $minQuantity = Setting::getValue('goomla_min_number');
+
+                if ($all_order_quantity < $minQuantity && $totalPrice < $minProductsPrice) {
+                    throw new \Exception("يجب أن يكون عدد القطع على الأقل " . $minQuantity . " أو يكون إجمالي السعر على الأقل " . $minProductsPrice . " لعميل الجملة.");
+                }
+            }
+
+            if (($totalPrice - $vip_discount - $promoDiscount) < 1) {
+                throw new \Exception("تأكد من اجمالي الاوردر قبل عمل اتمام الطلب.");
+            }
+
+
+            // إضافة تكلفة الشحن
+            $shippingCost = ShippingRate::where('state', $request->state)->first()->shipping_cost;
+
+            $order->shipping_cost = $shippingCost;
+
+            // تحديث إجمالي الطلب والخصومات
+            $order->total_price = $totalPrice;
+            $order->vip_discount = $vip_discount;
+            $order->promo_discount = $promoDiscount;
+            $order->total_after_discount = $totalPrice - $vip_discount - $promoDiscount;
+            $order->final_total = $totalPrice - $vip_discount - $promoDiscount + $shippingCost;
+            $order->save();
+
+            // تحديث كود الخصم إذا كان موجودًا
+            if ($promoDiscount) {
+
+                DB::table('user_promocode')->insert([
+                    'user_id' => $user ? $user->id : null,
+                    'promo_code_id' => $promoCode->id,
+                    'order_id' => $order->id,
+                    'created_at' => now(), // لا تنسى إضافة timestamps إذا كانت مطلوبة
+                    'updated_at' => now(),
                 ]);
-            });
+
+                $order->update(['promocode_id' => $promoCode->id]);
+            } else {
+                $order->update(['promocode_id' => null]);
+
+            }
+
+            DB::commit();
+            Cart::clear();
+
+            // اكتمال الطلب
+            session()->forget('editing_order_id');
+
+            session()->flash('success', 'تم تحديث طلبك بنجاح');
+            return response()->json([
+                'success' => true,
+                'route' => route('home.index'),
+            ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -567,7 +591,8 @@ class OrderController extends Controller
         return 0;
     }
 
-    public function checkCoupon(Request $request)
+    public
+    function checkCoupon(Request $request)
     {
 
         $couponCode = $request->input('promo_code');
@@ -631,7 +656,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getShippingCost($state)
+    public
+    function getShippingCost($state)
     {
         $shippingCost = ShippingRate::where('state', $state)->first()->shipping_cost;
 
@@ -639,7 +665,8 @@ class OrderController extends Controller
     }
 
 
-    public function clearCartSession()
+    public
+    function clearCartSession()
     {
         Cart::clear();
         \session()->forget('editing_order_id');

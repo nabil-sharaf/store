@@ -15,4 +15,5 @@ return [
     'currency' => 'L.E',
     'image_alt' => 'Image',
     'add_to_cart' => 'Add to Cart',
+    'show_product'=>'Show Product'
 ];

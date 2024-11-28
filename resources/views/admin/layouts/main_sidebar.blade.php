@@ -21,38 +21,47 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
                 @if(auth('admin')->user()->hasAnyRole(['superAdmin','supervisor']))
-                <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/settings*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link ">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p class='font-weight-bold'>
-                            لوحة التحكم
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{route('admin.settings.edit')}}"
-                               class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>اعدادات الموقع</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('admin.settings.images')}}"
-                               class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings/images') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>صور الموقع</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('admin.shipping-rates.index')}}"
-                               class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings/shipping-rates/') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>ادارة تكاليف الشحن </p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                    <li class="nav-item has-treeview {{ ((Request::is(app()->getLocale() .'/admin/settings*') || (Request::is (app()->getLocale() .'/admin/audits*')))) ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link ">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p class='font-weight-bold'>
+                                لوحة التحكم
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{route('admin.settings.edit')}}"
+                                   class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>اعدادات الموقع</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{route('admin.settings.images')}}"
+                                   class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings/images') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>صور الموقع</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{route('admin.shipping-rates.index')}}"
+                                   class="nav-link {{ Request::is(app()->getLocale() .'/admin/settings/shipping-rates/') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>ادارة تكاليف الشحن </p>
+                                </a>
+                            </li>
+                            @if(auth('admin')->user()->hasAnyRole(['superAdmin']))
+                                <li class="nav-item">
+                                    <a href="{{route('admin.audits.index')}}"
+                                       class="nav-link {{ Request::is(app()->getLocale() .'/admin/audits*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p> الأحداث و التغييرات </p>
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
                 @endif
                 @if(auth('admin')->user()->hasAnyRole(['superAdmin']))
                     <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/customers*') || Request::is(app()->getLocale() .'/admin/moderators*')? 'menu-open' : '' }}">
@@ -107,7 +116,7 @@
                         </ul>
                     </li>
                 @endif
-                <li class="nav-item has-treeview {{ Request::is(app()->getLocale() .'/admin/products*') ? 'menu-open' : '' }}">
+                <li class="nav-item has-treeview {{ (Request::is(app()->getLocale() .'/admin/products*'))||( Route::is('admin.prefixes.*')) || Route::is('admin.options.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-chart-pie"></i>
                         <p class='font-weight-bold'>
@@ -130,6 +139,21 @@
                                 <p>إضافة منتج</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.options.index') }}"
+                               class="nav-link {{ Request::is(app()->getLocale() .'/admin/options*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>الأوبشنز للمنتجات</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.prefixes.index') }}"
+                               class="nav-link {{ Route::is('admin.prefixes.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> اختصارات للبريفكس </p>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
                 @if(auth('admin')->user()->hasAnyRole(['superAdmin','supervisor']))

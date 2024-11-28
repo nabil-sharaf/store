@@ -4,11 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Admin\ShippingRate;
+use Illuminate\Support\Facades\DB;
 
 class ShippingRateSeeder extends Seeder
 {
     public function run()
     {
+        // ايقاف التحقق من الفورين كي مؤقتا
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        ShippingRate::truncate();
+        // اعادة التحقق من الفورين كي
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $states = [
             ['state' => 'القاهرة', 'shipping_cost' => 50.00],
             ['state' => 'الجيزة', 'shipping_cost' => 50.00],

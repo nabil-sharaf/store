@@ -75,7 +75,7 @@
                                                         <td>{{$loop->iteration}}</td>
                                                         <td>{{date_format($order->created_at,'y-m-d')}}</td>
                                                         <td>{{$order->status->name}}</td>
-                                                        <td>{{$order->total_after_discount}}</td>
+                                                        <td>{{$order->final_total}}</td>
                                                         <td><a href="{{route('order.show',$order->id)}}" class="check-btn sqr-btn">{{ __('profile.view') }}</a></td>
                                                     @empty
                                                         <td colspan="5"> لا توجد اوردرات خاصة بك حاليا</td>

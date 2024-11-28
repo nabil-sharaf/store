@@ -23,7 +23,7 @@
             <!-- العنوان -->
             <div class="col-md-6">
                 <label for="title" class="form-label">العنوان:</label>
-                <input type="text" name="title" value="{{ old('title', $popup->title ?? '') }}" class="form-control @error('title') is-invalid @enderror" placeholder="أدخل عنوان البوب أب">
+                <input type="text" name="title" value="{{ old('title', $popup?->title ?? '') }}" class="form-control @error('title') is-invalid @enderror" placeholder="أدخل عنوان البوب أب">
                 @error('title')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -32,7 +32,7 @@
             <!-- النص -->
             <div class="col-md-12">
                 <label for="popup-text" class="form-label">النص:</label>
-                <textarea id='popup-text' name="text" class="form-control @error('text') is-invalid @enderror" rows="4" placeholder="أدخل نص البوب أب">{{ old('text', $popup->text ?? '') }}</textarea>
+                <textarea id='popup-text' name="text" class="form-control @error('text') is-invalid @enderror" rows="4" placeholder="أدخل نص البوب أب">{{ old('text', $popup?->text ?? '') }}</textarea>
                 @error('text')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -45,8 +45,8 @@
                 @error('image')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-                @if(isset($popup->image_path))
-                    <img id="imagePreview" src="{{ asset('storage/' . $popup->image_path) }}" alt="صورة البوب أب" class="img-fluid mt-3" style="max-height: 150px;">
+                @if(isset($popup?->image_path))
+                    <img id="imagePreview" src="{{ asset('storage/' . $popup?->image_path) }}" alt="صورة البوب أب" class="img-fluid mt-3" style="max-height: 150px;">
                 @else
                     <img id="imagePreview" alt="معاينة الصورة" class="img-fluid mt-3" style="max-height: 150px; display: none;">
                 @endif
@@ -55,7 +55,7 @@
             <!-- نص الزر -->
             <div class="col-md-6">
                 <label for="button_text" class="form-label">نص الزر:</label>
-                <input type="text" name="button_text" value="{{ old('button_text', $popup->button_text ?? '') }}" class="form-control @error('button_text') is-invalid @enderror" placeholder="أدخل نص الزر">
+                <input type="text" name="button_text" value="{{ old('button_text', $popup?->button_text ?? '') }}" class="form-control @error('button_text') is-invalid @enderror" placeholder="أدخل نص الزر">
                 @error('button_text')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -64,7 +64,7 @@
             <!-- رابط الزر -->
             <div class="col-md-6">
                 <label for="button_link" class="form-label">رابط الزر:</label>
-                <input type="text" name="button_link" value="{{ old('button_link', $popup->button_link ?? '') }}" class="form-control @error('button_link') is-invalid @enderror" placeholder="أدخل رابط الزر">
+                <input type="text" name="button_link" value="{{ old('button_link', $popup?->button_link ?? '') }}" class="form-control @error('button_link') is-invalid @enderror" placeholder="أدخل رابط الزر">
                 @error('button_link')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -73,7 +73,7 @@
             <!-- نص الرابط في الـ Footer -->
             <div class="col-md-6">
                 <label for="footer_link_text" class="form-label">نص الرابط في الـ Footer:</label>
-                <input type="text" name="footer_link_text" value="{{ old('footer_link_text', $popup->footer_link_text ?? '') }}" class="form-control @error('footer_link_text') is-invalid @enderror" placeholder="أدخل نص الرابط">
+                <input type="text" name="footer_link_text" value="{{ old('footer_link_text', $popup?->footer_link_text ?? '') }}" class="form-control @error('footer_link_text') is-invalid @enderror" placeholder="أدخل نص الرابط">
                 @error('footer_link_text')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -82,7 +82,7 @@
             <!-- رابط الـ Footer -->
             <div class="col-md-6">
                 <label for="footer_link_url" class="form-label">رابط الـ Footer:</label>
-                <input type="text" name="footer_link_url" value="{{ old('footer_link_url', $popup->footer_link_url ?? '') }}" class="form-control @error('footer_link_url') is-invalid @enderror" placeholder="أدخل رابط الـ Footer">
+                <input type="text" name="footer_link_url" value="{{ old('footer_link_url', $popup?->footer_link_url ?? '') }}" class="form-control @error('footer_link_url') is-invalid @enderror" placeholder="أدخل رابط الـ Footer">
                 @error('footer_link_url')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -92,8 +92,8 @@
             <div class="col-md-6">
                 <label for="status" class="form-label">حالة ال popup</label>
                 <select class="form-control" name ='status'>
-                    <option value="1" {{$popup->status == 1 ? 'selected' : ''}}>مفعل</option>
-                    <option value="0" {{$popup->status==0 ? 'selected' : ''}}>غير مفعل</option>
+                    <option value="1" {{$popup?->status == 1 ? 'selected' : ''}}>مفعل</option>
+                    <option value="0" {{$popup?->status==0 ? 'selected' : ''}}>غير مفعل</option>
                 </select>
                 @error('status')
                 <div class="invalid-feedback">{{ $message }}</div>

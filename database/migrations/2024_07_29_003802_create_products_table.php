@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->tinyInteger('is_best_seller')->nullable();
             $table->decimal('price', 8, 2);
             $table->decimal('goomla_price', 8, 2);
+            $table->foreignId('prefix_id')->nullable()->constrained('prefixes')->onDelete('set null');
+            $table->string('sku_code')->nullable()->unique();
             $table->timestamps();
         });
     }

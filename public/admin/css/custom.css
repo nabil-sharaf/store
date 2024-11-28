@@ -128,3 +128,28 @@ span.free-quantity-number{
     color: #480909;
     font-weight: bold;
 }
+
+/*---------------- Scroll on Mobile ---------------------*/
+@media (max-width: 767.98px) {
+
+    .table-responsive {
+        overflow-x: auto; /* للتمرير الأفقي */
+        overflow-y: visible; /* للسماح بالتمرير العمودي */
+        -webkit-overflow-scrolling: touch; /* لتحسين التمرير على أجهزة iOS */
+    }
+
+    .card-body {
+        overflow-y: auto;
+        max-height: 80vh; /* قيود بحد أقصى لتسهيل القراءة */
+    }
+
+    html, body {
+        width: 100%;
+        overflow-x: hidden; /* منع التمرير الأفقي */
+    }
+
+    img, table {
+        max-width: 100%; /* لجعلها تتناسب مع عرض الحاوية */
+        height: auto; /* للحفاظ على النسبة */
+    }
+}

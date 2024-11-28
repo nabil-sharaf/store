@@ -4,12 +4,15 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class ProductDiscount extends Model
+class ProductDiscount extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory ;
+    use \OwenIt\Auditing\Auditable;
 
-    protected $fillable = ['product_id', 'discount', 'discount_type', 'start_date', 'end_date'];
+
+    protected $fillable = ['product_id','variant_id', 'discount', 'discount_type', 'start_date', 'end_date'];
 
     protected $casts = [
         'start_date' => 'datetime',
@@ -25,5 +28,9 @@ class ProductDiscount extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
     }
 }

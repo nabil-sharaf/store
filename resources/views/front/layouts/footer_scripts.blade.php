@@ -48,102 +48,677 @@
 
 
 <script>
-
+    //عرض واخفاء مودال البوتستراب للمنتج في الرئيسية
     $(document).ready(function () {
-
-        $('.action-quick-view').on('click', function (event) {
-            event.preventDefault();
-
-            // var button = $(this);
-
-            // تحديث محتوى المودال بالبيانات الجديدة
-            // openProductModal(button);
-
-            // إظهار المودال والتراكب
-            $('.product-quick-view-modal').fadeIn(200); // إظهار المودال
-            $('.canvas-overlay').fadeIn(200); // إظهار التراكب
+        // إغلاق المودال عند النقر على زر الإغلاق أو على التراكب
+        $('.btn-close, .canvas-overlay').on('click', function () {
+            $('.product-quick-view-modal').fadeOut();
+            $('.canvas-overlay').fadeOut();
         });
-
-        // إخفاء المودال والتراكب عند النقر على زر الإغلاق
-        $('.btn-close').on('click', function () {
-            $('.product-quick-view-modal').fadeOut(); // إخفاء المودال
-            $('.canvas-overlay').fadeOut(); // إخفاء التراكب
-        });
-
 
         updateCartDetails();
+
     });
+    let currentProductData = null;
 
-    // عرض مودال تفاصيل البروداكت
-    function showProductDetails(element) {
-        var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
-        var categoriesContainer = $('.product-quick-view-modal .product-categories');
-        var sliderContainer = $('.product-images-slider');
-        var url = "{{route('product.details',':productId')}} ";
-        var myUrl = url.replace(':productId', productId);
 
-        // استدعاء AJAX للحصول على تفاصيل المنتج
+    // تحديث دالة عرض تفاصيل المنتج لتعامل مع صور الفاريانت الافتراضية
+    // تعديل دالة showProductDetails لتنظيف المودال قبل عرض المنتج الجديد
+    // دالة جديدة لتنظيف المودال
+    function resetModal() {
+        // إعادة تعيين محتويات المودال
+        $('.product-quick-view-modal .product-name').text('');
+        $('.product-quick-view-modal .product-desc').html('');
+        $('.product-quick-view-modal .prices').empty();
+        $('.product-quick-view-modal .product-categories').empty();
+        $('.product-images-slider').empty();
+        $('.variant-section').empty();
+        $('.quick-product-action button').prop('disabled', true);
+    }
+    function showProductDetails(productId) {
+        const categoriesContainer = $('.product-quick-view-modal .product-categories');
+        const sliderContainer = $('.product-images-slider');
+        const myUrl =
+            "{{route('product.details',':productId')}}"
+              .replace(':productId', productId);
+
+
+        // تنظيف المودال قبل عرض المنتج الجديد
+        resetModal();
+
+        // عرض المودال قبل تحميل البيانات
+           $('.product-quick-view-modal').fadeIn(200);
+           $('.canvas-overlay').fadeIn(200);
+
+        // تعطيل زر الإضافة للسلة مؤقتاً
+        $('.quick-product-action button').prop('disabled', true);
+
         $.ajax({
-            url: myUrl, // المسار للوصول إلى تفاصيل المنتج
+            url: myUrl,
             method: 'GET',
-            success: function (response) {
+            success: function(response) {
+                currentProductData = response;
 
                 $('.product-quick-view-modal .product-name').text(response.name);
 
-                let productPrice = response.price;
-                let discountedPrice = response.discounted_price;
-                if (productPrice === discountedPrice) {
-                    $('.product-quick-view-modal .prices')
-                        .html(`
-                                <span class="price" style="color: #e74c3c;">
-                                ${discountedPrice} {{ __('home.currency') }}
-                        </span>
-`);
-                } else {
-                    $('.product-quick-view-modal .prices')
-                        .html(`
-                                 <span class="price-old" style="text-decoration: line-through; color: #999; font-size:18px; ">
-                                ${productPrice} {{ __('home.currency') }}
-                        </span>
-                        <span class="price" style="color: #e74c3c;">
-${discountedPrice} {{ __('home.currency') }}
-                        </span>
-`);
-                }
-                // إدخال القيم في الـ HTML
-                $('.product-quick-view-modal .product-desc').html(response.description);
-
-                categoriesContainer.empty();
-                response.categories.forEach(function (cat) {
-                    categoriesContainer.append('&nbsp;<a href="#">' + cat['name'] + '</a> &nbsp;&nbsp;  ');
-                });
-
-                sliderContainer.empty();
+                // عرض صور المنتج
                 if (response.images && response.images.length > 0) {
-                    const image = response.images[0]; // نأخذ الصورة الأولى فقط
-                    sliderContainer.append(`<div class="swiper-slide"><img src="<?php echo e(asset('storage/')); ?>/${image.path}" alt="Product Image" /></div>`);
-                } else {
-                    // إذا لم تكن هناك صور، يمكنك إضافة صورة افتراضية أو رسالة
-                    sliderContainer.append(`<div class="swiper-slide"><p>No image available</p></div>`);
+                    displayImages(response.images, sliderContainer);
                 }
 
-                // تحديث زر الإضافة للسلة بالمنتج المحدد
-                $('.quick-product-action button').attr('onclick', `addToCart(event, ${productId}, document.getElementById('quantity_${productId}').value)`);
+                // التحقق من وجود variants وoptions
+                if (response.variants && response.variants.length > 0) {
+                    if (response.available_options && response.available_options.length > 0) {
+                        handleProductOptions(response);
+                    } else {
+                        // إذا كان هناك variant واحد فقط بدون options
+                        const firstVariant = response.variants[0];
+                        updatePriceDisplay(firstVariant.price, firstVariant.discounted_price);
+                        enableAddToCartButton(response.id, firstVariant.id);
+                    }
+                } else {
+                    // في حالة المنتج بدون variants
+                    updatePriceDisplay(response.price, response.discounted_price);
+                    enableAddToCartButton(response.id, null);
+                }
 
-                //زر الويش ليست
-                $('.quick-product-action  .btn-wishlist').attr('onclick', `wishListAdd(event,this,${productId})`);
+                $('.product-quick-view-modal .product-desc').html(response.description);
+                displayCategories(response.categories, categoriesContainer);
 
-                // تحديث حقل الكمية داخل المودال مع id جديد للمنتج الحالي
-                $('.pro-qty input').attr('id', `quantity_${productId}`);
-                $('.pro-qty input').val(1);
-
+                $('.quick-product-action .btn-wishlist').attr('onclick', `wishListAdd(event,this,${productId})`);
+                updateQuantityField(productId);
                 $('.product-quick-view-modal').show();
             },
-            error: function (error) {
+            error: function(error) {
                 console.log('Error fetching product details:', error);
+                toastr.error('حدث خطأ أثناء تحميل تفاصيل المنتج');
             }
         });
     }
+
+    function handleProductOptions(response) {
+        const variantSection = $('.variant-section');
+        variantSection.empty();
+
+        // التحقق من وجود variants للمنتج
+        if (!response.variants || response.variants.length === 0) {
+            return;
+        }
+
+        // التحقق من وجود options متاحة
+        if (!response.available_options || response.available_options.length === 0) {
+            return;
+        }
+
+        // ترتيب الخيارات حسب التسلسل
+        const sortedOptions = response.available_options.sort((a, b) => a.position - b.position);
+
+        // إنشاء أول select box فقط
+        const firstOption = sortedOptions[0];
+        const availableValuesForFirst = getAvailableValuesForOption(response.variants, firstOption.id);
+
+        const firstSelect = createOptionSelect(firstOption, availableValuesForFirst);
+        variantSection.append(firstSelect);
+
+        // إضافة event listener للخيار الأول
+        variantSection.find('.option-selector').first().on('change', function() {
+            const selectedValue = $(this).val();
+            if (selectedValue) {
+                updateNextOptions(response, sortedOptions, 1, {
+                    [firstOption.id]: selectedValue
+                });
+            } else {
+                // إزالة جميع الخيارات التالية عند إعادة اختيار الخيار الأول
+                variantSection.find('.option-selector').not(':first').closest('.form-group').remove();
+                $('.quick-product-action button').prop('disabled', true);
+            }
+        });
+    }
+
+    function updateNextOptions(response, sortedOptions, currentIndex, selectedOptions) {
+        const variantSection = $('.variant-section');
+
+        // إزالة جميع الخيارات التالية للمستوى الحالي
+        variantSection.find('.option-selector').slice(currentIndex).closest('.form-group').remove();
+
+        if (currentIndex >= sortedOptions.length) {
+            // تم اختيار جميع الخيارات، البحث عن الفاريانت المطابق
+            handleOptionChange(response.id);
+            return;
+        }
+
+        // الحصول على الفاريانتس المتاحة بناءً على الاختيارات السابقة
+        const availableVariants = getAvailableVariants(response.variants, selectedOptions);
+
+        if (availableVariants.length === 0) {
+            return;
+        }
+
+        // إنشاء الخيار التالي
+        const nextOption = sortedOptions[currentIndex];
+        const availableValues = getAvailableValuesForOptionFiltered(availableVariants, nextOption.id);
+
+        if (availableValues.length > 0) {
+            const nextSelect = createOptionSelect(nextOption, availableValues);
+            variantSection.append(nextSelect);
+
+            // إضافة event listener للخيار الجديد
+            variantSection.find('.option-selector').last().on('change', function() {
+                const value = $(this).val();
+                if (value) {
+                    const newSelectedOptions = { ...selectedOptions, [nextOption.id]: value };
+                    updateNextOptions(response, sortedOptions, currentIndex + 1, newSelectedOptions);
+                } else {
+                    // إزالة الخيارات التالية عند إعادة الاختيار
+                    variantSection.find('.option-selector').slice(currentIndex + 1).closest('.form-group').remove();
+                    $('.quick-product-action button').prop('disabled', true);
+                }
+            });
+        }
+    }
+
+    function getAvailableValuesForOption(variants, optionId) {
+        const values = new Set();
+        variants.forEach(variant => {
+            const optionValue = variant.option_values.find(ov => ov.option_id === optionId);
+            if (optionValue) {
+                values.add(JSON.stringify({
+                    id: optionValue.id,
+                    value: optionValue.value
+                }));
+            }
+        });
+        return Array.from(values).map(v => JSON.parse(v));
+    }
+
+    function getAvailableValuesForOptionFiltered(variants, optionId) {
+        const values = new Set();
+        variants.forEach(variant => {
+            const optionValue = variant.option_values.find(ov => ov.option_id === optionId);
+            if (optionValue) {
+                values.add(JSON.stringify({
+                    id: optionValue.id,
+                    value: optionValue.value
+                }));
+            }
+        });
+        return Array.from(values).map(v => JSON.parse(v));
+    }
+
+    function getAvailableVariants(variants, selectedOptions) {
+        return variants.filter(variant => {
+            return Object.entries(selectedOptions).every(([optionId, valueId]) => {
+                const optionValue = variant.option_values.find(ov => ov.option_id === parseInt(optionId));
+                return optionValue && optionValue.id.toString() === valueId;
+            });
+        });
+    }
+
+    function createOptionSelect(option, values) {
+        return $(`
+        <div class="form-group mb-3">
+            <label>${option.name}:</label>
+            <select class="form-control option-selector" data-option-id="${option.id}">
+                <option value="">اختر ${option.name}</option>
+                ${values.map(value => `
+                    <option value="${value.id}">${value.value}</option>
+                `).join('')}
+            </select>
+        </div>
+    `);
+    }
+
+    // تحديث دالة handleOptionChange لتعيين معرف الفاريانت بشكل صحيح
+    function handleOptionChange(productId) {
+        const selectedOptions = {};
+        let allOptionsSelected = true;
+
+        // جمع جميع الخيارات المحددة
+        $('.option-selector').each(function() {
+            const optionId = $(this).data('option-id');
+            const valueId = $(this).val();
+
+            if (!valueId) {
+                allOptionsSelected = false;
+            }
+            selectedOptions[optionId] = valueId;
+        });
+
+        if (!allOptionsSelected) {
+            $('.quick-product-action button').prop('disabled', true);
+            if (currentProductData.images && currentProductData.images.length > 0) {
+                displayImages(currentProductData.images, $('.product-images-slider'));
+            }
+            return;
+        }
+
+        // البحث عن الفاريانت المطابق للخيارات المحددة
+        const matchingVariant = findMatchingVariant(selectedOptions);
+
+        if (matchingVariant) {
+            // تحديث السعر
+            updatePriceDisplay(matchingVariant.price, matchingVariant.discounted_price);
+
+            // تحديث الصور
+            if (matchingVariant.images && matchingVariant.images.length > 0) {
+                displayImages(matchingVariant.images, $('.product-images-slider'));
+            }
+
+            // تفعيل زر إضافة للسلة مع تمرير معرف الفاريانت
+            if (matchingVariant.quantity > 0) {
+                // إضافة حقل مخفي لتخزين معرف الفاريانت
+                $('.quick-product-action').find('.variant-id-holder').remove();
+                $('.quick-product-action').prepend(`<input type="hidden" class="variant-id-holder" value="${matchingVariant.id}">`);
+
+                $('.quick-product-action button')
+                    .prop('disabled', false)
+                    .text('أضف إلى السلة')
+                    .attr('onclick', `addToCart(event, ${productId}, document.getElementById('quantity_${productId}').value, ${matchingVariant.id})`);
+            } else {
+                $('.quick-product-action button')
+                    .prop('disabled', true)
+                    .text('غير متوفر حالياً');
+            }
+        } else {
+            toastr.error('هذه المجموعة من الخيارات غير متوفرة');
+            $('.quick-product-action button').prop('disabled', true);
+            if (currentProductData.images && currentProductData.images.length > 0) {
+                displayImages(currentProductData.images, $('.product-images-slider'));
+            }
+        }
+    }
+
+    function findMatchingVariant(selectedOptions) {
+        if (!currentProductData || !currentProductData.variants) return null;
+
+        return currentProductData.variants.find(variant => {
+            const variantOptionValues = variant.option_values.reduce((acc, val) => {
+                acc[val.option_id] = val.id.toString();
+                return acc;
+            }, {});
+
+            return Object.entries(selectedOptions).every(([optionId, valueId]) =>
+                variantOptionValues[optionId] === valueId
+            );
+        });
+    }
+
+    function updatePriceDisplay(price, discountedPrice) {
+        const pricesContainer = $('.product-quick-view-modal .prices');
+        pricesContainer.empty();
+
+        // تحويل الأسعار إلى علامتين عشريتين
+        const formattedPrice = parseFloat(price).toFixed(2);
+        const formattedDiscountedPrice = parseFloat(discountedPrice).toFixed(2);
+
+        if (formattedPrice === formattedDiscountedPrice) {
+            pricesContainer.html(`
+            <span class="price" style="color: #e74c3c;">
+                ${formattedPrice} {{ __('home.currency') }}
+            </span>
+        `);
+        } else {
+            pricesContainer.html(`
+            <span class="price-old" style="text-decoration: line-through; color: #999; font-size:18px;">
+                ${formattedPrice} {{ __('home.currency') }}
+            </span>
+            <span class="price" style="color: #e74c3c;">
+                ${formattedDiscountedPrice} {{ __('home.currency') }}
+            </span>
+        `);
+        }
+    }
+
+    function displayCategories(categories, container) {
+        container.empty();
+        categories.forEach(function(cat) {
+            container.append(`<a href="#" class="mx-2">${cat.name}</a>`);
+        });
+    }
+
+    function updateImage(imagePath) {
+        $('.product-images-slider').html(`
+        <div class="swiper-slide">
+            <img src="{{ asset('storage') }}/${imagePath}" alt="Product Image" />
+        </div>
+    `);
+    }
+
+    function updateQuantityField(productId) {
+        $('.pro-qty input')
+            .attr('id', `quantity_${productId}`)
+            .val(1);
+    }
+
+    function enableAddToCartButton(productId, variantId) {
+        const quantitySelector = `document.getElementById('quantity_${productId}').value`;
+        const onClickFunction = variantId
+            ? `addToCart(event, ${productId}, ${quantitySelector}, ${variantId})`
+            : `addToCart(event, ${productId}, ${quantitySelector})`;
+
+        $('.quick-product-action button')
+            .prop('disabled', false)
+            .text('أضف إلى السلة')
+            .attr('onclick', onClickFunction);
+    }
+
+    // تحديث دالة عرض الصور لتدعم عرض أكثر من صورة
+    function displayImages(images, container) {
+        container.empty();
+        if (images && images.length > 0) {
+            container.html(`
+            <div class="product-gallery">
+                <div class="main-image-slider">
+                    <div class="swiper-wrapper">
+                        ${images.map(image => `
+                            <div class="swiper-slide">
+                                <div class="image-wrapper">
+                                    <img src="{{ asset('storage') }}/${image.path}" alt="Product Image" />
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+                ${images.length > 1 ? `
+                    <div class="thumbnail-slider">
+                        <div class="swiper-wrapper">
+                            ${images.map(image => `
+                                <div class="swiper-slide">
+                                    <div class="thumb-image">
+                                        <img src="{{ asset('storage') }}/${image.path}" alt="Thumbnail" />
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `);
+
+            // تهيئة السلايدر الرئيسي
+            const mainSlider = new Swiper('.main-image-slider', {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                observer: true,
+                observeParents: true
+            });
+
+            // تهيئة سلايدر المصغرات إذا كان هناك أكثر من صورة
+            if (images.length > 1) {
+                const thumbSlider = new Swiper('.thumbnail-slider', {
+                    slidesPerView: 4,
+                    spaceBetween: 10,
+                    observer: true,
+                    observeParents: true,
+                    watchSlidesProgress: true,
+                    touchRatio: 0.2,
+                    slideToClickedSlide: true,  // إضافة خاصية النقر المباشر
+                    breakpoints: {
+                        // عند الشاشات الصغيرة
+                        320: {
+                            slidesPerView: 3,
+                            spaceBetween: 5,
+                        },
+                        // عند الشاشات المتوسطة
+                        768: {
+                            slidesPerView: 4,
+                            spaceBetween: 10,
+                        }
+                    }
+                });
+
+                // ربط السلايدرز معاً
+                mainSlider.controller.control = thumbSlider;
+                thumbSlider.controller.control = mainSlider;
+
+                // إضافة خاصية النقر المباشر على الصور المصغرة
+                $('.thumbnail-slider .swiper-slide').on('click', function() {
+                    const index = $(this).index();
+                    mainSlider.slideTo(index);
+                });
+
+                // تحديث تنسيق الصورة المحددة
+                mainSlider.on('slideChange', function() {
+                    const activeIndex = mainSlider.activeIndex;
+                    $('.thumbnail-slider .swiper-slide').removeClass('thumb-active');
+                    $('.thumbnail-slider .swiper-slide').eq(activeIndex).addClass('thumb-active');
+                });
+            }
+        } else {
+            container.html(`
+            <div class="product-gallery">
+                <div class="main-image-slider">
+                    <div class="swiper-slide">
+                        <div class="image-wrapper">
+                            <p>لا توجد صورة متاحة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+        }
+    }    // إضافة CSS للتأكد من تنسيق السلايدر
+    // إضافة CSS المحسن للتنسيق
+    // إضافة CSS للتأكد من تنسيق السلايدر
+    const style = document.createElement('style');
+    style.textContent = `
+    .product-gallery {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 15px;
+        position: relative;
+        direction: rtl;
+    }
+
+    .main-image-slider {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        background: #fff;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .main-image-slider .swiper-slide {
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .image-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        position: relative;
+    }
+
+    .image-wrapper img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 4px;
+    }
+
+    /* تنسيق أزرار التنقل */
+    .main-image-slider .swiper-button-next,
+    .main-image-slider .swiper-button-prev {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        position: absolute;
+    }
+
+    /* تنسيق السهم نفسه */
+    .main-image-slider .swiper-button-next:after,
+    .main-image-slider .swiper-button-prev:after {
+        font-size: 14px !important;
+        font-weight: bold;
+        color: #333;
+        transform: scale(0.7);
+    }
+
+    /* تبديل اتجاهات الأسهم للغة العربية */
+    .main-image-slider .swiper-button-prev {
+        right: 10px !important;
+        left: auto !important;
+    }
+
+    .main-image-slider .swiper-button-next {
+        left: 10px !important;
+        right: auto !important;
+    }
+
+    .main-image-slider .swiper-button-next:after {
+        content: 'prev' !important;
+    }
+
+    .main-image-slider .swiper-button-prev:after {
+        content: 'next' !important;
+    }
+
+    /* تحسين التفاعلية */
+    .main-image-slider .swiper-button-next:hover,
+    .main-image-slider .swiper-button-prev:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    .thumbnail-slider {
+        width: 100%;
+        height: 80px;
+        padding: 5px 0;
+        margin-top: 15px;
+    }
+
+    .thumbnail-slider .swiper-slide {
+        opacity: 0.6;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .thumbnail-slider .swiper-slide-active {
+        opacity: 1;
+    }
+
+    .thumb-image {
+        height: 70px;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .thumb-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    /* تعديلات الموبايل */
+    @media (max-width: 768px) {
+        .main-image-slider .swiper-slide {
+            height: 250px;
+        }
+
+        .main-image-slider .swiper-button-next,
+        .main-image-slider .swiper-button-prev {
+            width: 28px;
+            height: 28px;
+        }
+
+        .main-image-slider .swiper-button-next:after,
+        .main-image-slider .swiper-button-prev:after {
+            font-size: 12px !important;
+            transform: scale(0.6);
+        }
+
+        .thumbnail-slider {
+            height: 60px;
+        }
+
+        .thumb-image {
+            height: 50px;
+        }
+    }
+
+    .product-quick-view-modal .modal-body {
+        padding: 20px;
+        position: relative;
+    }
+
+    .product-quick-view-modal .product-info {
+        padding-top: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    .thumbnail-slider .swiper-slide {
+    opacity: 0.6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.thumbnail-slider .swiper-slide:hover {
+    opacity: 0.8;
+}
+
+.thumbnail-slider .swiper-slide-active,
+.thumbnail-slider .swiper-slide.thumb-active {
+    opacity: 1;
+}
+
+
+.thumbnail-slider .swiper-slide.thumb-active .thumb-image {
+    border:1px solid #e74c3c;
+}
+
+.thumb-image {
+    height: 70px;
+    padding: 3px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.thumb-image:hover {
+    border-color: #999;
+}
+
+@media (max-width: 768px) {
+    .thumb-image {
+        height: 50px;
+        padding: 2px;
+    }
+}
+.option-selector{
+    padding-right:60px !important;
+    font-weight:600 !important;
+}
+
+`;
+    document.head.appendChild(style);
+    // ----------------------------Wish List-------------------------------
 
     // إضافة المنتجات للويش ليست
     function wishListAdd(event, element, id = null) {
@@ -197,149 +772,317 @@ ${discountedPrice} {{ __('home.currency') }}
         toastr.warning('{{ __('scripts.wishlist_message') }}');
     }
 
+
     // ------------------------------Begin Shopping Cart--------------------------------
     // ------------------------------Begin Shopping Cart--------------------------------
+    // المتغيرات العامة
+    const csrf_token = '{{ csrf_token() }}';
+    const currency = '{{ __("scripts.currency_symbol") }}';
+    const storageUrl = '{{ asset("storage/") }}';
+    const freeItemText = '{{ __("shop-cart.free_item") }}';
+
+    // روابط
+    const cartAddRoute = '{{ route("cart.add") }}';
+    const cartDetailsRoute = '{{ route("cart.details") }}';
+    const cartUpdateRoute = '{{ route("cart.update") }}';
+    const cartRemoveRoute = '{{ route("cart.remove") }}';
+
+    // رسائل
+    const cartUpdateSuccessMessage = '{{ __("scripts.cart_update_success") }}';
+    const cartUpdateErrorMessage = '{{ __("scripts.cart_update_error") }}';
+    const cartDetailsErrorMessage = '{{ __("scripts.cart_details_error") }}';
+    const cartRemoveSuccessMessage = '{{ __("scripts.cart_remove_success") }}';
+    const cartRemoveErrorMessage = '{{ __("scripts.cart_remove_error") }}';
 
     // إضافة منتج إلى السلة
-    function addToCart(event, productId, quantity = 1) {
-        event.preventDefault();
+    // التحقق من اختيار جميع الخيارات المطلوبة
+    function validateVariantSelection(options) {
+        let isValid = true;
+        let message = '';
 
-        quantity = parseInt(quantity);
-        if (isNaN(quantity) || quantity < 1) {
-            quantity = 1;
+        // التحقق من وجود خيارات للمنتج
+        if (options && options.length > 0) {
+            $.each(options, function (_, option) {
+                const optionName = option.name[locale];
+                const optionNameEn = option.name['en'].toLowerCase();
+
+                if (optionNameEn === 'color') {
+                    // التحقق من اختيار اللون
+                    const selectedColor = $('.color-thumbnail input[type="radio"]:checked');
+                    if (!selectedColor.length) {
+                        isValid = false;
+                        message = `${__('products.please_select')} ${optionName}`;
+                        return false; // للخروج من each loop
+                    }
+                } else {
+                    // التحقق من اختيار القيمة في السيليكت
+                    const selectElement = $(`[name="product-${optionNameEn}"]`);
+                    if (selectElement.length && !selectElement.val()) {
+                        isValid = false;
+                        message = `${__('products.please_select')} ${optionName}`;
+                        return false; // للخروج من each loop
+                    }
+                }
+            });
         }
 
+        return {isValid, message};
+    }
+
+    // دالة إضافة المنتج للسلة
+    // تحديث دالة addToCart لاستخدام معرف الفاريانت بشكل صحيح
+    function addToCart(event, productId, quantity = 1, variantId = null) {
+        event.preventDefault();
+
+            // التحقق من صحة الكمية بشكل أكثر صرامة
+            quantity = Math.max(1, parseInt(quantity) || 1);
+
+        // إذا لم يتم تمرير معرف الفاريانت، نحاول العثور عليه
+            // محاولة العثور على معرف المتغير بطريقة أكثر موثوقية
+            if (!variantId) {
+                variantId = findVariantId(productId);
+            }
+
+        const data = {
+            product_id: productId,
+            _token: csrf_token,
+            quantity: quantity,
+        };
+
+        // إضافة معرف الفاريانت للطلب إذا كان موجوداً
+        if (variantId) {
+            data.variant_id = variantId;
+        }
+
+        // إرسال الطلب
         $.ajax({
-            url: '{{ route("cart.add") }}',
+            url: cartAddRoute,
             type: 'POST',
-            data: {
-                product_id: productId,
-                _token: '{{ csrf_token() }}',
-                quantity: quantity,
+            data: data,
+            success: function(response) {
+                if (response.error) {
+                    toastr.error(response.error);
+                } else {
+                    toastr.success(cartUpdateSuccessMessage);
+                    updateCartDetails();
+                    // إغلاق المودال بعد الإضافة بنجاح
+                    $('.product-quick-view-modal').hide();
+                }
             },
-            success: function (response) {
-                toastr.success('{{ __('scripts.cart_update_success') }}');
-                // تحديث تفاصيل السلة بعد إضافة المنتج
-                updateCartDetails();
-            },
-            error: function (error) {
-                console.log(error)
-                toastr.error('{{ __('scripts.cart_update_error') }}');
+            error: function(error) {
+                console.error(error);
+                toastr.error(__('scripts.cart_update_error'));
             }
         });
     }
 
+    function findVariantId(productId) {
+        // البحث عن معرف المتغير في المودال أو الصفحة الرئيسية
+        const modalVariant = $('.product-quick-view-modal .variant-id-holder').val();
+        if (modalVariant) return modalVariant;
+
+        const pageVariant = $(`[data-product-id="${productId}"].variant-id`).val();
+        return pageVariant || null;
+    }
+
+    // تحديث تفاصيل السلة
     function updateCartDetails() {
         $.ajax({
-            url: '{{ route("cart.details") }}',
+            url: cartDetailsRoute,
             type: 'GET',
             success: function (response) {
-                console.log(response.items)
-                // تحديث عدد المنتجات والإجمالي في الواجهة
                 $('#cart-total-quantity').text(response.totalQuantity);
-                $('#cart-total-price').text((response.totalPrice).toFixed(2) + ' {{ __('scripts.currency_symbol') }} ');
+                $('#cart-total-price').text((response.totalPrice).toFixed(2) + ' ' + currency);
 
-                // إذا كانت items كائنًا، قم بالتكرار على خصائصه
                 var itemsList = $('#cart-items-list');
-                itemsList.empty(); // تنظيف القائمة الحالية
+                itemsList.empty();
 
                 for (var key in response.items) {
                     if (response.items.hasOwnProperty(key)) {
                         var item = response.items[key];
-                        var url = item.attributes.url;
-                        var image = item.attributes.image;
-                        var freeQuantity = item.attributes.free_quantity;
+                        var variantInfo = '';
 
-                    // إنشاء النص الأساسي الذي سيتم إدراجه
+                        // Build variant information with better formatting
+                        if (item.attributes.variant_details) {
+                            variantInfo = '<div class="variant-info">';
+                            const entries = Object.entries(item.attributes.variant_details);
+                            entries.forEach(([optionName, details], index) => {
+                                        variantInfo += `
+                                <span class="variant-option">
+                                    <span class="option-value">${details.value}</span>
+                                    ${index < entries.length - 1 ? ',&nbsp;' : ''}
+                                </span>
+                                `;
+                            });
+                            variantInfo += '</div>';
+                        }
                         var itemHTML = `
-                                <li class="single-product-cart">
-                                    <div class="cart-img">
-                                        <a href="${url}"><img src="{{asset('storage')}}/${image}" alt=""></a>
-                                    </div>
-                                    <div class="cart-title">
-                                        <h4><a href="${url}">${item.name}</a></h4>
-                                        <span>${item.quantity} × <span class="price">${parseFloat(item.price).toFixed(2)}  {{ __('scripts.currency_symbol') }} </span></span>
-                                  `;
+                        <li class="single-product-cart">
+                            <div class="cart-img">
+                                <a href="${item.attributes.url}">
+                                    <img src="${storageUrl}/${item.attributes.image}" alt="${item.name}">
+                                </a>
+                            </div>
+                            <div class="cart-title">
+                                <h4><a href="${item.attributes.url}">${item.name}</a></h4>
+                                ${variantInfo}
+                                <span class="quantity-price">
+                                    ${item.quantity} × <span class="price">${parseFloat(item.price).toFixed(2)} ${currency}</span>
+                                </span>
+                    `;
 
-                        // التحقق إذا كانت freeQuantity أكبر من صفر
-                        if (freeQuantity > 0) {
-                            itemHTML += `<span class='free-quantity'> + <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني</span>`;
+                        if (item.attributes.free_quantity > 0) {
+                            itemHTML += `
+                            <span class="free-quantity">
+                                + <span class="free-quantity-number">${item.attributes.free_quantity}</span> ${freeItemText}
+                            </span>
+                        `;
                         }
 
-                            // إكمال النص وإضافة أي عناصر أخرى
                         itemHTML += `
-                                </div>
-                                <div class="cart-delete">
-                                    <a href="javascript:void(0);" data-id="${item.id}" onclick="removeFromCart(${item.id})" class="remove-item"><i class="pe-7s-trash icons"></i></a>
-                                </div>
-                            </li>
-                          `;
+        </div>
+        <div class="cart-delete">
+            <a href="javascript:void(0);"
+               onclick="removeFromCart(event, this)"
+               data-id="${item.id}"
+               data-variant-id="${item.attributes.variant_id || null}"
+               class="remove-item">
+                <i class="pe-7s-trash icons"></i>
+            </a>
+        </div>
+    </li>
+`;
 
-                        // إضافة النص الكامل إلى القائمة
                         itemsList.append(itemHTML);
                     }
                 }
+                // إعادة ربط الأحداث
+                bindQuantityEvents();
             },
             error: function (error) {
-                toastr.error('{{ __('scripts.cart_details_error') }}');
+                console.error('Error updating cart details:', error);
+                toastr.error(cartDetailsErrorMessage);
             }
         });
     }
+    // دالة ربط أحداث الكمية
+    function bindQuantityEvents() {
+        document.querySelectorAll('input[data-variant-id]').forEach(function (input) {
+            input.removeEventListener('change', quantityChangeHandler);
+            input.addEventListener('change', quantityChangeHandler);
+        });
+    }
 
+    // معالج حدث تغيير الكمية
+    function quantityChangeHandler() {
+        var quantity = Math.max(1, parseInt(this.value) || 1);
+        var price = parseFloat(this.getAttribute('data-price')) || 0;
+        var productId = this.getAttribute('data-product-id');
+        var variantId = this.getAttribute('data-variant-id');
+        var total = price * quantity;
+
+        // تحديث السعر الإجمالي
+        var totalPriceElement = document.querySelector(`#total-price-${productId}-${variantId}`);
+        if (totalPriceElement) {
+            totalPriceElement.innerText = total.toFixed(2) + ' {{ __("shop-cart.currency") }}';
+        }
+
+        // استدعاء تحديث السلة
+        updateQuantity(productId, quantity, variantId);
+    }
+
+    // --------------------------------------
     // تحديث كمية المنتج في السلة
-    function updateCart(productId, quantity) {
-        $.ajax({
-            url: '{{ route("cart.update") }}',
-            type: 'POST',
-            data: {
-                product_id: productId,
-                quantity: quantity,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function (response) {
-                toastr.success('{{ __('scripts.cart_update_success') }}');
-                getCartDetails();
-            },
-            error: function (error) {
-                toastr.error('{{ __('scripts.cart_update_error') }}');
-            }
-        });
-    }
+    function updateCart(productId,quantity=1, variantId = null) {
+        const data = {
+            product_id: productId,
+            quantity: quantity,
+            _token: csrf_token
+        };
 
-    // حذف منتج من السلة
-    function removeFromCart(productId) {
+        if (variantId) {
+            data.variant_id = variantId;
+        }
+
         $.ajax({
-            url: '{{ route("cart.remove") }}',
+            url: cartUpdateRoute,
             type: 'POST',
-            data: {
-                product_id: productId,
-                _token: '{{ csrf_token() }}'
-            },
+            data: data,
             success: function (response) {
-                toastr.success('{{ __('scripts.cart_remove_success') }}');
+                if (response.error) {
+                    toastr.error(response.error);
+                } else {
+                toastr.success(cartUpdateSuccessMessage);
                 updateCartDetails();
+                }
             },
             error: function (error) {
-                toastr.error('{{ __('scripts.cart_remove_error') }}');
+                console.error('Error updating cart:', error);
+                toastr.error(cartUpdateErrorMessage);
             }
         });
     }
-
 
     // فانكشنز  صفحة الشوب كارت
-    document.querySelectorAll('.quantity-input').forEach(function (input) {
-        input.addEventListener('input', function () {
-            var quantity = this.value;
-            var price = this.getAttribute('data-price');
-            var id = this.getAttribute('data-id');
-            var total = price * quantity;
-            document.getElementById('total-price-' + id).innerText = total + ' {{ __('shop-cart.currency') }}';
+    function updateQuantity(productId, quantity = 1, variantId = null) {
+        const data = {
+            product_id: productId,
+            quantity: quantity,
+            _token: csrf_token
+        };
 
-            // حساب وإظهار الإجمالي الكلي الجديد
-            updateQuantity(id, quantity)
-            updateGrandTotal();
+        if (variantId) {
+            data.variant_id = variantId;
+        }
+
+        $.ajax({
+            url: cartUpdateRoute,
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    // تحديث تفاصيل السلة مباشرة بعد التحديث
+                    updateCartDetails();
+
+                    // تحديث الكمية المجانية إذا وجدت
+                    if (response.free_quantity > 0) {
+                        $(`#free_quantity${response.item_id}`).html(` + عدد <span>${response.free_quantity}</span> قطعة مجاني`);
+                    } else {
+                        $(`#free_quantity${response.item_id}`).text('');
+                    }
+
+                    // تحديث المجموع الكلي
+                    updateGrandTotal();
+                } else {
+                    toastr.error(response.error || 'حدث خطأ أثناء تحديث الكمية');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error updating quantity:', xhr.responseText);
+                toastr.error('حدث خطأ أثناء تحديث الكمية');
+            }
         });
-    });
+    }
+
+    // تعديل الاستماع على تغيير الكمية
+    {{--document.querySelectorAll('input[data-variant-id]').forEach(function (input) {--}}
+    {{--    input.addEventListener('change', function () {--}}
+    {{--        var quantity = Math.max(1, parseInt(this.value) || 1);--}}
+    {{--        var price = parseFloat(this.getAttribute('data-price')) || 0;--}}
+    {{--        var productId = this.getAttribute('data-product-id');--}}
+    {{--        var variantId = this.getAttribute('data-variant-id');--}}
+    {{--        var total = price * quantity;--}}
+
+    {{--        // تحديث السعر الإجمالي--}}
+    {{--        var totalPriceElement = document.querySelector(`#total-price-${productId}-${variantId}`);--}}
+    {{--        if (totalPriceElement) {--}}
+    {{--            totalPriceElement.innerText = total.toFixed(2) + ' {{ __('shop-cart.currency') }}';--}}
+    {{--        }--}}
+
+    {{--        // استدعاء تحديث السلة--}}
+    {{--        updateQuantity(productId, quantity, variantId);--}}
+    {{--    });--}}
+    {{--});--}}
 
     function updateGrandTotal() {
         var grandTotal = 0;
@@ -349,61 +1092,84 @@ ${discountedPrice} {{ __('home.currency') }}
         document.getElementById('grand-total').innerText = grandTotal + ' {{ __('shop-cart.currency') }}';
     }
 
-    // تحديث الكمية في صفحة الشوب كارت بعد تغييرها بالاجاكس
-    function updateQuantity(productId, quantity) {
+
+    // حذف منتج من السلة
+    function removeFromCart(event, element) {
+        event.preventDefault();
+
+        const productId = $(element).data('id');
+        const variantId = $(element).data('variant-id');
+
+        // استخدام معرف مركب للمنتجات ذات المتغيرات
+        const removeId = variantId ? (productId + '-' + variantId) : productId;
+
         $.ajax({
-            url: `{{route('cart.update')}}`,
+            url: cartRemoveRoute,
             type: 'POST',
             data: {
-                quantity: quantity,
                 product_id: productId,
-                _token: '{{ csrf_token() }}'
+                variant_id: variantId,
+                _token: csrf_token
             },
-            success: function (data) {
-                if (data.success) {
-                    console.log('Quantity updated successfully');
+            success: function (response) {
+                if (response.success) {
+                    // تحديث السلة
+                    toastr.success(cartRemoveSuccessMessage);
                     updateCartDetails();
-                    if (data.free_quantity > 0) {
-                        $('#free_quantity' + productId).html(' + عدد   <span>' + data.free_quantity + '</span>  قطعة مجاني ');
-                    } else {
-                        $('#free_quantity' + productId).text('');
-                    }
-
+                } else {
+                    toastr.error(response.message || 'حدث خطأ أثناء حذف المنتج');
                 }
             },
-            error: function (xhr, status, error) {
-                console.error('Error updating quantity:', error);
+            error: function (error) {
+                console.error('Error removing item from cart:', error);
+                toastr.error(cartRemoveErrorMessage);
             }
         });
     }
-
     // حذف منتج من صفحة الشوب كارت
     function removeItem(event, element) {
         event.preventDefault();
-        var productId = $(element).data('id');
+
+        var elementId = $(element).data('id');
 
         $.ajax({
-            url: '{{ route("cart.remove") }}',
+            url: '{{ route("cart.remove-item") }}',
             type: 'POST',
             data: {
-                product_id: productId,
-                _token: '{{ csrf_token() }}'
+                _token: '{{ csrf_token() }}',
+                id: elementId,
             },
             success: function (response) {
-                $(element).closest('tr').remove();
-                updateCartDetails();
-                updateGrandTotal();
+                if (response.success) {
+                    // حذف الصف
+                    $(element).closest('tr').remove();
+
+                    // تحديث إجمالي السلة
+                    if (typeof updateCartDetails === 'function') {
+                        updateCartDetails();
+                    }
+
+                    // تحديث المجموع الكلي
+                    if ($('#grand-total').length) {
+                        $('#grand-total').text(response.cartTotal + ' {{ __("shop-cart.currency") }}');
+                    }
+
+                    // تحقق من وجود منتجات في السلة
+                    if ($('table tbody tr').length === 0) {
+                        $('table tbody').append('<tr><td colspan="6" class="text-center">{{ __("shop-cart.no_products") }}</td></tr>');
+                    }
+                } else {
+                    alert('حدث خطأ أثناء حذف المنتج');
+                }
             },
             error: function (error) {
-                console.log('Failed to remove product from cart.');
+                console.log('Error:', error);
+                alert('حدث خطأ أثناء حذف المنتج');
             }
         });
     }
 
-    // ------------------------------ End Shopping Cart--------------------------------
-
-
-    //------------------------ products filter toolbar-----------
+    //------------------------ products filter  toolbar-----------
 
     document.addEventListener('DOMContentLoaded', function () {
         const toggleFilterBtn = document.getElementById('toggleFilter');

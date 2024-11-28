@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('about_us_image')->nullable(); // مسار صورة من نحن
             $table->string('car_icon')->nullable();  // مسار صورة العربة الصغيرة
             $table->json('sponsor_images')->nullable();  // Add this column for multiple
+            $table->string('default_image')->nullable();  // مسار الصورة الديفولت
 
 
 

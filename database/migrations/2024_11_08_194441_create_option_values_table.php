@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_details', function (Blueprint $table) {
-            $table->integer('free_quantity')->nullable(); // كمية الهدية المجانية
+        Schema::create('option_values', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('option_id')->constrained('options')->cascadeOnDelete();
+            $table->json('value');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_details', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('option_values');
     }
 };

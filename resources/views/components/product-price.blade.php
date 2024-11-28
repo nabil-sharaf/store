@@ -1,13 +1,13 @@
-@if($productPrice > $discountedPrice)
+@if(floatval($productPrice) > floatval($discountedPrice))
     <span class="price-old" style=" color: #999; ">
-        {{ number_format($productPrice, 0) }}{{ trim(__('home.currency')) }}
+        {{ number_format(floatval($productPrice), 0) }}{{ trim(__('home.currency')) }}
     </span>
-<span class="price" style="color: #e74c3c;">
-    {{ number_format($discountedPrice, 0) }} {{ __('home.currency') }}
-</span>
-    @else
     <span class="price" style="color: #e74c3c;">
-    {{ number_format($discountedPrice, 2) }} {{ __('home.currency') }}
+        {{ number_format(floatval($discountedPrice), 0) }} {{ __('home.currency') }}
+    </span>
+@else
+    <span class="price" style="color: #e74c3c;">
+        {{ number_format(floatval($discountedPrice), 2) }} {{ __('home.currency') }}
     </span>
 @endif
 

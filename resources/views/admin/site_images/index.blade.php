@@ -121,6 +121,18 @@
                 </div>
             </div>
 
+            <!-- Default Image  -->
+            <div class="row mb-4">
+                <label for="default_image" class="col-md-4 col-form-label text-md-right">الصورة الاحتياطية    :</label>
+                <div class="col-md-6">
+                    <img src="{{ asset('storage/'.$siteImages?->default_image) }}" alt="car image" class="img-thumbnail mb-3" id="default_image-preview" style="width:100px; max-height: 80px;">
+                    <input type="file" name="default_image" id="default_image" class="form-control @error('default_image') is-invalid @enderror" onchange="previewImage(event, 'default_image-preview')">
+                    @error('default_image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
             <!-- Submit Button -->
             <div class="row mb-0">
                 <div class="col-md-8 offset-md-4">

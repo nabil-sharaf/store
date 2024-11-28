@@ -32,7 +32,8 @@
                                 <div class="col-sm-6 col-md-3">
                                     <div class="contact-info-item">
                                         <div class="icon">
-                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/5.png') }}" alt="Icon">
+                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/5.png') }}"
+                                                 alt="Icon">
                                         </div>
                                         <h2>{{ __('contact_us.address') }}</h2>
                                         <div class="content">
@@ -43,7 +44,8 @@
                                 <div class="col-sm-6 col-md-3">
                                     <div class="contact-info-item mt-xs-30">
                                         <div class="icon">
-                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/6.png') }}" alt="Icon">
+                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/6.png') }}"
+                                                 alt="Icon">
                                         </div>
                                         <h2>{{ __('contact_us.phone') }}</h2>
                                         <div class="content">
@@ -54,18 +56,24 @@
                                 <div class="col-sm-6 col-md-3">
                                     <div class="contact-info-item mt-sm-30">
                                         <div class="icon">
-                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/7.png') }}" alt="Icon">
+                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/7.png') }}"
+                                                 alt="Icon">
                                         </div>
                                         <h2>{{ __('contact_us.whats') }}</h2>
                                         <div class="content">
-                                            {{ \App\Models\Admin\Setting::getValue('whats-app') }}
+                                            @php
+                                             $link = \App\Models\Admin\Setting::getValue('whats-app');
+                                             $num= str_replace('https://wa.me/', '', $link)
+                                             @endphp
+                                            {{$num.'+'}}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-md-3">
                                     <div class="contact-info-item mt-sm-30">
                                         <div class="icon">
-                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/7.png') }}" alt="Icon">
+                                            <img class="icon-img" src="{{ asset('front/assets/img/icons/7.png') }}"
+                                                 alt="Icon">
                                         </div>
                                         <h2>{{ __('contact_us.email_web') }}</h2>
                                         <div class="content">
@@ -81,7 +89,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="contact-map-area">
-                            <iframe src="{{\App\Models\Admin\Setting::getValue('map')}}" allowfullscreen="" loading="lazy"></iframe>
+                            <iframe src="{{\App\Models\Admin\Setting::getValue('map')}}" allowfullscreen=""
+                                    loading="lazy"></iframe>
                         </div>
                     </div>
                 </div>
@@ -102,31 +111,40 @@
                                             <!-- اسم المستخدم -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <input class="form-control" type="text" id="name" placeholder=" {{ __('contact_us.name_placeholder') }} " required>
+                                                    <input class="form-control" type="text" id="name"
+                                                           placeholder=" {{ __('contact_us.name_placeholder') }} "
+                                                           required>
                                                 </div>
                                             </div>
                                             <!-- رقم الهاتف للتواصل عبر واتساب -->
                                             <div class="col-md-6 ">
                                                 <div class="form-group">
-                                                    <input class="form-control text-right" type="tel" id="phone" placeholder=" {{ __('contact_us.phone_placeholder') }} " required>
+                                                    <input class="form-control text-right" type="tel" id="phone"
+                                                           placeholder=" {{ __('contact_us.phone_placeholder') }} "
+                                                           required>
                                                 </div>
                                             </div>
                                             <!-- الموضوع -->
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <input class="form-control" type="text" id="subject" placeholder="{{ __('contact_us.subject_placeholder') }}" required>
+                                                    <input class="form-control" type="text" id="subject"
+                                                           placeholder="{{ __('contact_us.subject_placeholder') }}"
+                                                           required>
                                                 </div>
                                             </div>
                                             <!-- الرسالة -->
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <textarea class="form-control" id="message" placeholder="{{ __('contact_us.message_placeholder') }}" required></textarea>
+                                                    <textarea class="form-control" id="message"
+                                                              placeholder="{{ __('contact_us.message_placeholder') }}"
+                                                              required></textarea>
                                                 </div>
                                             </div>
                                             <!-- زر الإرسال -->
                                             <div class="col-md-12">
                                                 <div class="form-group text-center">
-                                                    <button class="btn btn-theme" type="submit">{{ __('contact_us.submit_button') }}</button>
+                                                    <button class="btn btn-theme"
+                                                            type="submit">{{ __('contact_us.submit_button') }}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,12 +152,12 @@
                                 </div>
                             </form>
 
-                        <!-- Message Notification -->
-                        <div class="form-message"></div>
+                            <!-- Message Notification -->
+                            <div class="form-message"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
     </section>
     <!--== End Contact Area ==-->
 @endsection

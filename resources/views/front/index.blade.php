@@ -25,9 +25,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <img class="thumb-two" src="{{asset('storage').'/'.$siteImages?->slider_image ?? ''}}"
+                                <img class="thumb-two"
+                                     src="{{asset('storage').'/'.($siteImages?->slider_image ?: $siteImages?->default_image)}}"
                                      alt="Image">
-                                <img class="thumb-four" src="{{asset('storage').'/'.$siteImages?->car_icon ?? ''}}"
+                                <img class="thumb-four"
+                                     src="{{asset('storage').'/'.($siteImages?->car_icon ?: $siteImages?->default_image)}}"
                                      alt="Image">
                             </div>
                             <div class="shape-top bg-img"
@@ -51,7 +53,8 @@
                     <div class="col-6 col-md-6">
                         <div class="category-item">
                             <div class="thumb">
-                                <img class="w-100" src="{{asset('storage/'.$cat->image)}}" alt="Image">
+                                <img class="w-100"
+                                     src="{{asset('storage/'.($cat->image?:$siteImages?->default_image))}}" alt="Image">
                                 <div class="content">
                                     <div class="contact-info">
                                         <h3 class="title text-white">{{$cat->name}}</h3>
@@ -96,10 +99,12 @@
             </div>
             <div class="shape-group divider-image">
                 <div class="shape-style3 ">
-                    <img src="{{asset('storage').'/'.$siteImages?->offer_two ?? ''}}" alt="Image">
+                    <img src="{{asset('storage').'/'.($siteImages?->offer_two ?:$siteImages?->default_image )}}"
+                         alt="Image">
                 </div>
                 <div class="shape-style4">
-                    <img src="{{asset('storage').'/'.$siteImages?->offer_one ?? ''}}" alt="Image">
+                    <img src="{{asset('storage').'/'.($siteImages?->offer_one ?:$siteImages?->default_image)}}"
+                         alt="Image">
                 </div>
             </div>
         </div>
@@ -125,13 +130,15 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="best-sellers-tab" data-bs-toggle="tab"
-                                        data-bs-target="#best-sellers" type="button" role="tab" aria-controls="best-sellers"
+                                        data-bs-target="#best-sellers" type="button" role="tab"
+                                        aria-controls="best-sellers"
                                         aria-selected="false">{{ __('home.best_sellers') }}</button>
                             </li>
                         </ul>
 
                         <div class="tab-content" id="myTabContent" data-aos="fade-up" data-aos-duration="1300">
-                            <div class="tab-pane fade show active" id="our-features" role="tabpanel" aria-labelledby="our-features-tab">
+                            <div class="tab-pane fade show active" id="our-features" role="tabpanel"
+                                 aria-labelledby="our-features-tab">
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="product">
@@ -139,37 +146,7 @@
                                                 @foreach($newProducts as $product)
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <!-- Start Product Item -->
-                                                        <div class="product-item">
-                                                            <div class="product-thumb">
-                                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-
-                                                                <!-- عرض البادج -->
-                                                                @if($product->customer_offer)
-                                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
-                                                                @endif
-
-                                                                <div class="product-action">
-                                                                    <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-                                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="product-info">
-                                                                <div class="rating">
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                </div>
-                                                                <h4 class="title">
-                                                                    <a href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
-                                                                </h4>
-                                                                <div class="prices">
-                                                                    <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        <x-product-item :product="$product"/>
                                                         <!-- End Product Item -->
                                                     </div>
                                                 @endforeach
@@ -178,8 +155,8 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="tab-pane fade" id="best-sellers" role="tabpanel" aria-labelledby="best-sellers-tab">
+                            <div class="tab-pane fade" id="best-sellers" role="tabpanel"
+                                 aria-labelledby="best-sellers-tab">
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="product">
@@ -187,35 +164,7 @@
                                                 @foreach($bestProducts as $product)
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <!-- Start Product Item -->
-                                                        <div class="product-item">
-                                                            <div class="product-thumb">
-                                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-                                                                <!-- عرض البادج -->
-                                                                @if($product->customer_offer)
-                                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
-                                                                @endif
-                                                                <div class="product-action">
-                                                                    <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-                                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="product-info">
-                                                                <div class="rating">
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                </div>
-                                                                <h4 class="title">
-                                                                    <a href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
-                                                                </h4>
-                                                                <div class="prices">
-                                                                    <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        <x-product-item :product="$product"/>
                                                         <!-- End Product Item -->
                                                     </div>
                                                 @endforeach
@@ -233,35 +182,7 @@
                                                 @foreach($newProducts as $product)
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <!-- Start Product Item -->
-                                                        <div class="product-item">
-                                                            <div class="product-thumb">
-                                                                <img src="{{ asset('storage/' . $product->images?->first()?->path) }}" alt="{{ $product->name }}">
-                                                                <!-- عرض البادج -->
-                                                                @if($product->customer_offer)
-                                                                    <span class="badge badge-offer">{{ $product->customer_offer}}</span>
-                                                                @endif
-                                                                <div class="product-action">
-                                                                    <a class="action-quick-view-cart" href="#" onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-                                                                    <a class="action-quick-view" href="#" data-id="{{ $product->id }}" onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                                                    <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}" onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="product-info">
-                                                                <div class="rating">
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                    <span class="fa fa-star"></span>
-                                                                </div>
-                                                                <h4 class="title">
-                                                                    <a href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
-                                                                </h4>
-                                                                <div class="prices">
-                                                                    <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        <x-product-item :product="$product"/>
                                                         <!-- End Product Item -->
                                                     </div>
                                                 @endforeach
@@ -297,39 +218,7 @@
                         @foreach($trendingProducts as $product)
                             <div class="slide-item">
                                 <!-- Start Product Item -->
-                                <div class="product-item">
-                                    <div class="product-thumb">
-                                        <img src="{{ asset('storage/' . $product->images?->first()?->path) }}"
-                                             alt="{{ $product->name }}">
-                                        <!-- عرض البادج -->
-                                        @if($product->customer_offer)
-                                            <span class="badge badge-offer">{{ $product->customer_offer}}</span>
-                                        @endif
-                                        <div class="product-action">
-                                            <a class="action-quick-view-cart" href="#"
-                                               onclick="addToCart(event,{{$product->id}})"><i class="ion-ios-cart"></i></a>
-                                            <a class="action-quick-view" href="#" data-id="{{ $product->id }}"
-                                               onclick="showProductDetails(this)"><i class="ion-arrow-expand"></i></a>
-                                            <a class="action-quick-view-wishlist" href="#" data-id="{{ $product->id }}"
-                                               onclick="wishListAdd(event,this)"><i class="ion-heart"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="product-info">
-                                        <div class="rating">
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                        </div>
-                                        <h4 class="title"><a
-                                                href="{{route('product.show',$product->id)}}">{{$product->name}}</a>
-                                        </h4>
-                                        <div class="prices">
-                                            <x-product-price :productPrice="$product->product_price" :discountedPrice="$product->discounted_price" />
-                                        </div>
-                                    </div>
-                                </div>
+                                <x-product-item :product="$product"/>
                                 <!-- End Product Item -->
                             </div>
                         @endforeach
@@ -345,6 +234,11 @@
 
 @push('styles')
     <style>
+
+        .product-item {
+            position: relative; /* يضمن أن العناصر المطلقة داخله تظل ضمن حدوده */
+            overflow: hidden; /* يمنع خروج أي محتوى زائد عن حدوده */
+        }
 
         .slider-content-area {
             background-color: #c2e0eb; /* اختر لون الخلفية المطلوب */
@@ -398,29 +292,30 @@
             border: 0; /* لون البوردر عند التركيز (focus) */
             box-shadow: 0 0 3px rgb(228, 107, 255) !important; /* إضافة تأثير ظل */
         }
-        .pop-up-button{
+
+        .pop-up-button {
             text-decoration: none;
-            color:white;
-        }
-        .pop-up-button:hover{
-            color:whitesmoke;
+            color: white;
         }
 
+        .pop-up-button:hover {
+            color: whitesmoke;
+        }
 
+        /*variants*/
     </style>
-
 @endpush
 
 @push('scripts')
     <script>
         @if(isset($popup) && $popup->status==1)
 
-            @if(!session()->has('popup_show'))
-                document.addEventListener('DOMContentLoaded', function () {
+        @if(!session()->has('popup_show'))
+        document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 title: '{{ $popup->title }}',
                 html: '{!! $popup->text !!} ',
-                iconHtml: '<img src="{{ asset('storage/' . $popup->image_path) }}" style="width:200px; max-height:100px;" />',
+                iconHtml: '<img src="{{ asset('storage/' . ($popup->image_path?:$siteImages?->default_image)) }}" style="width:200px; max-height:100px;" />',
                 background: '#f0f0f0',
                 color: '#333333',
                 confirmButtonText: '<a class="pop-up-button" href="{{ $popup->button_link }}">{{ $popup->button_text }}</a>',
@@ -433,8 +328,8 @@
                 }
             });
         });
-               <?php session()->put('popup_show', true); ?>
-           @endif
+            <?php session()->put('popup_show', true); ?>
+        @endif
         @endif
 
         $(document.ready(function () {
@@ -444,4 +339,5 @@
             });
         }))
     </script>
+
 @endpush

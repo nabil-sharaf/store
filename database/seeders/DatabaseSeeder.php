@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,11 +21,13 @@ class DatabaseSeeder extends Seeder
             CategoriesTableSeeder::class,
             SettingsTableSeeder::class,
             RolesAndPermissionsSeeder::class,
-         //   ProductsTableSeeder::class,
-           // OrdersTableSeeder::class,
-         //   OrderDetailsTableSeeder::class,
-          //  ImagesTableSeeder::class,
-          //  CategoryProductTableSeeder::class,
+            OptionsTableSeeder::class,
+            PrefixesTableSeeder::class,
+            //   ProductsTableSeeder::class,
+            // OrdersTableSeeder::class,
+            //   OrderDetailsTableSeeder::class,
+            //  ImagesTableSeeder::class,
+            //  CategoryProductTableSeeder::class,
             ShippingRateSeeder::class,
         ]);
     }

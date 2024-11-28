@@ -5,9 +5,12 @@ namespace App\Models\Admin;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-class Order extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+
+class Order extends Model implements Auditable
 {
     use HasFactory;
+    use \OwenIt\Auditing\Auditable;
 
     protected $guarded = [];
 
@@ -30,6 +33,7 @@ class Order extends Model
     {
         return $this->belongsTo(UserAddress::class);
     }
+
     public function guestAddress()
     {
         return $this->belongsTo(GuestAddress::class);

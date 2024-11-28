@@ -1,3 +1,5 @@
+@php use App\Models\Admin\Product; @endphp
+
 @extends('admin.layouts.app')
 @section('page-title', 'تعديل الطلب')
 
@@ -40,7 +42,7 @@
                                         {{ $user->name . ' (' . $user_type . $user_vip . ')' }}
                                     </option>
                                 @else
-                                    <option value=""  data-user-type="">Guest</option>
+                                    <option value="" data-user-type="">Guest</option>
                                 @endif
                             </select>
                             @error('user_id')
@@ -65,6 +67,7 @@
                                                     </button>
                                                 @endif
                                             </div>
+
                                             <div class="form-group">
                                                 <label for="product-select-{{ $index }}">اختر المنتج</label>
                                                 <select id="product-select-{{ $index }}"
@@ -85,6 +88,29 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+
+                                            <div class="form-group">
+                                                <label for="variant-select-{{$index}}">اختر الفاريانت</label>
+                                                <select id="variant-select-{{$index}}"
+                                                        class="form-control  product-variant"
+                                                        name="products[{{$index}}][variant_id]" {{$orderDetail->variant_id ?"":'disabled'}}>
+                                                    <option value="" selected disabled>اختر الفاريانت</option>
+                                                    @if($orderDetail->variant_id)
+                                                        @foreach($orderDetail->product->variants as $variant)
+                                                            @php
+                                                                $values = $variant->optionValues;
+                                                                $options = $values->map(function ($value) {
+                                                                            return $value->getTranslation('value', 'ar'); // للحصول على النص العربي
+                                                                           })->implode(', ');
+                                                            @endphp
+                                                            <option
+                                                                value="{{$variant->id}}" {{$variant->id == $orderDetail->variant_id ?'selected':''}}>
+                                                                {{$options}}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
                                             <div class="row">
                                                 <!-- Product Quantity -->
                                                 <div class="col-md-4">
@@ -98,11 +124,14 @@
                                                                required min="1">
                                                         <span class="free-quantity">
                                                             @if($orderDetail->free_quantity > 0)
-                                                             + عدد <span class="free-quantity-number">{{$orderDetail->free_quantity}}</span> قطعة هدية
+                                                                + عدد <span
+                                                                    class="free-quantity-number">{{$orderDetail->free_quantity}}</span>
+                                                                قطعة هدية
                                                             @endif
                                                         </span>
                                                     </div>
                                                 </div>
+
 
                                                 <!-- Current Quantity Available -->
                                                 <div class="col-md-4">
@@ -115,6 +144,7 @@
                                                                readonly>
                                                     </div>
                                                 </div>
+
 
                                                 <!-- Product Price -->
                                                 @php
@@ -287,7 +317,8 @@
                         <select class="form-control" name="state" data-user-state="{{ $user->address?->state ?? '' }}">
                             <option value="" disabled selected>اختر اسم محافظتك</option>
                             @foreach($states as $state)
-                                <option value="{{$state->state}}" {{ old('state', $user->address->state ?? '') == $state->state ? 'selected' : '' }}>{{$state->state}}</option>
+                                <option
+                                    value="{{$state->state}}" {{ old('state', $user->address->state ?? '') == $state->state ? 'selected' : '' }}>{{$state->state}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -295,14 +326,14 @@
 
                 <!-- Total After Discount -->
                 <div class="form-group   ">
-                    <label for="inputTotalOrder"   > الاجمالي بعد الخصم  </label>
-                        <input type="text" class=" form-control" id="inputTotalOrder" name="total_price"
-                               value="{{ old('total_price', $order->total_after_discount) }}" readonly
-                               data-order-id="{{$order->id}}">
+                    <label for="inputTotalOrder"> الاجمالي بعد الخصم </label>
+                    <input type="text" class=" form-control" id="inputTotalOrder" name="total_price"
+                           value="{{ old('total_price', $order->total_after_discount) }}" readonly
+                           data-order-id="{{$order->id}}">
 
                 </div>
 
-                <div class="form-group " id= 'shipping-cost-div' style = 'display: none;'>
+                <div class="form-group " id='shipping-cost-div' style='display: none;'>
                     <label for="shipping_cost">تكلفة الشحن</label>
                     <input type="text" class="form-control" id="shipping_cost" readonly>
                 </div>
@@ -326,6 +357,7 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
+            initializeSelect2();
             // هذا الكود يضيف الـ CSRF token لجميع الطلبات AJAX
             $.ajaxSetup({
                 headers: {
@@ -344,68 +376,79 @@
             function addProductField() {
                 productCount++;
                 var newField = `
-    <div class="product-field card mb-3">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="card-title mb-0 product-number">المنتج ${productCount + 1}</h5>
-                <button type="button" class="btn btn-danger btn-sm remove-product">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="form-group">
-                <label for="product-select-${productCount}">اختر المنتج</label>
-                <select id="product-select-${productCount}" class="select2 form-control product-select" name="products[${productCount}][id]" required>
-                    <option value="">اختر منتج</option>
-                    @foreach($products as $product)
+                <div class="product-field card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0 product-number">المنتج ${productCount + 1}</h5>
+                            <button type="button" class="btn btn-danger btn-sm remove-product">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-select-${productCount}">اختر المنتج</label>
+                            <select id="product-select-${productCount}" class="select2 form-control product-select" name="products[${productCount}][id]" required>
+                                <option value="">اختر منتج</option>
+                                @foreach($products as $product)
                 <option value="{{ $product->id }}"
-                    data-price-retail="{{ $product->price }}"
-                    data-price-wholesale="{{ $product->goomla_price }}"
-                    data-discount-type="{{ $product->discount->discount_type ?? '' }}"
-                    data-discount-value="{{ $product->discount->discount ?? 0 }}"
-                    data-quantity="{{ $product->quantity }}">{{ $product->name }}</option>
-                    @endforeach
+                                data-price-retail="{{ $product->price }}"
+                                data-price-wholesale="{{ $product->goomla_price }}"
+                                data-discount-type="{{ $product->discount->discount_type ?? '' }}"
+                                data-discount-value="{{ $product->discount->discount ?? 0 }}"
+                                data-quantity="{{ $product->quantity }}">{{ $product->name }}</option>
+                                @endforeach
                 </select>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="product-quantity-${productCount}">الكمية المطلوبة</label>
-                        <input type="number" id="product-quantity-${productCount}" name="products[${productCount}][quantity]" class="form-control product-quantity" required min="1" value="1">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="product-current-quantity-${productCount}">الكمية المتاحة للمنتج</label>
-                        <input type="text" id="product-current-quantity-${productCount}" class="form-control product-current-quantity" readonly>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="product-price-${productCount}">السعر </label>
-                        <input type="text" id="product-price-${productCount}" class="form-control product-price" readonly>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="product-discount-${productCount}">الخصم</label>
-                        <input type="text" id="product-discount-${productCount}" class="form-control product-discount" readonly>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="product-discountPrice-${productCount}">السعر بعد الخصم</label>
-                        <input type="text" id="product-discountPrice-${productCount}" class="form-control product-discountPrice" readonly>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="product-total-${productCount}">الإجمالي</label>
-                        <input type="text" id="product-total-${productCount}" class="form-control product-total" readonly>
-                    </div>
-                </div>
+            <div class="form-group">
+               <label for="variant-select-${productCount}">اختر الفاريانت</label>
+               <select id="variant-select-${productCount}"
+                   class="form-control select2 product-variant"
+                   name="products[${productCount}][variant_id]" disabled>
+
+               <option value="" selected disabled>اختر الفاريانت</option>
+
+                </select>
             </div>
-        </div>
-    </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                  <div class="form-group">
+                     <label for="product-quantity-${productCount}">الكمية المطلوبة</label>
+                         <input type="number" id="product-quantity-${productCount}" name="products[${productCount}][quantity]" class="form-control product-quantity" required min="1" value="1">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="product-current-quantity-${productCount}">الكمية المتاحة للمنتج</label>
+                                    <input type="text" id="product-current-quantity-${productCount}" class="form-control product-current-quantity" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="product-price-${productCount}">السعر </label>
+                                    <input type="text" id="product-price-${productCount}" class="form-control product-price" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="product-discount-${productCount}">الخصم</label>
+                                    <input type="text" id="product-discount-${productCount}" class="form-control product-discount" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="product-discountPrice-${productCount}">السعر بعد الخصم</label>
+                                    <input type="text" id="product-discountPrice-${productCount}" class="form-control product-discountPrice" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="product-total-${productCount}">الإجمالي</label>
+                                    <input type="text" id="product-total-${productCount}" class="form-control product-total" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
     `;
                 $('#product-fields').append(newField);
                 initializeSelect2();
@@ -416,7 +459,11 @@
             function updateProductNumbers() {
                 $('.product-field').each(function (index) {
                     $(this).find('.product-number').text('المنتج ' + (index + 1));
-                    $(this).find('select').attr('name', `products[${index}][id]`);
+                    // تحديث name للمنتج فقط (باستخدام class محددة)
+                    $(this).find('.product-select').attr('name', `products[${index}][id]`);
+
+                    // تحديث name للفاريانت بشكل صحيح
+                    $(this).find('.product-variant').attr('name', `products[${index}][variant_id]`);
                     $(this).find('.product-quantity').attr('name', `products[${index}][quantity]`);
                 });
             }
@@ -431,26 +478,63 @@
 
             $('#product-fields').on('change', '.product-select', function () {
                 var selectedProduct = $(this).find(':selected');
-                var priceRetail = selectedProduct.data('price-retail');
-                var priceWholesale = selectedProduct.data('price-wholesale');
-                var discountType = selectedProduct.data('discount-type');  // نوع الخصم
-                var discountValue = selectedProduct.data('discount-value');  // قيمة الخصم
-
-                var quantity = selectedProduct.data('quantity');
+                var productId = selectedProduct.val();
                 var productBody = $(this).closest('.card-body');
-                var userType = $('#inputUser').find(':selected').data('user-type'); // الحصول على نوع العميل من البيانات المخزنة
+                productBody.find('.product-quantity').val(1);
+                productBody.find('.free-quantity').html('');
 
-                var price = userType === 'goomla' ? priceWholesale : priceRetail;
+                // إعداد قائمة الفاريانتس
+                var variantSelect = productBody.find('.product-variant');
+                variantSelect.prop('disabled', true).html('<option value="">اختر الفاريانت</option>');
 
-                // حساب الخصم
+                if (productId) {
+                    $.ajax({
+                        url: "{{route('admin.orders.get-variants',':id')}}".replace(':id', productId),
+                        method: 'GET',
+                        success: function (response) {
+                            if (response.variants.length > 0) {
+                                variantSelect.prop('disabled', false);
+                                response.variants.forEach(function (variant) {
+                                    var optionValuesText = variant.option_values.map(function (optionValue) {
+                                        return optionValue.value.ar;
+                                    }).join(', ');
+
+                                    variantSelect.append(
+                                        `<option value="${variant.id}"
+                                data-price-retail="${variant.price}"
+                                data-price-wholesale="${variant.goomla_price}"
+                                data-discount-type="${variant.discount_type}"
+                                data-discount-value="${variant.discount_value}"
+                                data-quantity="${variant.quantity}">
+                                ${optionValuesText}
+                            </option>`
+                                    );
+                                });
+
+                                // تفريغ الحقول إذا كان المنتج يحتوي على فاريانتس
+                                clearProductFields(productBody);
+                            } else {
+                                // إذا لم يكن هناك فاريانت، استخدم قيم المنتج
+                                setProductFieldsFromProduct(productBody, selectedProduct);
+                            }
+                        }
+                    });
+                } else {
+                    clearProductFields(productBody);
+                }
+                initializeSelect2();
+
+            });
+
+            function updateProductPricing(productBody, price, discountType, discountValue, quantity) {
                 var discountAmount = 0;
+
                 if (discountType === 'percentage') {
                     discountAmount = (price * discountValue) / 100;
                 } else if (discountType === 'fixed') {
                     discountAmount = discountValue;
                 }
 
-                // حساب السعر النهائي بعد الخصم
                 var finalPrice = price - discountAmount;
 
                 productBody.find('.product-current-quantity').val(quantity);
@@ -459,21 +543,28 @@
                 productBody.find('.product-discountPrice').val(finalPrice);
 
                 updateTotal(productBody);
-                $('#copounDiscountAmount').val('0 '); // تحديث الخصم الجديد
-                $('#applyCouponButton').removeAttr('disabled');
+            }
 
-                initializeSelect2();
+            function clearProductFields(productBody) {
+                productBody.find('.product-current-quantity').val('');
+                productBody.find('.product-price').val('');
+                productBody.find('.product-discount').val('');
+                productBody.find('.product-discountPrice').val('');
+                productBody.find('.product-total').val('');
+            }
 
-                // Get free Product Quantity
-                var $productField = $(this).closest('.product-field');
-                getFreeQuantity($productField,function(freeQuantity) {
-                    // هنا تستطيع استخدام الكمية المجانية كما تريد
-                    $productField.find('.free-quantity').html(
-                        freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
-                    );
-                });
+            function setProductFieldsFromProduct(productBody, selectedProduct) {
+                var priceRetail = selectedProduct.data('price-retail');
+                var priceWholesale = selectedProduct.data('price-wholesale');
+                var discountType = selectedProduct.data('discount-type');
+                var discountValue = selectedProduct.data('discount-value');
+                var quantity = selectedProduct.data('quantity');
+                var userType = $('#inputUser').find(':selected').data('user-type'); // نوع العميل
 
-            });
+                var price = userType === 'goomla' ? priceWholesale : priceRetail;
+
+                updateProductPricing(productBody, price, discountType, discountValue, quantity);
+            }
 
             $('#product-fields').on('input', '.product-quantity', function () {
 
@@ -481,7 +572,7 @@
 
                 // Get free Product Quantity
                 var $productField = $(this).closest('.product-field');
-                getFreeQuantity($productField,function(freeQuantity) {
+                getFreeQuantity($productField, function (freeQuantity) {
                     // هنا تستطيع استخدام الكمية المجانية كما تريد
                     $productField.find('.free-quantity').html(
                         freeQuantity > 0 ? `+ عدد <span class="free-quantity-number">${freeQuantity}</span> قطعة مجاني` : ''
@@ -489,6 +580,35 @@
                 });
 
 
+            });
+
+            $('#product-fields').on('change', '.product-variant', function () {
+                var selectedVariant = $(this).find(':selected');
+                var productBody = $(this).closest('.card-body');
+                var selectedOption = $(this).find('option[value=""]');
+
+
+                // تعطيل وتفعيل اول اوبشن في اختيار الفاريانتس (وهو اختر الفاريانت)
+                if (this.value !== "") {
+                    selectedOption.prop('disabled', true); // تعطيل خيار "اختر الفاريانت"
+                } else {
+                    selectedOption.prop('disabled', false); // تمكين الخيار إذا لم يتم اختيار أي شيء
+                }
+
+                if (selectedVariant.val()) {
+                    var priceRetail = selectedVariant.data('price-retail');
+                    var priceWholesale = selectedVariant.data('price-wholesale');
+                    var discountType = selectedVariant.data('discount-type');
+                    var discountValue = selectedVariant.data('discount-value');
+                    var quantity = selectedVariant.data('quantity');
+                    var userType = $('#inputUser').find(':selected').data('user-type'); // نوع العميل
+
+                    var price = userType === 'goomla' ? priceWholesale : priceRetail;
+
+                    updateProductPricing(productBody, price, discountType, discountValue, quantity);
+                }
+                initializeSelect2();
+                updateTotal(productBody)
 
             });
 
@@ -692,7 +812,7 @@
             }
 
 
- // --------------------------------  حساب تكلفة الشحن --------------------------------------------
+            // --------------------------------  حساب تكلفة الشحن --------------------------------------------
 
             const stateSelect = $('select[name="state"]');
 
@@ -705,20 +825,19 @@
                 }
 
                 $.ajax({
-                    url: "{{route('admin.checkout.getShippingCost',':state')}}".replace(':state',state),
+                    url: "{{route('admin.checkout.getShippingCost',':state')}}".replace(':state', state),
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         const shippingCost = response.shipping_cost;
                         if (shippingCost == 0 || !shippingCost) {
                             $('#shipping_cost').val(' شحن مجاني');
                             alert('0000')
-                        }
-                        else {
+                        } else {
                             $('#shipping_cost').val(shippingCost + ' جنيه  ');
                         }
                     },
 
-                    error: function() {
+                    error: function () {
                         $('#shipping_cost').val('خطأ في جلب تكلفة الشحن');
                     }
                 });
@@ -732,7 +851,7 @@
             }
 
             // حدث عند تغيير المحافظة
-            stateSelect.change(function() {
+            stateSelect.change(function () {
                 const state = $(this).val();
                 calculateShippingCost(state);
 
@@ -740,7 +859,7 @@
             });
 
             // الحصول على الكمية المجانية من المنتج اذا كان عليه عرض واستخدام الكولباك
-            function getFreeQuantity($productField,callback){
+            function getFreeQuantity($productField, callback) {
 
                 var userType = $('#inputUser').find(':selected').data('user-type'); // الحصول على نوع العميل من البيانات المخزنة
                 var productId = $productField.find('.product-select').val(); // ID المنتج
@@ -750,7 +869,7 @@
                     $.ajax({
                         url: "{{route('admin.orders.free-quantity')}}",
                         method: 'GET',
-                        data : {
+                        data: {
                             productId: productId,
                             quantity: quantity,
                             customer_type: userType,
@@ -794,7 +913,6 @@
                 submitOrderButton.style.display = 'block';
                 goBackButton.style.display = 'block'; // عرض زر الرجوع
                 ShippingDiv.style.display = 'block';  // أظهار تكلفة الشحن
-
 
 
                 scrollToTop(); // الانتقال لأعلى الصفحة عند الضغط على "أكمل الطلب"
