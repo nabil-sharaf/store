@@ -175,7 +175,11 @@
 
                             </div>
                         @endforelse
-
+                        @if($product->hasVariants())
+                            <div class="variant-warning text-muted" style="font-size: 12px; margin-bottom: -10px; ">
+                                <span class="text-danger font-bold">*</span> برجاء اختيار جميع خصائص المنتج من أجل الإضافة للسلة
+                            </div>
+                        @endif
                         <!-- Action Buttons -->
                         <div class="quick-product-action mt-4">
                             <div class="action-top">
@@ -190,6 +194,7 @@
                                                    min="1"/>
                                         </div>
                                     </div>
+
                                     <div class="col-8 btn-product-cart">
                                         <div class="d-flex gap-2 ">
                                             <!-- تعديل زر Add to Cart -->

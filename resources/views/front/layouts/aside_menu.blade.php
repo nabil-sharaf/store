@@ -34,8 +34,8 @@
                             </div>
                         </div>
                         <p class="product-desc">{{ __('aside_menu.product_description') }}</p>
-                        <div class="variant-warning text-muted" style="font-size: 12px; margin-bottom: 10px; display: none;">
-                            * برجاء اختيار جميع خصائص المنتج من أجل الإضافة للسلة
+                        <div class="variant-warning text-muted" style="font-size: 11px; margin-bottom: 6px; display: none;">
+                            <span class="text-danger text-bold"> * </span> برجاء اختيار جميع خصائص المنتج من أجل الإضافة للسلة
                         </div>
                         <div class="quick-product-action">
                             <div class="action-top">

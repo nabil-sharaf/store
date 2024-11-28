@@ -141,10 +141,10 @@
 
         // Show/hide variant warning message based on product variants
         const variantWarning = $('.variant-warning');
-        if (response.variants && response.variants.length > 0 &&
-            response.available_options && response.available_options.length > 0) {
+        if(response.warning_message === true){
+
             variantWarning.show();
-        } else {
+        }else{
             variantWarning.hide();
         }
 

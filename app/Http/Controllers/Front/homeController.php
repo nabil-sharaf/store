@@ -167,9 +167,14 @@ class homeController extends Controller
         ];
 
         // إضافة الأوبشنز والفاريانت فقط إذا كانت موجودة
-        if ($product->variants->isNotEmpty()) {
+        if ($product->variants->count() > 1) {
             $response['available_options'] = $availableOptions->values()->toArray();
             $response['variants'] = $variants;
+        }
+        if($product->hasVariants()){
+            $response['warning_message']=true;
+        }else{
+            $response['warning_message']=false;
         }
 
         return response()->json($response);
