@@ -3,6 +3,7 @@
 <!--=== Modernizr Min Js ===-->
 <script src="{{asset('front/assets')}}/js/modernizr.js"></script>
 <!--=== jQuery Min Js ===-->
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--}}
 <script src="{{asset('front/assets')}}/js/jquery-main.js"></script>
 <!--=== jQuery Migration Min Js ===-->
 <script src="{{asset('front/assets')}}/js/jquery-migrate.js"></script>
@@ -43,7 +44,6 @@
 @endif
 
 {{--toastr--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 

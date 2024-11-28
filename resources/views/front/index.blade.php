@@ -333,10 +333,19 @@
         @endif
 
         $(document).ready(function () {
-            $('.slick-prev, .slick-next').css('display', 'block');
-            $('.product-tab1-slider').slick({
-                arrows: true,
-            });
+            // التأكد من وجود العنصر
+            if ($('.product-tab1-slider').length > 0) {
+                $('.slick-prev, .slick-next').css('display', 'block');
+                $('.product-tab1-slider').slick({
+                    arrows: true,
+                    dots: true,        // إضافة النقاط للتنقل
+                    infinite: true,    // تمكين التمرير الدائري
+                    slidesToShow: 1,   // عدد الشرائح المعروضة
+                    slidesToScroll: 1  // عدد الشرائح المتحركة
+                });
+            } else {
+                console.warn('لم يتم العثور على السلايدر');
+            }
         });
     </script>
 
