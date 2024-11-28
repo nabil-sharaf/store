@@ -332,12 +332,12 @@
         @endif
         @endif
 
-        $(document.ready(function () {
+        $(document).ready(function () {
             $('.slick-prev, .slick-next').css('display', 'block');
             $('.product-tab1-slider').slick({
                 arrows: true,
             });
-        }))
+        });
     </script>
 
 @endpush
