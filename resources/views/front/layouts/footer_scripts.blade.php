@@ -73,6 +73,10 @@
         $('.product-images-slider').empty();
         $('.variant-section').empty();
         $('.quick-product-action button').prop('disabled', true);
+        // تأكيد إخفاء وإعادة ضبط الورنينج
+        $('.variant-warning')
+            .hide()
+            .text('* برجاء اختيار جميع خصائص المنتج من أجل الإضافة للسلة');
     }
     function showProductDetails(productId) {
         const categoriesContainer = $('.product-quick-view-modal .product-categories');
