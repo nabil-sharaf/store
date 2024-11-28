@@ -18,7 +18,7 @@ class ColorService
         'purple' => '#800080',
         'orange' => '#FFA500',
         'brown' => '#A52A2A',
-        'gray' => '#808080',
+        'gray' => '#C0C0C0',
         'navy' => '#000080',
 
         // درجات الأزرق

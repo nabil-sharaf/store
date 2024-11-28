@@ -34,13 +34,21 @@
                             </div>
                         </div>
                         <p class="product-desc">{{ __('aside_menu.product_description') }}</p>
+                        <div class="variant-warning text-muted" style="font-size: 12px; margin-bottom: 10px; display: none;">
+                            * برجاء اختيار جميع خصائص المنتج من أجل الإضافة للسلة
+                        </div>
                         <div class="quick-product-action">
                             <div class="action-top">
                                 <div class="pro-qty">
                                     <input type="text" id="quantity" title="{{ __('aside_menu.quantity') }}" value="01" />
                                 </div>
-                                <button class="btn btn-theme font-weight-bold" disabled>{{ __('aside_menu.add_to_cart') }}</button>
-                                <a class="btn-wishlist btn-theme" href="" onclick="wishListAdd(event,this)">{{ __('aside_menu.add_to_wishlist') }}</a>
+                                <button class="btn btn-theme font-weight-bold" disabled>{{ __('aside_menu.add_to_cart') }}
+                                    &nbsp; <i class="fa fa-shopping-cart"></i>
+                                </button>
+                                <a class="aside-menu-wishlist-btn btn-wishlist btn-theme" href="" onclick="wishListAdd(event,this)">
+                                    {{ __('aside_menu.add_to_wishlist') }} &nbsp;&nbsp;
+                                    <i class="fa fa-heart"></i>
+                                </a>
                             </div>
                         </div>
                     </div>

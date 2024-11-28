@@ -61,7 +61,6 @@
     });
     let currentProductData = null;
 
-
     // تحديث دالة عرض تفاصيل المنتج لتعامل مع صور الفاريانت الافتراضية
     // تعديل دالة showProductDetails لتنظيف المودال قبل عرض المنتج الجديد
     // دالة جديدة لتنظيف المودال
@@ -140,39 +139,100 @@
         const variantSection = $('.variant-section');
         variantSection.empty();
 
-        // التحقق من وجود variants للمنتج
-        if (!response.variants || response.variants.length === 0) {
+        // Show/hide variant warning message based on product variants
+        const variantWarning = $('.variant-warning');
+        if (response.variants && response.variants.length > 0 &&
+            response.available_options && response.available_options.length > 0) {
+            variantWarning.show();
+        } else {
+            variantWarning.hide();
+        }
+
+        if (!response.variants || response.variants.length === 0 ||
+            !response.available_options || response.available_options.length === 0) {
             return;
         }
 
-        // التحقق من وجود options متاحة
-        if (!response.available_options || response.available_options.length === 0) {
-            return;
-        }
-
-        // ترتيب الخيارات حسب التسلسل
         const sortedOptions = response.available_options.sort((a, b) => a.position - b.position);
-
-        // إنشاء أول select box فقط
         const firstOption = sortedOptions[0];
         const availableValuesForFirst = getAvailableValuesForOption(response.variants, firstOption.id);
 
         const firstSelect = createOptionSelect(firstOption, availableValuesForFirst);
         variantSection.append(firstSelect);
 
-        // إضافة event listener للخيار الأول
+        // تعديل event listener للخيار الأول
         variantSection.find('.option-selector').first().on('change', function() {
             const selectedValue = $(this).val();
+            // تعطيل الزر عند تغيير الخيار الأول
+            $('.quick-product-action button')
+                .prop('disabled', true)
+                .html(`أضف للسلة &nbsp; <i class="fa fa-shopping-cart"></i>`);
+
             if (selectedValue) {
                 updateNextOptions(response, sortedOptions, 1, {
                     [firstOption.id]: selectedValue
                 });
             } else {
-                // إزالة جميع الخيارات التالية عند إعادة اختيار الخيار الأول
                 variantSection.find('.option-selector').not(':first').closest('.form-group').remove();
-                $('.quick-product-action button').prop('disabled', true);
             }
         });
+    }
+
+    function handleOptionChange(productId) {
+        const selectedOptions = {};
+        let allOptionsSelected = true;
+
+        $('.option-selector').each(function() {
+            const optionId = $(this).data('option-id');
+            const valueId = $(this).val();
+
+            if (!valueId) {
+                allOptionsSelected = false;
+            }
+            selectedOptions[optionId] = valueId;
+        });
+
+        // تعطيل الزر إذا لم يتم اختيار كل الخيارات
+        if (!allOptionsSelected) {
+            $('.quick-product-action button')
+                .prop('disabled', true)
+                .html(`أضف للسلة &nbsp; <i class="fa fa-shopping-cart"></i>`);
+
+            if (currentProductData.images && currentProductData.images.length > 0) {
+                displayImages(currentProductData.images, $('.product-images-slider'));
+            }
+            return;
+        }
+
+        const matchingVariant = findMatchingVariant(selectedOptions);
+
+        if (matchingVariant) {
+            updatePriceDisplay(matchingVariant.price, matchingVariant.discounted_price);
+
+            if (matchingVariant.images && matchingVariant.images.length > 0) {
+                displayImages(matchingVariant.images, $('.product-images-slider'));
+            }
+
+            if (matchingVariant.quantity > 0) {
+                $('.quick-product-action').find('.variant-id-holder').remove();
+                $('.quick-product-action').prepend(`<input type="hidden" class="variant-id-holder" value="${matchingVariant.id}">`);
+
+                $('.quick-product-action button')
+                    .prop('disabled', false)
+                    .html(`أضف للسلة &nbsp; <i class="fa fa-shopping-cart"></i>`)
+                    .attr('onclick', `addToCart(event, ${productId}, document.getElementById('quantity_${productId}').value, ${matchingVariant.id})`);
+            } else {
+                $('.quick-product-action button')
+                    .prop('disabled', true)
+                    .text('غير متوفر حالياً');
+            }
+        } else {
+            toastr.error('هذه المجموعة من الخيارات غير متوفرة');
+            $('.quick-product-action button').prop('disabled', true);
+            if (currentProductData.images && currentProductData.images.length > 0) {
+                displayImages(currentProductData.images, $('.product-images-slider'));
+            }
+        }
     }
 
     function updateNextOptions(response, sortedOptions, currentIndex, selectedOptions) {
@@ -268,65 +328,6 @@
     `);
     }
 
-    // تحديث دالة handleOptionChange لتعيين معرف الفاريانت بشكل صحيح
-    function handleOptionChange(productId) {
-        const selectedOptions = {};
-        let allOptionsSelected = true;
-
-        // جمع جميع الخيارات المحددة
-        $('.option-selector').each(function() {
-            const optionId = $(this).data('option-id');
-            const valueId = $(this).val();
-
-            if (!valueId) {
-                allOptionsSelected = false;
-            }
-            selectedOptions[optionId] = valueId;
-        });
-
-        if (!allOptionsSelected) {
-            $('.quick-product-action button').prop('disabled', true);
-            if (currentProductData.images && currentProductData.images.length > 0) {
-                displayImages(currentProductData.images, $('.product-images-slider'));
-            }
-            return;
-        }
-
-        // البحث عن الفاريانت المطابق للخيارات المحددة
-        const matchingVariant = findMatchingVariant(selectedOptions);
-
-        if (matchingVariant) {
-            // تحديث السعر
-            updatePriceDisplay(matchingVariant.price, matchingVariant.discounted_price);
-
-            // تحديث الصور
-            if (matchingVariant.images && matchingVariant.images.length > 0) {
-                displayImages(matchingVariant.images, $('.product-images-slider'));
-            }
-
-            // تفعيل زر إضافة للسلة مع تمرير معرف الفاريانت
-            if (matchingVariant.quantity > 0) {
-                // إضافة حقل مخفي لتخزين معرف الفاريانت
-                $('.quick-product-action').find('.variant-id-holder').remove();
-                $('.quick-product-action').prepend(`<input type="hidden" class="variant-id-holder" value="${matchingVariant.id}">`);
-
-                $('.quick-product-action button')
-                    .prop('disabled', false)
-                    .text('أضف إلى السلة')
-                    .attr('onclick', `addToCart(event, ${productId}, document.getElementById('quantity_${productId}').value, ${matchingVariant.id})`);
-            } else {
-                $('.quick-product-action button')
-                    .prop('disabled', true)
-                    .text('غير متوفر حالياً');
-            }
-        } else {
-            toastr.error('هذه المجموعة من الخيارات غير متوفرة');
-            $('.quick-product-action button').prop('disabled', true);
-            if (currentProductData.images && currentProductData.images.length > 0) {
-                displayImages(currentProductData.images, $('.product-images-slider'));
-            }
-        }
-    }
 
     function findMatchingVariant(selectedOptions) {
         if (!currentProductData || !currentProductData.variants) return null;
@@ -775,6 +776,7 @@
 
     // ------------------------------Begin Shopping Cart--------------------------------
     // ------------------------------Begin Shopping Cart--------------------------------
+
     // المتغيرات العامة
     const csrf_token = '{{ csrf_token() }}';
     const currency = '{{ __("scripts.currency_symbol") }}';
@@ -867,6 +869,7 @@
                     updateCartDetails();
                     // إغلاق المودال بعد الإضافة بنجاح
                     $('.product-quick-view-modal').hide();
+
                 }
             },
             error: function(error) {
@@ -876,6 +879,18 @@
         });
     }
 
+    function updateCartCount() {
+        const cartItems = $('#cart-items-list li').length;
+        const cartCountElement = $('.cart-count');
+
+        if (cartItems === 0) {
+            cartCountElement.hide();
+        } else {
+            cartCountElement.show();
+            // const formattedCount = cartItems < 10 ? `0${cartItems}` : cartItems;
+            cartCountElement.text(cartItems);
+        }
+    }
     function findVariantId(productId) {
         // البحث عن معرف المتغير في المودال أو الصفحة الرئيسية
         const modalVariant = $('.product-quick-view-modal .variant-id-holder').val();
@@ -958,6 +973,9 @@
                 }
                 // إعادة ربط الأحداث
                 bindQuantityEvents();
+
+                // تحديث العداد
+                updateCartCount();
             },
             error: function (error) {
                 console.error('Error updating cart details:', error);
@@ -1064,25 +1082,6 @@
         });
     }
 
-    // تعديل الاستماع على تغيير الكمية
-    {{--document.querySelectorAll('input[data-variant-id]').forEach(function (input) {--}}
-    {{--    input.addEventListener('change', function () {--}}
-    {{--        var quantity = Math.max(1, parseInt(this.value) || 1);--}}
-    {{--        var price = parseFloat(this.getAttribute('data-price')) || 0;--}}
-    {{--        var productId = this.getAttribute('data-product-id');--}}
-    {{--        var variantId = this.getAttribute('data-variant-id');--}}
-    {{--        var total = price * quantity;--}}
-
-    {{--        // تحديث السعر الإجمالي--}}
-    {{--        var totalPriceElement = document.querySelector(`#total-price-${productId}-${variantId}`);--}}
-    {{--        if (totalPriceElement) {--}}
-    {{--            totalPriceElement.innerText = total.toFixed(2) + ' {{ __('shop-cart.currency') }}';--}}
-    {{--        }--}}
-
-    {{--        // استدعاء تحديث السلة--}}
-    {{--        updateQuantity(productId, quantity, variantId);--}}
-    {{--    });--}}
-    {{--});--}}
 
     function updateGrandTotal() {
         var grandTotal = 0;
@@ -1190,12 +1189,12 @@
 
 
     toastr.options = {
-        "positionClass": "toast-top-left", // هنا نغير الموقع إلى أعلى اليسار
+        "positionClass": "toast-top-left custom-toast-position" , // هنا نغير الموقع إلى أعلى اليسار
         "closeButton": true,
         "progressBar": true,
-        "showDuration": "2000", // مدة عرض الرسالة
-        "hideDuration": "2000", // مدة اختفاء الرسالة
-        "timeOut": "1500", // مدة عرض الرسالة قبل الاختفاء (بالملي ثانية)
+        "showDuration": "1000", // مدة عرض الرسالة
+        "hideDuration": "1000", // مدة اختفاء الرسالة
+        "timeOut": "1000", // مدة عرض الرسالة قبل الاختفاء (بالملي ثانية)
     };
 
     @if(Session::has('success'))

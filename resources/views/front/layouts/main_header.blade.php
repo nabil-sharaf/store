@@ -110,6 +110,7 @@
                                     </div>
                                     <div class="header-action-cart">
                                         <button class="btn-cart cart-icon">
+                                            <span class="cart-count"></span>
                                             <i class="pe-7s-cart"></i>
                                         </button>
                                     </div>
@@ -199,7 +200,7 @@
                             </div>
                             <div class="header-action-cart">
                                 <button class="btn-cart cart-icon">
-{{--                                    <span class="cart-count">01</span>--}}
+                                    <span class="cart-count"></span>
                                     <i class="pe-7s-cart"></i>
                                 </button>
                             </div>
