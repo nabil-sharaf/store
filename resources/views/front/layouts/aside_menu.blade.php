@@ -98,12 +98,13 @@
                     <div class="cart-total">
                         <h4>{{ __('aside_menu.total') }}: <span id="cart-total-price">0.00</span></h4>
                     </div>
+
                     <div class="cart-checkout-btn">
                         @if(session()->has('editing_order_id'))
-                            <a class="cart-btn" href="{{ route('home.shop-cart',session()->get('editing_order_id')) }}">{{ __('aside_menu.view_cart') }}</a>
-                            <a class="checkout-btn" href="{{ route('checkout.indexEdit',session()->get('editing_order_id')) }}">{{ __('aside_menu.checkout_edit') }}</a>
+                            <a class="cart-btn" href="{{ route('home.shop-cart',session()->get('editing_order_id')) }}" >{{ __('aside_menu.view_cart') }}</a>
+                            <a class="checkout-btn" href="{{ route('checkout.indexEdit',session()->get('editing_order_id')) }}" >{{ __('aside_menu.checkout_edit') }}</a>
                         @else
-                           <a class="cart-btn" href="{{ route('home.shop-cart') }}">{{ __('aside_menu.view_cart') }}</a>
+                           <a class="cart-btn" href="{{ route('home.shop-cart') }}" >{{ __('aside_menu.view_cart') }}</a>
                             <a class="checkout-btn" href="{{ route('checkout.index') }}">{{ __('aside_menu.checkout') }}</a>
                         @endif
                     </div>

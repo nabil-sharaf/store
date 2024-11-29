@@ -809,47 +809,68 @@
 
     // إضافة المنتجات للويش ليست
     function wishListAdd(event, element, id = null) {
+        // منع الإجراء الافتراضي للحدث
         event.preventDefault();
-        if (id) {
 
-            var url = "{{route('wishlist.store',':productId')}}".replace(':productId', id);
-        } else {
+        // تحديد زر قائمة الرغبات الحالي
+        const wishlistButton = $(element);
 
-            var productId = $(element).data('id'); // احصل على معرف المنتج من خاصية الزر
-            var url = "{{route('wishlist.store',':productId')}}".replace(':productId', productId);
-
+        // التحقق مما إذا كان هناك طلب جاري بالفعل
+        if (wishlistButton.data('loading')) {
+            return;
         }
 
+        // تحديد معرف المنتج
+        let productId;
+        if (id) {
+            productId = id;
+        } else {
+            productId = wishlistButton.data('id');
+        }
 
+        // إنشاء رابط إضافة المنتج إلى قائمة الرغبات
+        const url = "{{route('wishlist.store',':productId')}}".replace(':productId', productId);
+
+        // تعطيل الزر وإضافة حالة التحميل
+        wishlistButton
+            .data('loading', true)
+            .prop('disabled', true)
+            .addClass('btn-loading');
+
+        // إرسال الطلب
         $.ajax({
             url: url,
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}'
             },
+            complete: function() {
+                // إعادة تمكين الزر وإزالة حالة التحميل
+                wishlistButton
+                    .data('loading', false)
+                    .prop('disabled', false)
+                    .removeClass('btn-loading');
+            },
             success: function (response) {
                 if (response.message) {
                     toastr.success(response.message);
-                    console.log(productId)
-
+                    console.log(productId);
                 }
                 if (response.err) {
                     toastr.error(response.err);
                 }
             },
             error: function (xhr) {
-                console.log(productId)
+                console.log(productId);
                 if (xhr.status === 401) {
                     toastr.warning('{{ __('scripts.login_required') }}');
                 } else {
                     toastr.error('{{ __('scripts.error') }}', 'خطأ');
-                    console.log(xhr
-                    )
+                    console.log(xhr);
                 }
             }
         });
     }
-
     function wishListMessage(event) {
         // عرض رسالة اذا لم يكن المستخدم مسجل دخول
         // منع إعادة توجيه الرابط
@@ -920,42 +941,63 @@
     // دالة إضافة المنتج للسلة
     // تحديث دالة addToCart لاستخدام معرف الفاريانت بشكل صحيح
     function addToCart(event, productId, quantity = 1, variantId = null) {
+        // Prevent default form submission
         event.preventDefault();
 
-            // التحقق من صحة الكمية بشكل أكثر صرامة
-            quantity = Math.max(1, parseInt(quantity) || 1);
+        // Select the current add to cart button
+        const addToCartButton = $(event.target);
 
-        // إذا لم يتم تمرير معرف الفاريانت، نحاول العثور عليه
-            // محاولة العثور على معرف المتغير بطريقة أكثر موثوقية
-            if (!variantId) {
-                variantId = findVariantId(productId);
-            }
+        // Check if a request is already in progress
+        if (addToCartButton.data('loading')) {
+            return;
+        }
 
+        // Validate quantity with more strict checks
+        quantity = Math.max(1, parseInt(quantity) || 1);
+
+        // If variant ID is not provided, try to find it more reliably
+        if (!variantId) {
+            variantId = findVariantId(productId);
+        }
+
+        // Prepare data object for the request
         const data = {
             product_id: productId,
             _token: csrf_token,
             quantity: quantity,
         };
 
-        // إضافة معرف الفاريانت للطلب إذا كان موجوداً
+        // Add variant ID to the request if available
         if (variantId) {
             data.variant_id = variantId;
         }
 
-        // إرسال الطلب
+        // Disable the button and show loading state
+        addToCartButton
+            .data('loading', true)
+            .prop('disabled', true)
+            .addClass('btn-loading');
+
+        // Send the request
         $.ajax({
             url: cartAddRoute,
             type: 'POST',
             data: data,
+            complete: function() {
+                // Re-enable the button and remove loading state
+                addToCartButton
+                    .data('loading', false)
+                    .prop('disabled', false)
+                    .removeClass('btn-loading');
+            },
             success: function(response) {
                 if (response.error) {
                     toastr.error(response.error);
                 } else {
                     toastr.success(cartUpdateSuccessMessage);
                     updateCartDetails();
-                    // إغلاق المودال بعد الإضافة بنجاح
+                    // Close the modal after successful addition
                     $('.product-quick-view-modal').hide();
-
                 }
             },
             error: function(error) {
@@ -968,13 +1010,33 @@
     function updateCartCount() {
         const cartItems = $('#cart-items-list li').length;
         const cartCountElement = $('.cart-count');
+        const cartButtons = $('.cart-checkout-btn a');
 
         if (cartItems === 0) {
+            // إخفاء عداد السلة
             cartCountElement.hide();
+
+            // تعطيل الأزرار وإضافة class للتنسيق
+            cartButtons
+                .addClass('disabled')
+                .css({
+                    'pointer-events': 'none',
+                    'opacity': '0.7'
+                })
+                .attr('title', 'السلة فارغة');
+
         } else {
-            cartCountElement.show();
-            // const formattedCount = cartItems < 10 ? `0${cartItems}` : cartItems;
-            cartCountElement.text(cartItems);
+            // إظهار العداد وتحديث القيمة
+            cartCountElement.show().text(cartItems);
+
+            // تفعيل الأزرار وإزالة التنسيق
+            cartButtons
+                .removeClass('disabled')
+                .css({
+                    'pointer-events': 'auto',
+                    'opacity': '1'
+                })
+                .removeAttr('title');
         }
     }
     function findVariantId(productId) {
@@ -1179,43 +1241,127 @@
 
 
     // حذف منتج من السلة
+    // تخزين العناصر المستخدمة بشكل متكرر
+    const SELECTORS = {
+        CART_COUNTER: '.cart-counter',
+        CART_TOTAL: '.cart-total'
+    };
+
     function removeFromCart(event, element) {
         event.preventDefault();
 
-        const productId = $(element).data('id');
-        const variantId = $(element).data('variant-id');
+        const $element = $(element);
 
-        // استخدام معرف مركب للمنتجات ذات المتغيرات
-        const removeId = variantId ? (productId + '-' + variantId) : productId;
+        // التحقق من حالة العنصر باستخدام data attribute بدلاً من class
+        if ($element.data('processing')) {
+            return;
+        }
 
-        $.ajax({
+        // تعيين حالة المعالجة
+        $element
+            .data('processing', true)
+            .addClass('loading')
+            .prop('disabled', true);
+
+        // استخراج البيانات مرة واحدة
+        const requestData = {
+            product_id: $element.data('id'),
+            variant_id: $element.data('variant-id'),
+            _token: csrf_token
+        };
+
+        // إنشاء Promise للـ AJAX request
+        const removeRequest = $.ajax({
             url: cartRemoveRoute,
             type: 'POST',
-            data: {
-                product_id: productId,
-                variant_id: variantId,
-                _token: csrf_token
-            },
-            success: function (response) {
-                if (response.success) {
-                    // تحديث السلة
-                    toastr.success(cartRemoveSuccessMessage);
-                    updateCartDetails();
-                } else {
-                    toastr.error(response.message || 'حدث خطأ أثناء حذف المنتج');
-                }
-            },
-            error: function (error) {
-                console.error('Error removing item from cart:', error);
-                toastr.error(cartRemoveErrorMessage);
-            }
+            data: requestData,
+            timeout: 10000 // timeout بعد 10 ثواني
         });
+
+        removeRequest
+            .then(response => {
+                if (response.success) {
+                    // معالجة النجاح
+                    handleSuccess(response);
+
+                    // تشغيل animation للعنصر المحذوف إذا كان موجوداً في صفحة السلة
+                    const $cartItem = $element.closest('.cart-item');
+                    if ($cartItem.length) {
+                        $cartItem.fadeOut(300, () => $cartItem.remove());
+                    }
+                } else {
+                    throw new Error(response.message || 'حدث خطأ أثناء حذف المنتج');
+                }
+            })
+            .catch(error => {
+                // معالجة الخطأ
+                console.error('Error removing item from cart:', error);
+                toastr.error(error.message || cartRemoveErrorMessage, '', {
+                    timeOut: 3000,
+                    closeButton: true,
+                    progressBar: true
+                });
+            })
+            .finally(() => {
+                // تنظيف حالة العنصر
+                cleanupElement($element);
+            });
     }
-    // حذف منتج من صفحة الشوب كارت
+
+    // دوال مساعدة لتنظيم الكود
+    function handleSuccess(response) {
+        // عرض رسالة النجاح مع خيارات محسنة
+        toastr.success(cartRemoveSuccessMessage, '');
+
+        // تحديث تفاصيل السلة بشكل متزامن
+        if (typeof updateCartDetails === 'function') {
+            updateCartDetails();
+        } else {
+            // تحديث العناصر الفردية إذا كانت دالة updateCartDetails غير متوفرة
+            updateCartUI(response);
+        }
+    }
+
+    function updateCartUI(response) {
+        // تحديث عداد السلة
+        const $counter = $(SELECTORS.CART_COUNTER);
+        if ($counter.length && response.cartCount !== undefined) {
+            $counter.text(response.cartCount);
+        }
+
+        // تحديث إجمالي السلة
+        const $total = $(SELECTORS.CART_TOTAL);
+        if ($total.length && response.cartTotal !== undefined) {
+            $total.fadeOut(150).text(response.cartTotal).fadeIn(150);
+        }
+    }
+
+    function cleanupElement($element) {
+        $element
+            .removeData('processing')
+            .removeClass('loading')
+            .prop('disabled', false);
+    }    // حذف منتج من صفحة الشوب كارت
     function removeItem(event, element) {
         event.preventDefault();
 
-        var elementId = $(element).data('id');
+        // منع النقر المتكرر عن طريق التحقق من حالة العنصر
+        const $element = $(element);
+        if ($element.data('processing')) {
+            return;
+        }
+
+        // وضع علامة أن العنصر قيد المعالجة
+        $element.data('processing', true);
+
+        // إضافة class للإشارة بصرياً أن العملية جارية
+        $element.addClass('processing').prop('disabled', true);
+
+        const elementId = $element.data('id');
+        const $row = $element.closest('tr');
+
+        // تخزين مرجع لـ tbody لتحسين الأداء
+        const $tbody = $row.parent();
 
         $.ajax({
             url: '{{ route("cart.remove-item") }}',
@@ -1226,34 +1372,67 @@
             },
             success: function (response) {
                 if (response.success) {
-                    // حذف الصف
-                    $(element).closest('tr').remove();
+                    // استخدام animation للحذف
+                    $row.fadeOut(300, function() {
+                        $(this).remove();
 
-                    // تحديث إجمالي السلة
+                        // التحقق من وجود منتجات
+                        if ($tbody.children('tr').length === 0) {
+                            const emptyMessage = $('<tr><td colspan="6" class="text-center">{{ __("shop-cart.no_products") }}</td></tr>');
+                            $tbody.append(emptyMessage.hide().fadeIn(300));
+                        }
+                    });
+
+                    // تحديث إجمالي السلة بشكل متزامن
                     if (typeof updateCartDetails === 'function') {
                         updateCartDetails();
                     }
 
-                    // تحديث المجموع الكلي
-                    if ($('#grand-total').length) {
-                        $('#grand-total').text(response.cartTotal + ' {{ __("shop-cart.currency") }}');
-                    }
-
-                    // تحقق من وجود منتجات في السلة
-                    if ($('table tbody tr').length === 0) {
-                        $('table tbody').append('<tr><td colspan="6" class="text-center">{{ __("shop-cart.no_products") }}</td></tr>');
+                    // تحديث المجموع الكلي مع animation
+                    const $grandTotal = $('#grand-total');
+                    if ($grandTotal.length) {
+                        $grandTotal
+                            .fadeOut(150)
+                            .text(response.cartTotal + ' {{ __("shop-cart.currency") }}')
+                            .fadeIn(150);
                     }
                 } else {
-                    alert('حدث خطأ أثناء حذف المنتج');
+                    showError('حدث خطأ أثناء حذف المنتج');
                 }
             },
             error: function (error) {
-                console.log('Error:', error);
-                alert('حدث خطأ أثناء حذف المنتج');
+                console.error('Error:', error);
+                showError('حدث خطأ أثناء حذف المنتج');
+            },
+            complete: function() {
+                // إزالة علامة المعالجة وتمكين العنصر مرة أخرى
+                $element
+                    .removeData('processing')
+                    .removeClass('processing')
+                    .prop('disabled', false);
             }
         });
     }
 
+    // دالة مساعدة لعرض رسائل الخطأ
+    function showError(message) {
+        const $errorAlert = $('<div>')
+            .addClass('alert alert-danger alert-dismissible fade show')
+            .html(`
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        `);
+
+        // إضافة التنبيه في أعلى الصفحة
+        $('main').prepend($errorAlert);
+
+        // إزالة التنبيه تلقائياً بعد 3 ثواني
+        setTimeout(() => {
+            $errorAlert.alert('close');
+        }, 3000);
+    }
     //------------------------ products filter  toolbar-----------
 
     document.addEventListener('DOMContentLoaded', function () {

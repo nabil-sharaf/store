@@ -791,3 +791,34 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     }
 }
 
+.btn-loading {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+.cart-checkout-btn a.disabled {
+    cursor: not-allowed;
+    transition: opacity 0.3s ease;
+}
+
+/* تنسيق التلميح عند التحويم */
+.cart-checkout-btn a[title] {
+    position: relative;
+}
+
+.cart-checkout-btn a[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    margin-bottom: 5px;
+}
