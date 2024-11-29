@@ -177,7 +177,8 @@
                         @endforelse
                         @if($product->hasVariants())
                             <div class="variant-warning text-muted" style="font-size: 12px; margin-bottom: -10px; ">
-                                <span class="text-danger font-bold">*</span> برجاء اختيار جميع خصائص المنتج من أجل الإضافة للسلة
+                                <span class="text-danger font-bold">*</span> برجاء اختيار جميع خصائص المنتج من أجل
+                                الإضافة للسلة
                             </div>
                         @endif
                         <!-- Action Buttons -->
@@ -375,6 +376,14 @@
                 const requiredOptionsCount = options.length;
                 const selectedOptionsCount = Object.keys(selectedOptions).length;
 
+
+                // إذا كان المنتج ليس له خيارات، فعّل الزر
+                if (requiredOptionsCount === 0) {
+                    $addToCartBtn.prop('disabled', false).css('opacity', '1');
+                    return;
+                }
+
+                // للمنتجات ذات الخيارات
                 if (selectedOptionsCount === requiredOptionsCount) {
                     const matchedVariant = findMatchingVariant(variants, selectedOptions);
                     $addToCartBtn.prop('disabled', !matchedVariant);
@@ -384,7 +393,6 @@
                     $addToCartBtn.css('opacity', '0.6');
                 }
             }
-
 // دالة مساعدة للعثور على المتغير المطابق
             function findMatchingVariant(variants, selectedOptions) {
                 return variants.find(variant =>
@@ -393,16 +401,20 @@
                     )
                 );
             }
+
             // تعديل الحالة الأولية للزر عند تحميل الصفحة
             function initializeButtonState() {
-                const selectedOptions = {};
                 const $addToCartBtn = $('.btn-add-cart');
 
-                // تعطيل الزر مبدئياً
-                $addToCartBtn.prop('disabled', true).css('opacity', '0.6');
-            }
-
-            // إضافة استدعاء الدالة عند تحميل الصفحة
+                // إذا كانت المتغيرات فارغة أو لا تحتوي على خيارات
+                if (!variants || variants.length === 0 || options.length === 0) {
+                    // فعّل الزر
+                    $addToCartBtn.prop('disabled', false).css('opacity', '1');
+                } else {
+                    // عطّل الزر حتى يتم اختيار كل الخيارات
+                    $addToCartBtn.prop('disabled', true).css('opacity', '0.6');
+                }
+            }            // إضافة استدعاء الدالة عند تحميل الصفحة
             initializeButtonState();
 
             function updateProductVariations() {
@@ -659,7 +671,7 @@
                 }
             });
 // تحسين معالج حدث النقر على الألوان
-            $('.color-thumbnail').on('click', function() {
+            $('.color-thumbnail').on('click', function () {
                 const $radio = $(this).find('input[type="radio"]');
                 if (!$radio.prop('checked')) {
                     $('.color-thumbnail').removeClass('selected');
