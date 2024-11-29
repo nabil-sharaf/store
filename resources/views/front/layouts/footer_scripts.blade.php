@@ -437,79 +437,37 @@
         return Math.round(discount); // تقريب النسبة لأقرب رقم صحيح
     }
 
-    // Cache DOM selectors for better performance
-    const DOM = {
-        productSlider: document.querySelector('.product-images-slider'),
-        cartButton: document.querySelector('.quick-product-action button'),
-        quantityInput: document.querySelector('.pro-qty input')
-    };
-
-    // Use DocumentFragment for better performance when adding multiple categories
     function displayCategories(categories, container) {
-        const fragment = document.createDocumentFragment();
-
-        categories.forEach(category => {
-            const link = document.createElement('a');
-            link.href = '#';
-            link.className = 'mx-2';
-            link.textContent = category.name;
-            fragment.appendChild(link);
+        container.empty();
+        categories.forEach(function(cat) {
+            container.append(`<a href="#" class="mx-2">${cat.name}</a>`);
         });
-
-        container.innerHTML = '';
-        container.appendChild(fragment);
     }
 
-    // Use template literal with proper escaping
     function updateImage(imagePath) {
-        if (!imagePath) return;
-
-        DOM.productSlider.innerHTML = `
+        $('.product-images-slider').html(`
         <div class="swiper-slide">
-            <img src="${window.assetUrl}/storage/${encodeURIComponent(imagePath)}"
-                 alt="Product Image"
-                 loading="lazy" />
+            <img src="{{ asset('storage') }}/${imagePath}" alt="Product Image" />
         </div>
-    `;
+    `);
     }
 
-    // Simplified quantity field update with data attributes
     function updateQuantityField(productId) {
-        if (!productId) return;
-
-        DOM.quantityInput.id = `quantity_${productId}`;
-        DOM.quantityInput.value = 1;
-        DOM.quantityInput.dataset.productId = productId;
+        $('.pro-qty input')
+            .attr('id', `quantity_${productId}`)
+            .val(1);
     }
 
-    // Improved cart button handling with better event management
     function enableAddToCartButton(productId, variantId) {
-        if (!productId) return;
+        const quantitySelector = `document.getElementById('quantity_${productId}').value`;
+        const onClickFunction = variantId
+            ? `addToCart(event, ${productId}, ${quantitySelector}, ${variantId})`
+            : `addToCart(event, ${productId}, ${quantitySelector})`;
 
-        const button = DOM.cartButton;
-        button.disabled = false;
-        button.innerHTML = `أضف للسلة &nbsp; <i class="fa fa-shopping-cart"></i>`;
-
-        // Remove old event listener if exists
-        button.removeEventListener('click', button.clickHandler);
-
-        // Create new event handler
-        button.clickHandler = async (event) => {
-            event.preventDefault();
-            const quantity = document.getElementById(`quantity_${productId}`).value;
-            await addToCart(event, productId, quantity, variantId);
-        };
-
-        button.addEventListener('click', button.clickHandler);
-    }
-
-    // Helper function to validate inputs
-    function validateInput(value, name) {
-        if (!value) {
-            console.warn(`Invalid ${name} provided`);
-            return false;
-        }
-        return true;
+        $('.quick-product-action button')
+            .prop('disabled', false)
+            .html(`أضف للسلة &nbsp; <i class="fa fa-shopping-cart"></i>`)
+            .attr('onclick', onClickFunction);
     }
 
     // تحديث دالة عرض الصور لتدعم عرض أكثر من صورة
@@ -1222,58 +1180,36 @@
 
     // حذف منتج من السلة
     function removeFromCart(event, element) {
-        // منع السلوك الافتراضي مبكرًا
         event.preventDefault();
 
-        // التحقق من العنصر بسرعة
-        if (!element) return;
+        const productId = $(element).data('id');
+        const variantId = $(element).data('variant-id');
 
-        const $element = $(element);
-        const productId = $element.data('id');
-        const variantId = $element.data('variant-id');
-
-        // تحسين معالجة معرف المنتج المركب
-        const removeId = variantId ? `${productId}-${variantId}` : productId;
-
-        // إضافة حالة تحميل للمنع المتعدد
-        if ($element.hasClass('removing')) return;
-        $element.addClass('removing');
+        // استخدام معرف مركب للمنتجات ذات المتغيرات
+        const removeId = variantId ? (productId + '-' + variantId) : productId;
 
         $.ajax({
             url: cartRemoveRoute,
-            method: 'POST', // أكثر دقة من 'type'
+            type: 'POST',
             data: {
                 product_id: productId,
                 variant_id: variantId,
                 _token: csrf_token
             },
-            timeout: 10000, // إضافة مهلة زمنية
-            beforeSend: function() {
-                // تعطيل العنصر مؤقتًا
-                $element.prop('disabled', true);
-            }
-        })
-            .done(function (response) {
+            success: function (response) {
                 if (response.success) {
-                    // إزالة العنصر بسلاسة
-                    $element.closest('.cart-item').fadeOut(300, function() {
-                        $(this).remove();
-                    });
-
+                    // تحديث السلة
                     toastr.success(cartRemoveSuccessMessage);
                     updateCartDetails();
                 } else {
                     toastr.error(response.message || 'حدث خطأ أثناء حذف المنتج');
                 }
-            })
-            .fail(function (xhr, status, error) {
+            },
+            error: function (error) {
                 console.error('Error removing item from cart:', error);
                 toastr.error(cartRemoveErrorMessage);
-            })
-            .always(function() {
-                // إعادة تمكين العنصر وإزالة حالة التحميل
-                $element.removeClass('removing').prop('disabled', false);
-            });
+            }
+        });
     }
     // حذف منتج من صفحة الشوب كارت
     function removeItem(event, element) {
