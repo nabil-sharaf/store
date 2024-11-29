@@ -1060,6 +1060,9 @@
                 var itemsList = $('#cart-items-list');
                 itemsList.empty();
 
+                // Check if current URL contains checkout path
+                const isCheckoutPage = window.location.pathname.includes('/shop/checkout');
+
                 for (var key in response.items) {
                     if (response.items.hasOwnProperty(key)) {
                         var item = response.items[key];
@@ -1070,59 +1073,64 @@
                             variantInfo = '<div class="variant-info">';
                             const entries = Object.entries(item.attributes.variant_details);
                             entries.forEach(([optionName, details], index) => {
-                                        variantInfo += `
-                                <span class="variant-option">
-                                    <span class="option-value">${details.value}</span>
-                                    ${index < entries.length - 1 ? ',&nbsp;' : ''}
-                                </span>
-                                `;
+                                variantInfo += `
+                            <span class="variant-option">
+                                <span class="option-value">${details.value}</span>
+                                ${index < entries.length - 1 ? ',&nbsp;' : ''}
+                            </span>
+                            `;
                             });
                             variantInfo += '</div>';
                         }
                         var itemHTML = `
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="${item.attributes.url}">
-                                    <img src="${storageUrl}/${item.attributes.image}" alt="${item.name}">
-                                </a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="${item.attributes.url}">${item.name}</a></h4>
-                                ${variantInfo}
-                                <span class="quantity-price">
-                                    ${item.quantity} × <span class="price">${parseFloat(item.price).toFixed(2)} ${currency}</span>
-                                </span>
+                    <li class="single-product-cart">
+                        <div class="cart-img">
+                            <a href="${item.attributes.url}">
+                                <img src="${storageUrl}/${item.attributes.image}" alt="${item.name}">
+                            </a>
+                        </div>
+                        <div class="cart-title">
+                            <h4><a href="${item.attributes.url}">${item.name}</a></h4>
+                            ${variantInfo}
+                            <span class="quantity-price">
+                                ${item.quantity} × <span class="price">${parseFloat(item.price).toFixed(2)} ${currency}</span>
+                            </span>
                     `;
 
                         if (item.attributes.free_quantity > 0) {
                             itemHTML += `
-                            <span class="free-quantity">
-                                + <span class="free-quantity-number">${item.attributes.free_quantity}</span> ${freeItemText}
-                            </span>
-                        `;
+                        <span class="free-quantity">
+                            + <span class="free-quantity-number">${item.attributes.free_quantity}</span> ${freeItemText}
+                        </span>
+                    `;
                         }
 
                         itemHTML += `
-        </div>
-        <div class="cart-delete">
-            <a href="javascript:void(0);"
-               onclick="removeFromCart(event, this)"
-               data-id="${item.id}"
-               data-variant-id="${item.attributes.variant_id || null}"
-               class="remove-item">
-                <i class="pe-7s-trash icons"></i>
-            </a>
-        </div>
-    </li>
-`;
+                    </div>`;
+
+                        // Only add delete button if not on checkout page
+                        if (!isCheckoutPage) {
+                            itemHTML += `
+                        <div class="cart-delete">
+                            <a href="javascript:void(0);"
+                               onclick="removeFromCart(event, this)"
+                               data-id="${item.id}"
+                               data-variant-id="${item.attributes.variant_id || null}"
+                               class="remove-item">
+                                <i class="pe-7s-trash icons"></i>
+                            </a>
+                        </div>`;
+                        }
+
+                        itemHTML += `</li>`;
 
                         itemsList.append(itemHTML);
                     }
                 }
-                // إعادة ربط الأحداث
+                // Re-bind events
                 bindQuantityEvents();
 
-                // تحديث العداد
+                // Update counter
                 updateCartCount();
             },
             error: function (error) {
@@ -1130,8 +1138,7 @@
                 toastr.error(cartDetailsErrorMessage);
             }
         });
-    }
-    // دالة ربط أحداث الكمية
+    }    // دالة ربط أحداث الكمية
     function bindQuantityEvents() {
         document.querySelectorAll('input[data-variant-id]').forEach(function (input) {
             input.removeEventListener('change', quantityChangeHandler);
