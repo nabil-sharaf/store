@@ -348,7 +348,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     text-align: center;
     width: 100%; /* يجعل الخلفية تغطي عرض الصورة بالكامل */
     padding: 10px 0; /* تقليل المسافات */
-    background-color: rgba(0, 0, 0, 0.35); /* الخلفية الشفافة */
+    background-color: rgba(0, 0, 0, 0.50); /* الخلفية الشفافة */
     transform: unset !important;
 }
 
