@@ -417,9 +417,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
         height: auto !important;
         padding: 2px 20px !important;
     }
-    }
-
 }
+
 
 @media (min-width: 992px) {
     .category-items2 .col-md-6 {
@@ -443,7 +442,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 @media (max-width: 768px) {
     .category-item .contact-info h3 {
-        font-size: 16px !important;
+        font-size: 17px !important;
         font-weight: bold;
     }
 
@@ -470,9 +469,30 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     right: 20%;
     left: 20%;
 }
-.contact-info{
-padding-right: 3px;
-padding-left: 3px;
+
+.contact-info {
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+@media only screen and (min-width: 769px) {
+
+
+
+    .category-item .contact-info h3 {
+        font-size: 24px !important;
+    }
+
+    .category-item .contact-info h4 {
+        font-size: 18px !important;
+    }
+
+    .category-item .btn-theme {
+        display: inline-block;
+        font-size: 20px !important;
+        height: auto !important;
+        padding: 6px 20px !important;
+    }
 }
 
 /*----------------------------End Home Categories----------------------*/
