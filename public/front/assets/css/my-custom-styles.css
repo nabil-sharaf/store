@@ -343,7 +343,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 @media (max-width: 768px) {
     .category-item .content {
         position: absolute;
-        top: 71% !important;
+        top: 65% !important;
         inset-inline-end: 10px !important;
     }
 

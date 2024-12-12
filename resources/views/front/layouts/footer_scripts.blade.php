@@ -4,7 +4,7 @@
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <!--=== Bootstrap Min Js ===-->
-<script src="{{asset('front/assets')}}/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!--=== jquery Appear Js ===-->
 <script src="{{asset('front/assets')}}/js/jquery.appear.js"></script>
 <!--=== jquery Swiper Min Js ===-->
