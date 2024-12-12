@@ -86,7 +86,7 @@
                             <div class="login-register-style login-register-pr" style="direction: rtl;">
                                 <div class="login-register-title mb-30">
                                     {{ __('auth.login_welcome') }}
-                                    <a href="#" id="show-register" class="btn btn-link">{{ __('auth.no_account') }}</a>
+                                    <a href="#" id="show-register" class="btn btn-link no-acount">{{ __('auth.no_account') }}</a>
                                     <h2 class=""><strong>{{ __('auth.login_button') }}</strong></h2>
                                 </div>
                                 <form id="login-form" action="{{ route('login') }}" method="post">
@@ -97,20 +97,20 @@
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="login-register-input">
+                                    <div class="login-register-input mt-4">
                                         <input type="password" name="password" placeholder="{{ __('auth.password_placeholder') }}">
                                         @error('password')
                                         <div style="color: red; font-size: 12px;">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="remember-me-btn">
-                                        <input type="checkbox" name="remember">
-                                        <label>&nbsp;&nbsp;{{ __('auth.remember_me') }} &nbsp;</label>
-                                    </div>
-                                    <div class="forgot">
-                                        <a href="#">{{ __('auth.forgot_password') }}</a>
-                                    </div>
-                                    <div class="btn-style-3">
+{{--                                    <div class="remember-me-btn">--}}
+{{--                                        <input type="checkbox" name="remember">--}}
+{{--                                        <label>&nbsp;&nbsp;{{ __('auth.remember_me') }} &nbsp;</label>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="forgot">--}}
+{{--                                        <a href="#">{{ __('auth.forgot_password') }}</a>--}}
+{{--                                    </div>--}}
+                                    <div class="btn-style-3 mt-4">
                                         <button class="btn" type="submit"><strong>{{ __('auth.login_button') }}</strong></button>
                                     </div>
                                 </form>
@@ -124,7 +124,13 @@
 
 @endsection
 
-
+@push('styles')
+<style>
+    .no-acount{
+        color:#0074e5 !important;
+    }
+</style>
+@endpush
 @push('scripts')
     <script>
         $(document).ready(function() {
