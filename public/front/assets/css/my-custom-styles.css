@@ -447,7 +447,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     }
 
     .category-item .contact-info h4 p {
-        font-size: 14px !important;
+        font-size: 13px !important;
         margin-bottom: 0 !important;
     }
 
@@ -465,7 +465,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .category-area.product-category2-area .category-items2 .category-item .thumb .content .btn-theme {
     position: absolute;
-    bottom: 12px;
+    bottom: 5px;
     right: 20%;
     left: 20%;
 }
